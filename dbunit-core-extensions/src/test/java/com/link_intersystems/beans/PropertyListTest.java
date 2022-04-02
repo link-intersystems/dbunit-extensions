@@ -1,5 +1,6 @@
 package com.link_intersystems.beans;
 
+import com.link_intersystems.UnitTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,6 +13,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author René Link <rene.link@link-intersystems.com>
  */
+@UnitTest
 class PropertyListTest {
 
     private Property property1;

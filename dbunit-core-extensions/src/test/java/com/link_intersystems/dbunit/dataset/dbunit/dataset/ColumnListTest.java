@@ -1,5 +1,6 @@
 package com.link_intersystems.dbunit.dataset.dbunit.dataset;
 
+import com.link_intersystems.UnitTest;
 import com.link_intersystems.dbunit.dataset.ColumnList;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.datatype.DataType;
@@ -11,6 +12,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@UnitTest
 class ColumnListTest {
 
     private ColumnList columnList;

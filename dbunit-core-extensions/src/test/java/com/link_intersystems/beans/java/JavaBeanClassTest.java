@@ -1,5 +1,6 @@
 package com.link_intersystems.beans.java;
 
+import com.link_intersystems.ComponentTest;
 import com.link_intersystems.beans.Property;
 import org.junit.jupiter.api.Test;
 
@@ -11,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * @author René Link <rene.link@link-intersystems.com>
  */
+@ComponentTest
 class JavaBeanClassTest {
 
     @Test

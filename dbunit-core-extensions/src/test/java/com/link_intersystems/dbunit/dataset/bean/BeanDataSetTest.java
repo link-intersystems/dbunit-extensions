@@ -1,5 +1,6 @@
 package com.link_intersystems.dbunit.dataset.bean;
 
+import com.link_intersystems.ComponentTest;
 import com.link_intersystems.dbunit.dataset.bean.java.JavaBeanTableMetaData;
 import com.link_intersystems.dbunit.dataset.dbunit.dataset.bean.DepartmentBean;
 import com.link_intersystems.dbunit.dataset.dbunit.dataset.bean.EmployeeBean;
@@ -18,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author René Link <rene.link@link-intersystems.com>
  */
+@ComponentTest
 class BeanDataSetTest {
 
     private BeanDataSet beanDataSet;
