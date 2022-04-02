@@ -2,7 +2,6 @@ package com.link_intersystems.dbunit.dataset.bean;
 
 import com.link_intersystems.util.ReversedList;
 import org.dbunit.dataset.AbstractDataSet;
-import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITableIterator;
 
 import java.util.Collections;
