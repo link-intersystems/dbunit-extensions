@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.example</groupId>
-    <artifactId>dbunit-ext</artifactId>
+    <groupId>com.link_intersystems.dbunit</groupId>
+    <artifactId>dbunit-extensions</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
 
@@ -19,6 +19,8 @@
         <maven.compiler.target>11</maven.compiler.target>
         <junit.jupiter.version>5.8.2</junit.jupiter.version>
         <junit.platform.version>1.8.2</junit.platform.version>
+        <dbunit.version>2.4.8</dbunit.version>
+        <slf4j.version>1.7.36</slf4j.version>
     </properties>
 
     <dependencies>
@@ -67,20 +69,14 @@
             <dependency>
                 <groupId>org.dbunit</groupId>
                 <artifactId>dbunit</artifactId>
-                <version>2.4.8</version>
+                <version>${dbunit.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.7.36</version>
+                <version>${slf4j.version}</version>
             </dependency>
-            <dependency>
-                <groupId>ch.qos.logback</groupId>
-                <artifactId>logback-core</artifactId>
-                <version>1.2.6</version>
-            </dependency>
-
 
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
