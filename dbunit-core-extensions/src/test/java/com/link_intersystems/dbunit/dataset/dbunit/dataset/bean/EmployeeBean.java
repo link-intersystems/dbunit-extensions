@@ -1,6 +1,7 @@
 package com.link_intersystems.dbunit.dataset.dbunit.dataset.bean;
 
 import java.util.Date;
+import java.util.Objects;
 
 import static com.link_intersystems.dbunit.dataset.util.DataFormatter.YYYY_MM_DD;
 
@@ -102,5 +103,18 @@ public class EmployeeBean {
 
     public int getDepartmentNumber() {
         return departmentNumber;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EmployeeBean that = (EmployeeBean) o;
+        return number == that.number && sal == that.sal && departmentNumber == that.departmentNumber && name.equals(that.name) && job.equals(that.job) && hireDate.equals(that.hireDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(number, name, job, hireDate, sal, departmentNumber);
     }
 }

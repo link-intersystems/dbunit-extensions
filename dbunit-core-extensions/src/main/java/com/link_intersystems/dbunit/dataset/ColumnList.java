@@ -10,7 +10,7 @@ public class ColumnList extends AbstractList<Column> {
 
     private List<Column> columns;
 
-    public ColumnList(Column[] columns) {
+    public ColumnList(Column... columns) {
         this(Arrays.asList(columns));
     }
 

@@ -1,5 +1,6 @@
 package com.link_intersystems.dbunit.dataset.dbunit.dataset.bean.java;
 
+import com.link_intersystems.UnitTest;
 import com.link_intersystems.dbunit.dataset.ColumnList;
 import com.link_intersystems.dbunit.dataset.beans.BeanTableMetaData;
 import com.link_intersystems.dbunit.dataset.beans.java.JavaBeanTableMetaData;
@@ -12,6 +13,7 @@ import java.beans.IntrospectionException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@UnitTest
 class JavaBeanTableMetaDataTest {
 
     private BeanTableMetaData tableMetaData;

@@ -24,12 +24,7 @@ class ColumnListTest {
         col1 = new Column("col1", DataType.BIGINT);
         col2 = new Column("col2", DataType.VARCHAR);
 
-        List<Column> columns = new ArrayList<>();
-
-        columns.add(col1);
-        columns.add(col2);
-
-        columnList = new ColumnList(columns);
+        columnList = new ColumnList(col1, col2);
     }
 
     @Test
