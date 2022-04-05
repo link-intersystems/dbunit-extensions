@@ -55,15 +55,15 @@ public class JavaBeanTableMetaData extends BeanTableMetaData {
         Method readMethod = pd.getReadMethod();
 
         try {
-            makeAccessible(bean, readMethod);
+            makeAccessible(readMethod);
             return readMethod.invoke(bean);
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new DataSetException(e);
         }
     }
 
-    protected void makeAccessible(Object bean, Method readMethod) {
-        if (!readMethod.canAccess(bean)) {
+    protected void makeAccessible(Method readMethod) {
+        if (!readMethod.isAccessible()) {
             readMethod.setAccessible(true);
         }
     }
