@@ -3,7 +3,7 @@ package com.link_intersystems.beans;
 import java.util.*;
 
 /**
- * @author René Link <rene.link@link-intersystems.com>
+ *  @author - René Link &lt;rene.link@link-intersystems.com&gt;
  */
 public class PropertyList extends AbstractList<Property> {
 

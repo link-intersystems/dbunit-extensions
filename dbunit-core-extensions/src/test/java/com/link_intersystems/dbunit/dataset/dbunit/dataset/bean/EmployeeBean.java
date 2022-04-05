@@ -12,7 +12,7 @@ public class EmployeeBean {
         king.setJob("PRESIDENT");
         king.setSal(7698);
         king.setHireDate(YYYY_MM_DD.safeParse("1981-11-17"));
-        king.setDepartment(DepartmentBean.accounting());
+        king.setDepartmentNumber(10);
         return king;
     }
 
@@ -21,7 +21,7 @@ public class EmployeeBean {
         blake.setJob("MANAGER");
         blake.setSal(7839);
         blake.setHireDate(YYYY_MM_DD.safeParse("1-5-1981"));
-        blake.setDepartment(DepartmentBean.research());
+        blake.setDepartmentNumber(20);
         return blake;
     }
 
@@ -30,7 +30,7 @@ public class EmployeeBean {
         clark.setJob("MANAGER");
         clark.setSal(7839);
         clark.setHireDate(YYYY_MM_DD.safeParse("9-6-1981"));
-        clark.setDepartment(DepartmentBean.sales());
+        clark.setDepartmentNumber(30);
         return clark;
     }
 
@@ -39,7 +39,7 @@ public class EmployeeBean {
         jones.setJob("MANAGER");
         jones.setSal(7839);
         jones.setHireDate(YYYY_MM_DD.safeParse("2-4-1981"));
-        jones.setDepartment(DepartmentBean.research());
+        jones.setDepartmentNumber(20);
         return jones;
     }
 
@@ -49,7 +49,7 @@ public class EmployeeBean {
     private String job;
     private Date hireDate;
     private int sal;
-    private DepartmentBean department;
+    private int departmentNumber;
 
     public EmployeeBean(int number, String name) {
         this.number = number;
@@ -96,11 +96,11 @@ public class EmployeeBean {
         this.sal = sal;
     }
 
-    public void setDepartment(DepartmentBean department) {
-        this.department = department;
+    public void setDepartmentNumber(int departmentNumber) {
+        this.departmentNumber = departmentNumber;
     }
 
-    public DepartmentBean getDepartment() {
-        return department;
+    public int getDepartmentNumber() {
+        return departmentNumber;
     }
 }

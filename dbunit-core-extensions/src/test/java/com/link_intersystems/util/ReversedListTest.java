@@ -7,7 +7,7 @@ import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * @author René Link <rene.link@link-intersystems.com>
+ *  @author - René Link &lt;rene.link@link-intersystems.com&gt;
  */
 @UnitTest
 class ReversedListTest {

@@ -10,7 +10,7 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * @author René Link <rene.link@link-intersystems.com>
+ *  @author - René Link &lt;rene.link@link-intersystems.com&gt;
  */
 @Retention(RUNTIME)
 @Target(TYPE)

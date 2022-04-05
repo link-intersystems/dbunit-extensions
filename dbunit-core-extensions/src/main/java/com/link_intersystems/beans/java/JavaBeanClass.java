@@ -15,7 +15,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
- * @author René Link <rene.link@link-intersystems.com>
+ *  @author - René Link &lt;rene.link@link-intersystems.com&gt;
  */
 public class JavaBeanClass implements BeanClass {
 

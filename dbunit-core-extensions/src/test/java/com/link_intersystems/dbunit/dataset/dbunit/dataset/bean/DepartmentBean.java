@@ -1,7 +1,7 @@
 package com.link_intersystems.dbunit.dataset.dbunit.dataset.bean;
 
 /**
- * @author René Link <rene.link@link-intersystems.com>
+ *  @author - René Link &lt;rene.link@link-intersystems.com&gt;
  */
 public class DepartmentBean {
 

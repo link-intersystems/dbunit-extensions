@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.dataset.bean;
+package com.link_intersystems.dbunit.dataset.beans;
 
 public interface BeanTableNameProvider {
 

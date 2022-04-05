@@ -1,6 +1,6 @@
-package com.link_intersystems.dbunit.dataset.bean.java;
+package com.link_intersystems.dbunit.dataset.beans.java;
 
-import com.link_intersystems.dbunit.dataset.bean.PropertyDataTypeMapping;
+import com.link_intersystems.dbunit.dataset.beans.PropertyDataTypeMapping;
 import org.dbunit.dataset.datatype.DataType;
 
 import java.math.BigDecimal;

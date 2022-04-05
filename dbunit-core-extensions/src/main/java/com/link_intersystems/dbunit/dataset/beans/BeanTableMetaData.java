@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.dataset.bean;
+package com.link_intersystems.dbunit.dataset.beans;
 
 import com.link_intersystems.beans.BeanClass;
 import com.link_intersystems.beans.Property;
@@ -65,7 +65,7 @@ public abstract class BeanTableMetaData extends AbstractTableMetaData {
             idProperties = getBeanClass().getProperties().stream().filter(this::isIdentityProperty).collect(toList());
         }
         Column[] columns = getColumns();
-        return stream(columns).filter(columnMap::containsKey).toArray(Column[]::new);
+        return stream(columns).filter(c -> idProperties.contains(columnMap.get(c))).toArray(Column[]::new);
     }
 
     protected abstract boolean isIdentityProperty(Property property);

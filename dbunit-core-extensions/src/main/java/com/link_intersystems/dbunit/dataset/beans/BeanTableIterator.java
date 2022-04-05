@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.dataset.bean;
+package com.link_intersystems.dbunit.dataset.beans;
 
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITable;

@@ -5,7 +5,7 @@ import com.link_intersystems.beans.Property;
 import java.beans.PropertyDescriptor;
 
 /**
- * @author René Link <rene.link@link-intersystems.com>
+ *  @author - René Link &lt;rene.link@link-intersystems.com&gt;
  */
 public class JavaBeanProperty implements Property {
 

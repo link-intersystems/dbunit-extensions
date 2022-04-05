@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.dataset.bean;
+package com.link_intersystems.dbunit.dataset.beans;
 
 import java.util.AbstractList;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 /**
- * @author René Link <rene.link@link-intersystems.com>
+ *  @author - René Link &lt;rene.link@link-intersystems.com&gt;
  */
 public class BeanList<E> extends AbstractList<E> {
 

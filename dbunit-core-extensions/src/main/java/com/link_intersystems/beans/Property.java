@@ -1,7 +1,7 @@
 package com.link_intersystems.beans;
 
 /**
- * @author René Link <rene.link@link-intersystems.com>
+ *  @author - René Link &lt;rene.link@link-intersystems.com&gt;
  */
 public interface Property {
     String getName();

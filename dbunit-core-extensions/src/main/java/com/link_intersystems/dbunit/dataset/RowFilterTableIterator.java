@@ -10,7 +10,7 @@ import java.util.Map;
 import static java.util.Objects.requireNonNull;
 
 /**
- * @author - René Link <rene.link@link-intersystems.com>
+ * @author - René Link &lt;rene.link@link-intersystems.com&gt;
  */
 public class RowFilterTableIterator implements ITableIterator {
 

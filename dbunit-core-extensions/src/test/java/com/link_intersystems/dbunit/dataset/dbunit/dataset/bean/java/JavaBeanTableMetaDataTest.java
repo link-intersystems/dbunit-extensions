@@ -1,8 +1,8 @@
 package com.link_intersystems.dbunit.dataset.dbunit.dataset.bean.java;
 
 import com.link_intersystems.dbunit.dataset.ColumnList;
-import com.link_intersystems.dbunit.dataset.bean.BeanTableMetaData;
-import com.link_intersystems.dbunit.dataset.bean.java.JavaBeanTableMetaData;
+import com.link_intersystems.dbunit.dataset.beans.BeanTableMetaData;
+import com.link_intersystems.dbunit.dataset.beans.java.JavaBeanTableMetaData;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;
 import org.junit.jupiter.api.BeforeEach;

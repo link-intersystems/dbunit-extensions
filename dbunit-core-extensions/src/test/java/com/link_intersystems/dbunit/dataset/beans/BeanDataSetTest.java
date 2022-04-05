@@ -1,7 +1,7 @@
-package com.link_intersystems.dbunit.dataset.bean;
+package com.link_intersystems.dbunit.dataset.beans;
 
 import com.link_intersystems.ComponentTest;
-import com.link_intersystems.dbunit.dataset.bean.java.JavaBeanTableMetaData;
+import com.link_intersystems.dbunit.dataset.beans.java.JavaBeanTableMetaData;
 import com.link_intersystems.dbunit.dataset.dbunit.dataset.bean.DepartmentBean;
 import com.link_intersystems.dbunit.dataset.dbunit.dataset.bean.EmployeeBean;
 import org.dbunit.dataset.DataSetException;
@@ -17,7 +17,7 @@ import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * @author René Link <rene.link@link-intersystems.com>
+ *  @author - René Link &lt;rene.link@link-intersystems.com&gt;
  */
 @ComponentTest
 class BeanDataSetTest {

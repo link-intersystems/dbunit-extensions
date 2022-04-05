@@ -7,7 +7,7 @@ import static java.lang.Math.max;
 import static java.util.Objects.requireNonNull;
 
 /**
- * @author René Link <rene.link@link-intersystems.com>
+ *  @author - René Link &lt;rene.link@link-intersystems.com&gt;
  */
 public class ReversedList<E> extends AbstractList<E> {
 

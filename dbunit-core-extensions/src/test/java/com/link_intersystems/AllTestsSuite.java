@@ -15,7 +15,7 @@ import org.junit.platform.suite.api.Suite;
  * different classes that might also be tested in separate {@link UnitTest}s, you should first fix {@link UnitTest}s
  * before fixing {@link ComponentTest}s.
  *
- * @author René Link <rene.link@link-intersystems.com>
+ *  @author - René Link &lt;rene.link@link-intersystems.com&gt;
  */
 @Suite
 @SelectClasses({UnitTestSuite.class, ComponentTestSuite.class})
