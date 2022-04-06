@@ -3,7 +3,7 @@ package com.link_intersystems.dbunit.dataset.beans.java;
 import com.link_intersystems.beans.Property;
 import com.link_intersystems.beans.java.JavaBeanClass;
 import com.link_intersystems.beans.java.JavaBeanProperty;
-import com.link_intersystems.dbunit.dataset.beans.BeanTableMetaData;
+import com.link_intersystems.dbunit.dataset.beans.AbstractBeanTableMetaData;
 import com.link_intersystems.dbunit.dataset.beans.PropertyDataTypeMapping;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.datatype.DataType;
@@ -18,7 +18,7 @@ import static java.util.Objects.requireNonNull;
 /**
  *  @author - René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class JavaBeanTableMetaData extends BeanTableMetaData {
+public class JavaBeanTableMetaData extends AbstractBeanTableMetaData {
 
     private final JavaBeanClass beanClass;
     private final PropertyDataTypeMapping propertyDataTypeMapping;

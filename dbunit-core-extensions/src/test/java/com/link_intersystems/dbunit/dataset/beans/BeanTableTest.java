@@ -21,14 +21,14 @@ import static org.mockito.Mockito.when;
 @UnitTest
 class BeanTableTest {
 
-    private BeanTableMetaData metaDataProvider;
+    private AbstractBeanTableMetaData metaDataProvider;
     private BeanTable<String> beanTable;
     private Column valueColumn;
 
     @BeforeEach
     public void setUp() {
         BeanList<String> beanList = new BeanList<>(String.class, Arrays.asList("A", "B"));
-        metaDataProvider = mock(BeanTableMetaData.class);
+        metaDataProvider = mock(AbstractBeanTableMetaData.class);
 
         valueColumn = new Column("value", DataType.VARCHAR);
         beanTable = new BeanTable<>(beanList, metaDataProvider);

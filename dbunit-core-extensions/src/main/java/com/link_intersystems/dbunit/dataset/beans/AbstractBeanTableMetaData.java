@@ -15,12 +15,12 @@ import java.util.Map;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
-public abstract class BeanTableMetaData extends AbstractTableMetaData {
-
-    public abstract BeanClass getBeanClass();
+public abstract class AbstractBeanTableMetaData extends AbstractTableMetaData {
 
     private Map<Column, Property> columnMap;
     private List<Property> idProperties;
+
+    public abstract BeanClass getBeanClass();
 
     @Override
     public String getTableName() {

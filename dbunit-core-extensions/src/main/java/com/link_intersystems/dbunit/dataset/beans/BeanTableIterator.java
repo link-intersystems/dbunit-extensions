@@ -40,7 +40,7 @@ public class BeanTableIterator implements ITableIterator {
     public ITable getTable() throws DataSetException {
         Class<?> beanClass = beanList.getBeanClass();
         try {
-            BeanTableMetaData beanTableMetaData = beanTableMetaDataProvider.getMetaData(beanClass);
+            AbstractBeanTableMetaData beanTableMetaData = beanTableMetaDataProvider.getMetaData(beanClass);
             return new BeanTable<>(beanList, beanTableMetaData);
         } catch (Exception e) {
             throw new DataSetException(e);
