@@ -1,6 +1,5 @@
 package com.link_intersystems.dbunit.dataset.beans;
 
-import com.link_intersystems.beans.BeanClass;
 import com.link_intersystems.beans.Property;
 import com.link_intersystems.dbunit.dataset.ColumnList;
 import org.dbunit.dataset.AbstractTableMetaData;
@@ -15,12 +14,15 @@ import java.util.Map;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
-public abstract class AbstractBeanTableMetaData extends AbstractTableMetaData {
+/**
+ * Template methods for easier implementation of {@link IBeanTableMetaData}.
+ *
+ * @author - René Link {@literal <rene.link@link-intersystems.com>}
+ */
+public abstract class AbstractBeanTableMetaData extends AbstractTableMetaData implements IBeanTableMetaData {
 
     private Map<Column, Property> columnMap;
     private List<Property> idProperties;
-
-    public abstract BeanClass getBeanClass();
 
     @Override
     public String getTableName() {
@@ -41,6 +43,7 @@ public abstract class AbstractBeanTableMetaData extends AbstractTableMetaData {
         return columnMap.keySet().toArray(new Column[0]);
     }
 
+    @Override
     public ColumnList getColumnList() {
         return new ColumnList(getColumns());
     }
@@ -70,6 +73,7 @@ public abstract class AbstractBeanTableMetaData extends AbstractTableMetaData {
 
     protected abstract boolean isIdentityProperty(Property property);
 
+    @Override
     public Object getValue(Object bean, Column column) throws DataSetException {
         Property property = columnMap.get(column);
         return getValue(bean, property);

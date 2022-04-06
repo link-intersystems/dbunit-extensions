@@ -11,9 +11,9 @@ import static java.util.Objects.requireNonNull;
 public class BeanTable<E> extends AbstractTable {
 
     private final BeanList<E> beanList;
-    private AbstractBeanTableMetaData beanTableMetaData;
+    private IBeanTableMetaData beanTableMetaData;
 
-    public BeanTable(BeanList<E> beanList, AbstractBeanTableMetaData beanTableMetaData) {
+    public BeanTable(BeanList<E> beanList, IBeanTableMetaData beanTableMetaData) {
         this.beanList = requireNonNull(beanList);
         this.beanTableMetaData = requireNonNull(beanTableMetaData);
     }

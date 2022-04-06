@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 @UnitTest
 class BeanTableTest {
 
-    private AbstractBeanTableMetaData metaDataProvider;
+    private IBeanTableMetaData metaDataProvider;
     private BeanTable<String> beanTable;
     private Column valueColumn;
 

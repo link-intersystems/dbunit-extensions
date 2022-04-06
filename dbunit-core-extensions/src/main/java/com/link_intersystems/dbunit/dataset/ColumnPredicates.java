@@ -6,6 +6,8 @@ import org.dbunit.dataset.datatype.DataType;
 import java.util.function.Predicate;
 
 /**
+ * Convenience class that provides reusable predicates that can be applied to {@link Column}s.
+ *
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 public final class ColumnPredicates {

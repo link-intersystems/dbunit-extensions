@@ -3,6 +3,7 @@ package com.link_intersystems.dbunit.dataset.dbunit.dataset.bean.java;
 import com.link_intersystems.UnitTest;
 import com.link_intersystems.dbunit.dataset.ColumnList;
 import com.link_intersystems.dbunit.dataset.beans.AbstractBeanTableMetaData;
+import com.link_intersystems.dbunit.dataset.beans.IBeanTableMetaData;
 import com.link_intersystems.dbunit.dataset.beans.java.JavaBeanTableMetaData;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;
@@ -16,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @UnitTest
 class JavaBeanTableMetaDataTest {
 
-    private AbstractBeanTableMetaData tableMetaData;
+    private IBeanTableMetaData tableMetaData;
 
     @BeforeEach
     public void setUp() throws IntrospectionException {
@@ -29,12 +30,12 @@ class JavaBeanTableMetaDataTest {
     }
 
     @Test
-    void getColumns() {
+    void getColumns() throws DataSetException {
         assertEquals(8, tableMetaData.getColumns().length);
     }
 
     @Test
-    void getPrimaryKeys() {
+    void getPrimaryKeys() throws DataSetException {
         assertEquals(0, tableMetaData.getPrimaryKeys().length);
     }
 
