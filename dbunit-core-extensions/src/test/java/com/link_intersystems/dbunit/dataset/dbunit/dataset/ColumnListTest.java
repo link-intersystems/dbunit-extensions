@@ -35,6 +35,13 @@ class ColumnListTest {
     }
 
     @Test
+    void getColumnIgnoreCase() {
+        assertEquals(col1, columnList.getColumn("CoL1", true));
+        assertEquals(col2, columnList.getColumn("CoL2", true));
+        assertNull(columnList.getColumn("CoL3", true));
+    }
+
+    @Test
     void get() {
         assertEquals(col1, columnList.get(0));
         assertEquals(col2, columnList.get(1));

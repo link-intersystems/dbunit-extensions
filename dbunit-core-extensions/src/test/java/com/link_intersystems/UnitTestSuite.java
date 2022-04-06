@@ -6,7 +6,7 @@ import org.junit.platform.suite.api.SelectPackages;
 import org.junit.platform.suite.api.Suite;
 
 /**
- *  @author - René Link &lt;rene.link@link-intersystems.com&gt;
+ *  @author - René Link {@literal <rene.link@link-intersystems.com>}
  */
 @Suite
 @SelectPackages("com.link_intersystems")

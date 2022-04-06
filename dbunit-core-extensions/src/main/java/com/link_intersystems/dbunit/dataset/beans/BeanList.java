@@ -6,7 +6,7 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 /**
- *  @author - René Link &lt;rene.link@link-intersystems.com&gt;
+ *  @author - René Link {@literal <rene.link@link-intersystems.com>}
  */
 public class BeanList<E> extends AbstractList<E> {
 

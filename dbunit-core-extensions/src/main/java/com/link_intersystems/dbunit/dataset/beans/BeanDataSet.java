@@ -7,7 +7,17 @@ import org.dbunit.dataset.ITableIterator;
 import java.util.Collections;
 import java.util.List;
 
+import static java.util.Collections.singletonList;
+
+/**
+ * @author - René Link {@literal <rene.link@link-intersystems.com>}
+ */
 public class BeanDataSet extends AbstractDataSet {
+
+    public static BeanDataSet singletonSet(BeanList<?> beanList, BeanTableMetaDataProvider beanTableMetaDataProvider) {
+        List<BeanList<?>> beanLists = singletonList(beanList);
+        return new BeanDataSet(beanLists, beanTableMetaDataProvider);
+    }
 
     private final List<BeanList<?>> beansDataSet;
     private final BeanTableMetaDataProvider beanTableMetaDataProvider;

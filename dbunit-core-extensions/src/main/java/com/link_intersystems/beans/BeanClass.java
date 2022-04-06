@@ -3,7 +3,7 @@ package com.link_intersystems.beans;
 import java.util.List;
 
 /**
- *  @author - René Link &lt;rene.link@link-intersystems.com&gt;
+ *  @author - René Link {@literal <rene.link@link-intersystems.com>}
  */
 public interface BeanClass {
 

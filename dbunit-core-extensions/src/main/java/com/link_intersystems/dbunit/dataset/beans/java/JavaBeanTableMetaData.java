@@ -16,7 +16,7 @@ import java.lang.reflect.Method;
 import static java.util.Objects.requireNonNull;
 
 /**
- *  @author - René Link &lt;rene.link@link-intersystems.com&gt;
+ *  @author - René Link {@literal <rene.link@link-intersystems.com>}
  */
 public class JavaBeanTableMetaData extends BeanTableMetaData {
 

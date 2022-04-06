@@ -4,7 +4,7 @@ import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.filter.IRowFilter;
 
 /**
- * @author - René Link &lt;rene.link@link-intersystems.com&gt;
+ * @author - René Link {@literal <rene.link@link-intersystems.com>}
  */
 public interface IRowFilterFactory {
 

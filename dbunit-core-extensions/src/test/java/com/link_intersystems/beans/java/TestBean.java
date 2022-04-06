@@ -1,7 +1,7 @@
 package com.link_intersystems.beans.java;
 
 /**
- *  @author - René Link &lt;rene.link@link-intersystems.com&gt;
+ *  @author - René Link {@literal <rene.link@link-intersystems.com>}
  */
 abstract class TestBean {
     public abstract String getWritableStringProp();

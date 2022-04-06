@@ -4,7 +4,7 @@ import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
 /**
- * The {@link AllTestsSuite} ensures that tests are executed in the following order:
+ * The {@link AllTestSuite} ensures that tests are executed in the following order:
  *
  * <ul>
  *     <li>{@link UnitTest}<br/>Test only a single class in isolation.</li>
@@ -15,10 +15,10 @@ import org.junit.platform.suite.api.Suite;
  * different classes that might also be tested in separate {@link UnitTest}s, you should first fix {@link UnitTest}s
  * before fixing {@link ComponentTest}s.
  *
- *  @author - René Link &lt;rene.link@link-intersystems.com&gt;
+ *  @author - René Link {@literal <rene.link@link-intersystems.com>}
  */
 @Suite
 @SelectClasses({UnitTestSuite.class, ComponentTestSuite.class})
-public class AllTestsSuite {
+public class AllTestSuite {
 
 }

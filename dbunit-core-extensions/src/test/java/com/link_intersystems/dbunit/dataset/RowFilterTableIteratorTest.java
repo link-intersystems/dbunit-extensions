@@ -12,12 +12,8 @@ import org.dbunit.dataset.ITableMetaData;
 import org.dbunit.dataset.filter.IRowFilter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
-import java.util.Collections;
-import java.util.List;
-
-import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -35,11 +31,11 @@ class RowFilterTableIteratorTest {
 
     @BeforeEach
     void setUp() {
-        List<EmployeeBean> employeeBeans = asList(EmployeeBean.blake(), EmployeeBean.king());
-        beanList = new BeanList<>(EmployeeBean.class, employeeBeans);
-        BeanTableIterator beanTableIterator = new BeanTableIterator(asList(beanList), JavaBeanTableMetaData::new);
+        EmployeeBeanFixture employeeBeanFixture = new EmployeeBeanFixture();
+        beanList = employeeBeanFixture.createBeanList();
+        BeanTableIterator beanTableIterator = new BeanTableIterator(singletonList(beanList), JavaBeanTableMetaData::new);
 
-        rowFilter = Mockito.mock(IRowFilter.class);
+        rowFilter = mock(IRowFilter.class);
         rowFilterTableIterator = new RowFilterTableIterator(beanTableIterator, t -> rowFilter);
     }
 
@@ -89,7 +85,7 @@ class RowFilterTableIteratorTest {
         when(beanTableMetaDataProvider.getMetaData(any())).thenThrow(runtimeException);
 
 
-        BeanTableIterator beanTableIterator = new BeanTableIterator(Collections.singletonList(beanList), beanTableMetaDataProvider);
+        BeanTableIterator beanTableIterator = new BeanTableIterator(singletonList(beanList), beanTableMetaDataProvider);
         beanTableIterator.next();
         DataSetException dataSetException = assertThrows(DataSetException.class, beanTableIterator::getTable);
 
