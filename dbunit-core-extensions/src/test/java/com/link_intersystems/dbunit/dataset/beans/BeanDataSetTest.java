@@ -1,7 +1,7 @@
 package com.link_intersystems.dbunit.dataset.beans;
 
 import com.link_intersystems.ComponentTest;
-import com.link_intersystems.dbunit.dataset.beans.java.JavaBeanTableMetaData;
+import com.link_intersystems.dbunit.dataset.EmployeeBeanFixture;
 import com.link_intersystems.dbunit.dataset.dbunit.dataset.bean.DepartmentBean;
 import com.link_intersystems.dbunit.dataset.dbunit.dataset.bean.EmployeeBean;
 import org.dbunit.dataset.DataSetException;
@@ -10,6 +10,7 @@ import org.dbunit.dataset.ITableIterator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.beans.IntrospectionException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +18,7 @@ import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- *  @author - René Link {@literal <rene.link@link-intersystems.com>}
+ * @author - René Link {@literal <rene.link@link-intersystems.com>}
  */
 @ComponentTest
 class BeanDataSetTest {
@@ -25,7 +26,7 @@ class BeanDataSetTest {
     private BeanDataSet beanDataSet;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws IntrospectionException {
         List<BeanList<?>> beanLists = new ArrayList<>();
 
         BeanList<EmployeeBean> employeeBeans = new BeanList<>(EmployeeBean.class, asList(EmployeeBean.king(), EmployeeBean.blake()));
@@ -34,7 +35,8 @@ class BeanDataSetTest {
         BeanList<DepartmentBean> departmentBeans = new BeanList<>(DepartmentBean.class, asList(DepartmentBean.accounting(), DepartmentBean.sales(), DepartmentBean.research()));
         beanLists.add(departmentBeans);
 
-        beanDataSet = new BeanDataSet(beanLists, JavaBeanTableMetaData::new);
+        BeanTableMetaDataProvider tableMetaDataProvider = new EmployeeBeanFixture().createBeanMetaDataProvider();
+        beanDataSet = new BeanDataSet(beanLists, tableMetaDataProvider);
     }
 
     @Test

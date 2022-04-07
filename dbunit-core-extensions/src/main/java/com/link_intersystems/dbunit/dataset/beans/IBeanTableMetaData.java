@@ -1,6 +1,7 @@
 package com.link_intersystems.dbunit.dataset.beans;
 
 import com.link_intersystems.beans.BeanClass;
+import com.link_intersystems.beans.Property;
 import com.link_intersystems.dbunit.dataset.ColumnList;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;
@@ -29,4 +30,6 @@ public interface IBeanTableMetaData extends ITableMetaData {
      * @throws DataSetException if the column can not be found or if the value can not be extracted.
      */
     Object getValue(Object bean, Column column) throws DataSetException;
+
+    void setValue(Object bean, Column column, Object value) throws DataSetException;
 }

@@ -9,7 +9,9 @@ public class EmployeeBean {
 
 
     public static EmployeeBean king() {
-        EmployeeBean king = new EmployeeBean(7839, "KING");
+        EmployeeBean king = new EmployeeBean();
+        king.setNumber(7839);
+        king.setName("KING");
         king.setJob("PRESIDENT");
         king.setSal(7698);
         king.setHireDate(YYYY_MM_DD.safeParse("1981-11-17"));
@@ -18,7 +20,9 @@ public class EmployeeBean {
     }
 
     public static EmployeeBean blake() {
-        EmployeeBean blake = new EmployeeBean(7839, "BLAKE");
+        EmployeeBean blake = new EmployeeBean();
+        blake.setNumber(7839);
+        blake.setName("BLAKE");
         blake.setJob("MANAGER");
         blake.setSal(7839);
         blake.setHireDate(YYYY_MM_DD.safeParse("1-5-1981"));
@@ -27,7 +31,9 @@ public class EmployeeBean {
     }
 
     public static EmployeeBean clark() {
-        EmployeeBean clark = new EmployeeBean(7782, "CLARK");
+        EmployeeBean clark = new EmployeeBean();
+        clark.setNumber(7782);
+        clark.setName("CLARK");
         clark.setJob("MANAGER");
         clark.setSal(7839);
         clark.setHireDate(YYYY_MM_DD.safeParse("9-6-1981"));
@@ -36,7 +42,9 @@ public class EmployeeBean {
     }
 
     public static EmployeeBean jones() {
-        EmployeeBean jones = new EmployeeBean(7566, "JONES");
+        EmployeeBean jones = new EmployeeBean();
+        jones.setNumber(7566);
+        jones.setName("JONES");
         jones.setJob("MANAGER");
         jones.setSal(7839);
         jones.setHireDate(YYYY_MM_DD.safeParse("2-4-1981"));
@@ -51,11 +59,6 @@ public class EmployeeBean {
     private Date hireDate;
     private int sal;
     private int departmentNumber;
-
-    public EmployeeBean(int number, String name) {
-        this.number = number;
-        this.name = name;
-    }
 
     public int getNumber() {
         return number;
@@ -116,5 +119,13 @@ public class EmployeeBean {
     @Override
     public int hashCode() {
         return Objects.hash(number, name, job, hireDate, sal, departmentNumber);
+    }
+
+    @Override
+    public String toString() {
+        return "EmployeeBean{" +
+                "number=" + number +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

@@ -1,6 +1,7 @@
 package com.link_intersystems.beans.java;
 
 import com.link_intersystems.beans.BeanClass;
+import com.link_intersystems.beans.BeanInstantiationException;
 import com.link_intersystems.beans.Property;
 import com.link_intersystems.beans.PropertyList;
 
@@ -8,6 +9,8 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import static java.util.Arrays.stream;
@@ -15,7 +18,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
- *  @author - René Link {@literal <rene.link@link-intersystems.com>}
+ * @author - René Link {@literal <rene.link@link-intersystems.com>}
  */
 public class JavaBeanClass implements BeanClass {
 
@@ -46,5 +49,16 @@ public class JavaBeanClass implements BeanClass {
         PropertyDescriptor[] pds = beanInfo.getPropertyDescriptors();
         List<Property> properties = stream(pds).map(JavaBeanProperty::new).collect(toList());
         return new PropertyList(properties);
+    }
+
+    @Override
+    public Object newInstance() throws BeanInstantiationException {
+        Class<?> beanClass = getType();
+        try {
+            Constructor<?> defaultConstructor = beanClass.getDeclaredConstructor();
+            return defaultConstructor.newInstance();
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new BeanInstantiationException(e);
+        }
     }
 }

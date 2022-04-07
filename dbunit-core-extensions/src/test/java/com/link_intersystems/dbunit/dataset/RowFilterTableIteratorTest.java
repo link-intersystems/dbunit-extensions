@@ -4,7 +4,6 @@ import com.link_intersystems.ComponentTest;
 import com.link_intersystems.dbunit.dataset.beans.BeanList;
 import com.link_intersystems.dbunit.dataset.beans.BeanTableIterator;
 import com.link_intersystems.dbunit.dataset.beans.BeanTableMetaDataProvider;
-import com.link_intersystems.dbunit.dataset.beans.java.JavaBeanTableMetaData;
 import com.link_intersystems.dbunit.dataset.dbunit.dataset.bean.EmployeeBean;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITable;
@@ -12,6 +11,8 @@ import org.dbunit.dataset.ITableMetaData;
 import org.dbunit.dataset.filter.IRowFilter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.beans.IntrospectionException;
 
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,10 +31,11 @@ class RowFilterTableIteratorTest {
     private BeanList<EmployeeBean> beanList;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws IntrospectionException {
         EmployeeBeanFixture employeeBeanFixture = new EmployeeBeanFixture();
+        BeanTableMetaDataProvider beanMetaDataProvider = employeeBeanFixture.createBeanMetaDataProvider();
         beanList = employeeBeanFixture.createBeanList();
-        BeanTableIterator beanTableIterator = new BeanTableIterator(singletonList(beanList), JavaBeanTableMetaData::new);
+        BeanTableIterator beanTableIterator = new BeanTableIterator(singletonList(beanList), beanMetaDataProvider);
 
         rowFilter = mock(IRowFilter.class);
         rowFilterTableIterator = new RowFilterTableIterator(beanTableIterator, t -> rowFilter);
@@ -82,7 +84,7 @@ class RowFilterTableIteratorTest {
     void exceptionInBeanTableMetaDataProvider() throws Exception {
         BeanTableMetaDataProvider beanTableMetaDataProvider = mock(BeanTableMetaDataProvider.class);
         RuntimeException runtimeException = new RuntimeException();
-        when(beanTableMetaDataProvider.getMetaData(any())).thenThrow(runtimeException);
+        when(beanTableMetaDataProvider.getMetaData(any(Class.class))).thenThrow(runtimeException);
 
 
         BeanTableIterator beanTableIterator = new BeanTableIterator(singletonList(beanList), beanTableMetaDataProvider);

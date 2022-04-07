@@ -10,4 +10,6 @@ public interface BeanClass {
     String getName();
 
     PropertyList getProperties();
+
+    Object newInstance() throws BeanInstantiationException;
 }

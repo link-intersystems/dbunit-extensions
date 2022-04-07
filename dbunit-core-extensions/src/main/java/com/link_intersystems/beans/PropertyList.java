@@ -1,9 +1,12 @@
 package com.link_intersystems.beans;
 
-import java.util.*;
+import java.util.AbstractList;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
- *  @author - René Link {@literal <rene.link@link-intersystems.com>}
+ * @author - René Link {@literal <rene.link@link-intersystems.com>}
  */
 public class PropertyList extends AbstractList<Property> {
 
@@ -30,5 +33,9 @@ public class PropertyList extends AbstractList<Property> {
     @Override
     public int size() {
         return propertyDescs.size();
+    }
+
+    public Property[] asArray() {
+        return toArray(new Property[size()]);
     }
 }

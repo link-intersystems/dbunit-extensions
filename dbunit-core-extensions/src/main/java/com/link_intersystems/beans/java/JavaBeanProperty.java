@@ -5,7 +5,6 @@ import com.link_intersystems.beans.PropertyReadException;
 import com.link_intersystems.beans.PropertyWriteException;
 
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import static java.text.MessageFormat.format;
@@ -62,7 +61,7 @@ public class JavaBeanProperty implements Property {
         Method writeMethod = propertyDescriptor.getWriteMethod();
 
         if (writeMethod == null) {
-            String msg = format("{0} is not writable.", getPropertyDescriptor());
+            String msg = format("{0} is not writable.", this);
             throw new PropertyWriteException(msg);
         }
 
@@ -71,7 +70,7 @@ public class JavaBeanProperty implements Property {
         try {
             writeMethod.invoke(bean, value);
         } catch (Exception e) {
-            String msg = format("{0} could not be written.", getPropertyDescriptor());
+            String msg = format("{0} could not be written.", this);
             throw new PropertyWriteException(msg, e);
         }
     }
