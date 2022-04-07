@@ -1,5 +1,7 @@
 package com.link_intersystems.dbunit.dataset.beans.java;
 
+import com.link_intersystems.beans.BeanClass;
+import com.link_intersystems.beans.Property;
 import com.link_intersystems.dbunit.dataset.beans.PropertyDataTypeMapping;
 import org.dbunit.dataset.datatype.DataType;
 
@@ -54,7 +56,8 @@ public class DefaultJavaBeanPropertyDataTypeMapping implements PropertyDataTypeM
     }
 
     @Override
-    public DataType getDataType(Class<?> javaType) {
+    public DataType getDataType(BeanClass beanClass, Property property) {
+        Class<?> javaType = property.getType();
         return dataTypeMap.get(javaType);
     }
 }

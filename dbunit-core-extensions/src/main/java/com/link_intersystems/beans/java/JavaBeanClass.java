@@ -32,7 +32,12 @@ public class JavaBeanClass implements BeanClass {
     }
 
     @Override
-    public String getSimpleName() {
+    public Class<?> getType() {
+        return beanInfo.getBeanDescriptor().getBeanClass();
+    }
+
+    @Override
+    public String getName() {
         return beanInfo.getBeanDescriptor().getName();
     }
 

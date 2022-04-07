@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Template methods for easier implementation of {@link IBeanTableMetaData}.
@@ -23,10 +23,15 @@ public abstract class AbstractBeanTableMetaData extends AbstractTableMetaData im
 
     private Map<Column, Property> columnMap;
     private List<Property> idProperties;
+    private BeanIdentity beanIdentity = BeanIdentity.NULL_IDENTITY;
+
+    protected void setBeanIdentity(BeanIdentity beanIdentity) {
+        this.beanIdentity = requireNonNull(beanIdentity);
+    }
 
     @Override
     public String getTableName() {
-        return getBeanClass().getSimpleName();
+        return getBeanClass().getName();
     }
 
     @Override
@@ -35,7 +40,7 @@ public abstract class AbstractBeanTableMetaData extends AbstractTableMetaData im
             Map<Column, Property> columnMap = new LinkedHashMap<>();
             List<Property> properties = getBeanClass().getProperties();
             for (Property property : properties) {
-                Column column = toColumn(property);
+                Column column = createColumn(property);
                 columnMap.put(column, property);
             }
             this.columnMap = columnMap;
@@ -48,8 +53,13 @@ public abstract class AbstractBeanTableMetaData extends AbstractTableMetaData im
         return new ColumnList(getColumns());
     }
 
-
-    private Column toColumn(Property property) {
+    /**
+     * Returns a {@link Column} that represents the given {@link Property}.
+     *
+     * @param property a property of the {@link com.link_intersystems.beans.BeanClass}.
+     * @return a {@link Column} that represents the given {@link Property}.
+     */
+    protected Column createColumn(Property property) {
         String name = property.getName();
 
         DataType dataType = getDataType(property);
@@ -60,24 +70,54 @@ public abstract class AbstractBeanTableMetaData extends AbstractTableMetaData im
         return new Column(name, dataType);
     }
 
+    /**
+     * @param property a property of the {@link com.link_intersystems.beans.BeanClass}.
+     * @return The {@link DataType} that the property's type is mapped to.
+     */
     protected abstract DataType getDataType(Property property);
 
     @Override
-    public Column[] getPrimaryKeys() {
-        if (idProperties == null) {
-            idProperties = getBeanClass().getProperties().stream().filter(this::isIdentityProperty).collect(toList());
-        }
+    public Column[] getPrimaryKeys() throws DataSetException {
+        getIdProperties();
         Column[] columns = getColumns();
         return stream(columns).filter(c -> idProperties.contains(columnMap.get(c))).toArray(Column[]::new);
     }
 
-    protected abstract boolean isIdentityProperty(Property property);
+    protected void getIdProperties() throws DataSetException {
+        if (idProperties == null) {
+            try {
+                idProperties = beanIdentity.getIdProperties(getBeanClass());
+            } catch (Exception e) {
+                throw new DataSetException(e);
+            }
+        }
+    }
 
     @Override
     public Object getValue(Object bean, Column column) throws DataSetException {
         Property property = columnMap.get(column);
-        return getValue(bean, property);
+        Object propertyValue = getValue(bean, property);
+        return toDataTypeValue(property, propertyValue, column.getDataType());
     }
 
+    /**
+     * Map the property value to a value of the given {@link DataType}.
+     * <p>This default implementation simply returns the propertyValue. Override the behavior if you need to.</p>
+     *
+     * @param property      a property of the {@link com.link_intersystems.beans.BeanClass}.
+     * @param propertyValue a value of the property.
+     * @param dataType      the data type to which the return value should be converted to.
+     * @return the data type converted value of the given property value.
+     */
+    protected Object toDataTypeValue(Property property, Object propertyValue, DataType dataType) {
+        return propertyValue;
+    }
+
+    /**
+     * @param bean     a bean of the {@link com.link_intersystems.beans.BeanClass}'s type.
+     * @param property property of the {@link com.link_intersystems.beans.BeanClass}.
+     * @return the properties value.
+     * @throws DataSetException if the value can not be determined.
+     */
     protected abstract Object getValue(Object bean, Property property) throws DataSetException;
 }

@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.dataset.dbunit.dataset.bean.java;
 
-class PrimitiveTypesBean {
+public class PrimitiveTypesBean {
 
     private byte byteValue;
     private short shortValue;

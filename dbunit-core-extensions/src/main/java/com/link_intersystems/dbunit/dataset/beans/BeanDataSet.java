@@ -10,10 +10,20 @@ import java.util.List;
 import static java.util.Collections.singletonList;
 
 /**
+ * A {@link org.dbunit.dataset.IDataSet} perspective on a set of Java beans.
+ *
  * @author - René Link {@literal <rene.link@link-intersystems.com>}
  */
 public class BeanDataSet extends AbstractDataSet {
 
+    /**
+     * returns a {@link BeanDataSet} based on a single collection of Java beans.
+     *
+     * @param beanList                  the list of Java beans that returned {@link org.dbunit.dataset.IDataSet}
+     *                                  should contain.
+     * @param beanTableMetaDataProvider the {@link BeanTableMetaDataProvider} used to resolve
+     *                                  {@link org.dbunit.dataset.ITableMetaData} for the beans.
+     */
     public static BeanDataSet singletonSet(BeanList<?> beanList, BeanTableMetaDataProvider beanTableMetaDataProvider) {
         List<BeanList<?>> beanLists = singletonList(beanList);
         return new BeanDataSet(beanLists, beanTableMetaDataProvider);
@@ -22,6 +32,14 @@ public class BeanDataSet extends AbstractDataSet {
     private final List<BeanList<?>> beansDataSet;
     private final BeanTableMetaDataProvider beanTableMetaDataProvider;
 
+
+    /**
+     * Creates a {@link BeanDataSet} based on many collections of Java beans.
+     *
+     * @param beansDataSet              a list of {@link BeanList} that this {@link BeanDataSet} should contain.
+     * @param beanTableMetaDataProvider the {@link BeanTableMetaDataProvider} used to resolve
+     *                                  {@link org.dbunit.dataset.ITableMetaData} for the beans.
+     */
     public BeanDataSet(List<BeanList<?>> beansDataSet, BeanTableMetaDataProvider beanTableMetaDataProvider) {
 
         this.beansDataSet = beansDataSet;

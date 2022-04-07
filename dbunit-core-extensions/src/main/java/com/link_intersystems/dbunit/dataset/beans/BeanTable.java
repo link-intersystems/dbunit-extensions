@@ -8,11 +8,22 @@ import org.dbunit.dataset.ITableMetaData;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * A {@link org.dbunit.dataset.ITable} adaption of a {@link BeanList}.
+ *
+ * @param <E>
+ */
 public class BeanTable<E> extends AbstractTable {
 
     private final BeanList<E> beanList;
     private IBeanTableMetaData beanTableMetaData;
 
+    /**
+     * Create an {@link org.dbunit.dataset.ITable} adaption of the given {@link BeanList}.
+     *
+     * @param beanList          the {@link BeanList} to adapt.
+     * @param beanTableMetaData the metadata provider for the beans.
+     */
     public BeanTable(BeanList<E> beanList, IBeanTableMetaData beanTableMetaData) {
         this.beanList = requireNonNull(beanList);
         this.beanTableMetaData = requireNonNull(beanTableMetaData);

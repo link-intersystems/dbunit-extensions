@@ -27,6 +27,6 @@ class JavaBeanClassTest {
     void getSimpleName() throws IntrospectionException {
         JavaBeanClass javaBeanClass = new JavaBeanClass(TestBean.class);
 
-        assertEquals("TestBean", javaBeanClass.getSimpleName());
+        assertEquals("TestBean", javaBeanClass.getName());
     }
 }

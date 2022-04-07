@@ -1,14 +1,26 @@
 package com.link_intersystems.beans.java;
 
 /**
- *  @author - René Link {@literal <rene.link@link-intersystems.com>}
+ * @author - René Link {@literal <rene.link@link-intersystems.com>}
  */
-abstract class TestBean {
-    public abstract String getWritableStringProp();
+public class TestBean {
+    String modifiableProperty;
+    String readOnlyProperty;
+    String writeOnlyProperty;
 
-    public abstract void setWritableStringProp(String value);
+    public String getModifiableProperty() {
+        return modifiableProperty;
+    }
 
-    public abstract String getReadOnlyStringProp();
+    public void setModifiableProperty(String modifiableProperty) {
+        this.modifiableProperty = modifiableProperty;
+    }
 
-    public abstract void setWriteOnlyStringProp(String value);
+    public String getReadOnlyProperty() {
+        return readOnlyProperty;
+    }
+
+    public void setWriteOnlyProperty(String value) {
+        this.writeOnlyProperty = value;
+    }
 }
