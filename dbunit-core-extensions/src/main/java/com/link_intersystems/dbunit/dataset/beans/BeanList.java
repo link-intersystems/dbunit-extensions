@@ -1,7 +1,5 @@
 package com.link_intersystems.dbunit.dataset.beans;
 
-import com.link_intersystems.beans.BeanClass;
-
 import java.util.AbstractList;
 import java.util.List;
 
@@ -14,7 +12,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class BeanList<E> extends AbstractList<E> {
 
-    private Class<E> beanClass;
+    private Class<? extends E> beanClass;
     private List<E> beans;
 
     /**
@@ -23,7 +21,7 @@ public class BeanList<E> extends AbstractList<E> {
      * @param beanClass the {@link com.link_intersystems.beans.BeanClass} that all beans belong to.
      * @param beans     the bean elements of this list.
      */
-    public BeanList(Class<E> beanClass, List<E> beans) {
+    public BeanList(Class<? extends E> beanClass, List<E> beans) {
         this.beanClass = requireNonNull(beanClass);
         this.beans = requireNonNull(beans);
     }
@@ -31,7 +29,7 @@ public class BeanList<E> extends AbstractList<E> {
     /**
      * Returns the {@link com.link_intersystems.beans.BeanClass} of this {@link BeanList}.
      */
-    public Class<E> getBeanClass() {
+    public Class<? extends E> getBeanClass() {
         return beanClass;
     }
 

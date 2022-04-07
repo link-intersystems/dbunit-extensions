@@ -5,6 +5,7 @@ import com.link_intersystems.dbunit.dataset.beans.IBeanTableMetaData;
 import org.dbunit.dataset.ITableMetaData;
 
 import java.beans.IntrospectionException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +16,12 @@ public class JavaBeanTableMetaDataProvider implements BeanTableMetaDataProvider 
 
     private Map<Class<?>, IBeanTableMetaData> beanTableMetaDataByType = new HashMap<>();
     private Map<String, IBeanTableMetaData> beanTableMetaDataByName = new HashMap<>();
+
+    public JavaBeanTableMetaDataProvider(Class<?> ...bealClasses) throws IntrospectionException {
+        for (Class<?> bealClass : bealClasses) {
+            registerBeanClass(bealClass);
+        }
+    }
 
     public void registerBeanClass(Class<?> beanClass) throws IntrospectionException {
         JavaBeanTableMetaData beanTableMetaData = new JavaBeanTableMetaData(beanClass);

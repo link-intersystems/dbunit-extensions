@@ -1,15 +1,19 @@
 package com.link_intersystems.dbunit.dataset.beans;
 
 import com.link_intersystems.ComponentTest;
+import com.link_intersystems.beans.BeanInstantiationException;
+import com.link_intersystems.beans.java.TestBean;
 import com.link_intersystems.dbunit.dataset.EmployeeBeanFixture;
+import com.link_intersystems.dbunit.dataset.beans.java.JavaBeanTableMetaDataProvider;
 import com.link_intersystems.dbunit.dataset.dbunit.dataset.bean.EmployeeBean;
+import org.dbunit.dataset.DataSetException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.beans.IntrospectionException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -46,6 +50,32 @@ class BeanDataSetConsumerTest {
 
         Object jones = employeeBeans.get(0);
         assertEquals(EmployeeBean.jones(), jones);
+    }
+
+    @Test
+    void beanInstantiationException() throws Exception {
+        class NoBean {
+            private NoBean() {
+            }
+        }
+
+        beanMetaDataProvider = new JavaBeanTableMetaDataProvider(NoBean.class);
+        beanDataSetConsumer = new BeanDataSetConsumer(beanMetaDataProvider);
+
+        beanDataSetConsumer.startDataSet();
+        beanDataSetConsumer.startTable(beanMetaDataProvider.getMetaData(NoBean.class));
+
+        DataSetException dataSetException = assertThrows(DataSetException.class, () -> beanDataSetConsumer.row(employeeBeanFixture.toRow(EmployeeBean.jones())));
+        assertTrue(dataSetException.getCause() instanceof BeanInstantiationException);
+    }
+
+    @Test
+    void beanTableMetaDataCanNotBeResolved() throws Exception {
+        beanMetaDataProvider = new JavaBeanTableMetaDataProvider(TestBean.class);
+
+        beanDataSetConsumer.startDataSet();
+
+        assertThrows(DataSetException.class, () -> beanDataSetConsumer.startTable(beanMetaDataProvider.getMetaData(TestBean.class)));
     }
 
 

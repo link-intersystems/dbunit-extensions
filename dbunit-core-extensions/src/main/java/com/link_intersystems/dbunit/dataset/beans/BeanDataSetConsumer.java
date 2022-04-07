@@ -10,6 +10,8 @@ import org.dbunit.dataset.stream.IDataSetConsumer;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.text.MessageFormat.format;
+
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
@@ -40,27 +42,19 @@ public class BeanDataSetConsumer implements IDataSetConsumer {
             this.tableMetaData = tableMetaData;
         }
 
-        public void addRow(Object[] objects) throws BeanInstantiationException {
+        public void addRow(Object[] objects) throws DataSetException, BeanInstantiationException {
             BeanClass beanClass = beanTableMetaData.getBeanClass();
             Object bean = beanClass.newInstance();
 
-            try {
-                Column[] columns = tableMetaData.getColumns();
-                for (int i = 0; i < columns.length; i++) {
-                    Column column = columns[i];
-                    Object value = objects[i];
-                    beanTableMetaData.setValue(bean, column, value);
-                }
-
-
-            } catch (DataSetException e) {
-                throw new BeanInstantiationException(e);
+            Column[] columns = tableMetaData.getColumns();
+            for (int i = 0; i < columns.length; i++) {
+                Column column = columns[i];
+                Object value = objects[i];
+                beanTableMetaData.setValue(bean, column, value);
             }
 
             beans.add(bean);
         }
-
-
     }
 
     private BeanTableMetaDataProvider beanTableMetaDataProvider;
@@ -85,8 +79,12 @@ public class BeanDataSetConsumer implements IDataSetConsumer {
     }
 
     @Override
-    public void startTable(ITableMetaData iTableMetaData) {
+    public void startTable(ITableMetaData iTableMetaData) throws DataSetException {
         IBeanTableMetaData beanTableMetaData = beanTableMetaDataProvider.getMetaData(iTableMetaData);
+        if (beanTableMetaData == null) {
+            String msg = format("Unable to process table {0}. {1} can not be resolved.", iTableMetaData.getTableName(), IBeanTableMetaData.class.getSimpleName());
+            throw new DataSetException(msg);
+        }
         tableConsumeContext = new TableConsumeContext(beanTableMetaData, iTableMetaData);
     }
 

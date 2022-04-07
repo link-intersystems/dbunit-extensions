@@ -5,13 +5,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- *  @author - René Link {@literal <rene.link@link-intersystems.com>}
+ * @author - René Link {@literal <rene.link@link-intersystems.com>}
  */
 @UnitTest
 class PropertyListTest {
@@ -51,5 +50,10 @@ class PropertyListTest {
     @Test
     void size() {
         assertEquals(2, properties.size());
+    }
+
+    @Test
+    void asArray() {
+        assertArrayEquals(new Property[]{property1, property2}, properties.asArray());
     }
 }
