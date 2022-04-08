@@ -3,6 +3,9 @@ package com.link_intersystems.dbunit.dataset.beans;
 import com.link_intersystems.beans.Property;
 import com.link_intersystems.beans.PropertyWriteException;
 import com.link_intersystems.dbunit.dataset.ColumnList;
+import com.link_intersystems.util.TypeConversionException;
+import com.link_intersystems.util.ValueConverter;
+import com.link_intersystems.util.ValueConverterRegistry;
 import org.dbunit.dataset.AbstractTableMetaData;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;
@@ -25,9 +28,14 @@ public abstract class AbstractBeanTableMetaData extends AbstractTableMetaData im
     private Map<Column, Property> columnMap;
     private List<Property> idProperties;
     private BeanIdentity beanIdentity = BeanIdentity.NULL_IDENTITY;
+    private ValueConverterRegistry valueConverterRegistry = new DataTypeValueConverterRegistry();
 
     protected void setBeanIdentity(BeanIdentity beanIdentity) {
         this.beanIdentity = requireNonNull(beanIdentity);
+    }
+
+    public void setValueConverterRegistry(ValueConverterRegistry valueConverterRegistry) {
+        this.valueConverterRegistry = requireNonNull(valueConverterRegistry);
     }
 
     @Override
@@ -98,22 +106,8 @@ public abstract class AbstractBeanTableMetaData extends AbstractTableMetaData im
     public Object getValue(Object bean, Column column) throws DataSetException {
         Property property = columnMap.get(column);
         Object propertyValue = getValue(bean, property);
-        Class<?> propertyType = property.getType();
         DataType dataType = column.getDataType();
-        return convertTo(propertyType, propertyValue, dataType);
-    }
-
-    /**
-     * Convert the source value to a target value of the given {@link DataType}.
-     * <p>This default implementation simply returns the propertyValue. Override the behavior if you need to.</p>
-     *
-     * @param sourceType  the source type.
-     * @param sourceValue a value of the source type.
-     * @param targetType  the data type to which the return value should be converted to.
-     * @return the data type converted value of the given property value.
-     */
-    protected Object convertTo(Class<?> sourceType, Object sourceValue, DataType targetType) {
-        return sourceValue;
+        return dataType.typeCast(propertyValue);
     }
 
     /**
@@ -125,28 +119,15 @@ public abstract class AbstractBeanTableMetaData extends AbstractTableMetaData im
     protected abstract Object getValue(Object bean, Property property) throws DataSetException;
 
     @Override
-    public void setValue(Object bean, Column column, Object value) throws DataSetException {
+    public void setValue(Object bean, Column column, Object columnValue) throws DataSetException {
         Property property = columnMap.get(column);
         try {
-            DataType dataType = column.getDataType();
             Class<?> propertyType = property.getType();
-            Object propertyValue = convertTo(dataType, value, propertyType);
+            ValueConverter valueConverter = valueConverterRegistry.getValueConverter(propertyType);
+            Object propertyValue = valueConverter.convert(columnValue);
             property.set(bean, propertyValue);
-        } catch (PropertyWriteException e) {
+        } catch (PropertyWriteException | TypeConversionException e) {
             throw new DataSetException(e);
         }
-    }
-
-    /**
-     * Convert the value of the given dataType to a value of the given target type.
-     * <p>This default implementation simply returns the value. Override the behavior if you need to.</p>
-     *
-     * @param sourceType  the data type of the value.
-     * @param sourceValue the data value.
-     * @param targetType  the target type to which the return value should be converted to.
-     * @return the data type converted value of the given property value.
-     */
-    protected Object convertTo(DataType sourceType, Object sourceValue, Class<?> targetType) {
-        return sourceValue;
     }
 }
