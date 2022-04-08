@@ -1,5 +1,6 @@
 package com.link_intersystems.dbunit.dataset.beans;
 
+import com.link_intersystems.lang.Constants;
 import com.link_intersystems.lang.Primitives;
 import com.link_intersystems.util.TypeConversionException;
 import com.link_intersystems.util.ValueConverter;
@@ -8,32 +9,49 @@ import org.dbunit.dataset.datatype.DataType;
 import org.dbunit.dataset.datatype.TypeCastException;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Member;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static java.lang.reflect.Modifier.*;
-import static java.util.Arrays.stream;
-
 /**
+ * A {@link ValueConverterRegistry} that uses dbunit {@link DataType}s as {@link ValueConverter}s.
+ *
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 public class DataTypeValueConverterRegistry implements ValueConverterRegistry {
 
-    public static final ValueConverter UNKNOWN_VALUE_CONVERTER = createValueConverterAdapter(DataType.UNKNOWN);
+    public static final ValueConverter UNKNOWN_VALUE_CONVERTER = new DataTypeValueConverter(DataType.UNKNOWN);
+
+    private static class DataTypeValueConverter implements ValueConverter {
+
+        private DataType dataType;
+
+        public DataTypeValueConverter(DataType dataType) {
+            this.dataType = dataType;
+        }
+
+        @Override
+        public Object convert(Object source) throws TypeConversionException {
+            try {
+                return dataType.typeCast(source);
+            } catch (TypeCastException e) {
+                throw new TypeConversionException(e);
+            }
+        }
+
+        public boolean isMoreGeneral(DataTypeValueConverter otherConverter) {
+            Class<?> otherTypeClass = otherConverter.dataType.getTypeClass();
+            Class<?> thisTypeClass = dataType.getTypeClass();
+            return thisTypeClass.isAssignableFrom(otherTypeClass);
+        }
+    }
 
 
-
-    private Map<Class<?>, ValueConverter> valueConverters = new HashMap<>();
+    private Map<Class<?>, DataTypeValueConverter> valueConverters = new HashMap<>();
 
     public DataTypeValueConverterRegistry() {
-        stream(DataType.class.getDeclaredFields())
-                .filter(this::isPublicStaticFinal)
-                .filter(this::isDataType)
-                .map(this::getDataType)
-                .map(DataType.class::cast)
-                .forEach(this::registerDataTypeConverter);
+        Constants<DataType> dataTypeConstants = new Constants<>(DataType.class);
+        dataTypeConstants.forEach(this::registerDataTypeConverter);
     }
 
     private DataType getDataType(Field constant) {
@@ -45,28 +63,15 @@ public class DataTypeValueConverterRegistry implements ValueConverterRegistry {
     }
 
     private void registerDataTypeConverter(DataType dataType) {
+        DataTypeValueConverter valueConverter = new DataTypeValueConverter(dataType);
+
         Class<?> typeClass = dataType.getTypeClass();
-        ValueConverter valueConverter = createValueConverterAdapter(dataType);
+        DataTypeValueConverter existingConverter = valueConverters.get(typeClass);
+        if (existingConverter != null && valueConverter.isMoreGeneral(existingConverter)) {
+            return;
+        }
+
         valueConverters.put(typeClass, valueConverter);
-    }
-
-    private static ValueConverter createValueConverterAdapter(DataType dataType) {
-        return o -> {
-            try {
-                return dataType.typeCast(o);
-            } catch (TypeCastException e) {
-                throw new TypeConversionException(e);
-            }
-        };
-    }
-
-    private boolean isDataType(Field field) {
-        return DataType.class.equals(field.getType());
-    }
-
-    private boolean isPublicStaticFinal(Member member) {
-        int m = member.getModifiers();
-        return isPublic(m) && isStatic(m) && isFinal(m);
     }
 
     @Override
@@ -88,7 +93,7 @@ public class DataTypeValueConverterRegistry implements ValueConverterRegistry {
     private Optional<ValueConverter> tryFindAccessibleConverter(Class<?> targetType) {
         Optional<ValueConverter> accessibleValueConverter = Optional.empty();
 
-        for (Map.Entry<Class<?>, ValueConverter> valueConverterEntry : valueConverters.entrySet()) {
+        for (Map.Entry<Class<?>, DataTypeValueConverter> valueConverterEntry : valueConverters.entrySet()) {
             Class<?> converterTargetClass = valueConverterEntry.getKey();
             if (targetType.isAssignableFrom(converterTargetClass)) {
                 ValueConverter valueConverter = valueConverterEntry.getValue();

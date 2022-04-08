@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Utility methods for primitive types.
+ *
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 public class Primitives {
