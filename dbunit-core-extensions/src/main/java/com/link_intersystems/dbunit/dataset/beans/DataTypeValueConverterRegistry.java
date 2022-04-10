@@ -8,7 +8,6 @@ import com.link_intersystems.util.ValueConverterRegistry;
 import org.dbunit.dataset.datatype.DataType;
 import org.dbunit.dataset.datatype.TypeCastException;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -52,14 +51,6 @@ public class DataTypeValueConverterRegistry implements ValueConverterRegistry {
     public DataTypeValueConverterRegistry() {
         Constants<DataType> dataTypeConstants = new Constants<>(DataType.class);
         dataTypeConstants.forEach(this::registerDataTypeConverter);
-    }
-
-    private DataType getDataType(Field constant) {
-        try {
-            return (DataType) constant.get(DataType.class);
-        } catch (IllegalAccessException e) {
-            throw new IllegalStateException(e);
-        }
     }
 
     private void registerDataTypeConverter(DataType dataType) {
