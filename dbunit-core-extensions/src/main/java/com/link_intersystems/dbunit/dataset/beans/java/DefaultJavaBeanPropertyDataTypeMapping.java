@@ -13,6 +13,28 @@ import java.util.Map;
 
 import static org.dbunit.dataset.datatype.DataType.*;
 
+/**
+ * Maps Java bean property types to dbunit {@link DataType}s.
+ *
+ * Implemented mappings:
+ *
+ * <ul>
+ *     <li>{@link Byte} => TINYINT</li>
+ *     <li>{@link Short} => SMALLINT</li>
+ *     <li>{@link Integer} => INTEGER</li>
+ *     <li>{@link Long} => BIGINT</li>
+ *     <li>{@link Float} => FLOAT</li>
+ *     <li>{@link Double} => DOUBLE</li>
+ *     <li>{@link Boolean} => BOOLEAN</li>
+ *     <li>{@link Character} => CHAR</li>
+ *
+ *     <li>{@link String} => VARCHAR</li>
+ *     <li>{@link CharSequence} => CLOB</li>
+ *     <li>{@link Date} => DATE</li>
+ *     <li>{@link BigInteger} => BIGINT</li>
+ *     <li>{@link BigDecimal} => DECIMAL</li>
+ * </ul>
+ */
 public class DefaultJavaBeanPropertyDataTypeMapping implements PropertyDataTypeMapping {
 
     public static final PropertyDataTypeMapping INSTANCE = new DefaultJavaBeanPropertyDataTypeMapping();
