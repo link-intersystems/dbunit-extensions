@@ -1,7 +1,6 @@
 package com.link_intersystems.dbunit.dataset.beans;
 
 import com.link_intersystems.beans.BeanClass;
-import com.link_intersystems.beans.Property;
 import com.link_intersystems.dbunit.dataset.ColumnList;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;
@@ -16,7 +15,7 @@ public interface IBeanTableMetaData extends ITableMetaData {
     /**
      * @return the {@link BeanClass} of the elements that this {@link ITableMetaData} represents.
      */
-    BeanClass getBeanClass();
+    BeanClass<?> getBeanClass();
 
     /**
      * @return a {@link ColumnList} for convenient access to {@link Column}s.

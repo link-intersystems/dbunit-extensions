@@ -1,7 +1,6 @@
 package com.link_intersystems.dbunit.dataset.beans;
 
 import com.link_intersystems.ComponentTest;
-import com.link_intersystems.beans.BeanInstantiationException;
 import com.link_intersystems.beans.java.TestBean;
 import com.link_intersystems.dbunit.dataset.EmployeeBeanFixture;
 import com.link_intersystems.dbunit.dataset.beans.java.JavaBeanTableMetaDataProvider;
@@ -65,8 +64,7 @@ class BeanDataSetConsumerTest {
         beanDataSetConsumer.startDataSet();
         beanDataSetConsumer.startTable(beanMetaDataProvider.getMetaData(NoBean.class));
 
-        DataSetException dataSetException = assertThrows(DataSetException.class, () -> beanDataSetConsumer.row(employeeBeanFixture.toRow(EmployeeBean.jones())));
-        assertTrue(dataSetException.getCause() instanceof BeanInstantiationException);
+        assertThrows(DataSetException.class, () -> beanDataSetConsumer.row(employeeBeanFixture.toRow(EmployeeBean.jones())));
     }
 
     @Test

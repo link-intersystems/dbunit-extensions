@@ -1,5 +1,6 @@
 package com.link_intersystems.dbunit.dataset.beans;
 
+import com.link_intersystems.beans.Bean;
 import com.link_intersystems.beans.BeanClass;
 import com.link_intersystems.beans.BeanInstantiationException;
 import org.dbunit.dataset.Column;
@@ -22,7 +23,7 @@ public class BeanDataSetConsumer implements IDataSetConsumer {
         private List<BeanList<?>> dataSet = new ArrayList<>();
 
         public void add(TableConsumeContext tableConsumeContext) {
-            BeanClass beanClass = tableConsumeContext.beanTableMetaData.getBeanClass();
+            BeanClass<?> beanClass = tableConsumeContext.beanTableMetaData.getBeanClass();
             Class<?> type = beanClass.getType();
             BeanList<?> eBeanList = new BeanList<>(type, tableConsumeContext.beans);
             dataSet.add(eBeanList);
@@ -42,18 +43,21 @@ public class BeanDataSetConsumer implements IDataSetConsumer {
             this.tableMetaData = tableMetaData;
         }
 
-        public void addRow(Object[] objects) throws DataSetException, BeanInstantiationException {
+        public void addRow(Object[] objects) throws DataSetException {
             BeanClass beanClass = beanTableMetaData.getBeanClass();
-            Object bean = beanClass.newInstance();
+            try {
+                Object bean = beanClass.newInstance();
+                Column[] columns = tableMetaData.getColumns();
+                for (int i = 0; i < columns.length; i++) {
+                    Column column = columns[i];
+                    Object value = objects[i];
+                    beanTableMetaData.setValue(bean, column, value);
+                }
 
-            Column[] columns = tableMetaData.getColumns();
-            for (int i = 0; i < columns.length; i++) {
-                Column column = columns[i];
-                Object value = objects[i];
-                beanTableMetaData.setValue(bean, column, value);
+                beans.add(bean);
+            } catch (BeanInstantiationException e) {
+                throw new DataSetException(e);
             }
-
-            beans.add(bean);
         }
     }
 
@@ -96,11 +100,7 @@ public class BeanDataSetConsumer implements IDataSetConsumer {
 
     @Override
     public void row(Object[] objects) throws DataSetException {
-        try {
-            tableConsumeContext.addRow(objects);
-        } catch (BeanInstantiationException e) {
-            throw new DataSetException(e);
-        }
+        tableConsumeContext.addRow(objects);
     }
 
     public List<BeanList<?>> getBeanDataSet() {

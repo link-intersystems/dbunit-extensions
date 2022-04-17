@@ -2,7 +2,7 @@ package com.link_intersystems.dbunit.dataset.beans.java;
 
 import com.link_intersystems.UnitTest;
 import com.link_intersystems.beans.BeanClass;
-import com.link_intersystems.beans.Property;
+import com.link_intersystems.beans.PropertyDesc;
 import org.dbunit.dataset.datatype.DataType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,6 @@ import org.mockito.Mockito;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.text.MessageFormat;
 import java.util.Date;
 import java.util.function.Supplier;
 
@@ -28,15 +27,15 @@ class DefaultJavaBeanPropertyDataTypeMappingTest {
 
     private DefaultJavaBeanPropertyDataTypeMapping propertyDataTypeMapping;
 
-    private BeanClass beanClass;
-    private Property property;
+    private BeanClass<?> beanClass;
+    private PropertyDesc<?> property;
 
     @BeforeEach
     void setUp() {
         propertyDataTypeMapping = new DefaultJavaBeanPropertyDataTypeMapping();
 
         beanClass = Mockito.mock(BeanClass.class);
-        property = Mockito.mock(Property.class);
+        property = Mockito.mock(PropertyDesc.class);
     }
 
     @Test

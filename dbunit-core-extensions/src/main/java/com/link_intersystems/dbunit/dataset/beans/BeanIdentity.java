@@ -2,6 +2,7 @@ package com.link_intersystems.dbunit.dataset.beans;
 
 import com.link_intersystems.beans.BeanClass;
 import com.link_intersystems.beans.Property;
+import com.link_intersystems.beans.PropertyDesc;
 
 import java.util.List;
 
@@ -23,5 +24,5 @@ public interface BeanIdentity {
      * @return the identity properties of a Java bean class. Never <code>null</code>, return an empty list instead.
      * @throws Exception if the identity properties can not be resolved for any reason.
      */
-    List<Property> getIdProperties(BeanClass beanClass) throws Exception;
+    List<PropertyDesc<?>> getIdProperties(BeanClass<?> beanClass) throws Exception;
 }

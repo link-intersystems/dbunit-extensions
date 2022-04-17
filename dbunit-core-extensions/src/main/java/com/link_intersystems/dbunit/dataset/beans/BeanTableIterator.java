@@ -1,6 +1,5 @@
 package com.link_intersystems.dbunit.dataset.beans;
 
-import com.link_intersystems.beans.BeanClass;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.ITableIterator;
