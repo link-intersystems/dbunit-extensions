@@ -1,6 +1,4 @@
-package com.link_intersystems.dbunit.dataset.dbunit.dataset.bean.java;
-
-import com.link_intersystems.dbunit.dataset.dbunit.dataset.bean.java.PrimitiveTypesBean;
+package com.link_intersystems.dbunit.dataset.dbunit.dataset.bean;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

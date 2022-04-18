@@ -1,6 +1,7 @@
 package com.link_intersystems.dbunit.dataset.beans;
 
 import com.link_intersystems.ComponentTest;
+import com.link_intersystems.beans.BeanClassException;
 import com.link_intersystems.dbunit.dataset.EmployeeBeanFixture;
 import com.link_intersystems.dbunit.dataset.dbunit.dataset.bean.DepartmentBean;
 import com.link_intersystems.dbunit.dataset.dbunit.dataset.bean.EmployeeBean;
@@ -10,7 +11,6 @@ import org.dbunit.dataset.ITableIterator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.beans.IntrospectionException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +26,7 @@ class BeanDataSetTest {
     private BeanDataSet beanDataSet;
 
     @BeforeEach
-    void setUp() throws IntrospectionException {
+    void setUp() throws BeanClassException {
         List<BeanList<?>> beanLists = new ArrayList<>();
 
         BeanList<EmployeeBean> employeeBeans = new BeanList<>(EmployeeBean.class, asList(EmployeeBean.king(), EmployeeBean.blake()));

@@ -1,6 +1,7 @@
 package com.link_intersystems.dbunit.dataset;
 
 import com.link_intersystems.ComponentTest;
+import com.link_intersystems.beans.BeanClassException;
 import com.link_intersystems.dbunit.dataset.beans.BeanList;
 import com.link_intersystems.dbunit.dataset.beans.BeanTableIterator;
 import com.link_intersystems.dbunit.dataset.beans.BeanTableMetaDataProvider;
@@ -11,8 +12,6 @@ import org.dbunit.dataset.ITableMetaData;
 import org.dbunit.dataset.filter.IRowFilter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.beans.IntrospectionException;
 
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,7 +30,7 @@ class RowFilterTableIteratorTest {
     private BeanList<EmployeeBean> beanList;
 
     @BeforeEach
-    void setUp() throws IntrospectionException {
+    void setUp() throws BeanClassException {
         EmployeeBeanFixture employeeBeanFixture = new EmployeeBeanFixture();
         BeanTableMetaDataProvider beanMetaDataProvider = employeeBeanFixture.createBeanMetaDataProvider();
         beanList = employeeBeanFixture.createBeanList();

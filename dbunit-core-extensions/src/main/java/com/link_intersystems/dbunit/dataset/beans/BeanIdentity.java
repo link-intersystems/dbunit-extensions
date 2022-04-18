@@ -24,5 +24,5 @@ public interface BeanIdentity {
      * @return the identity properties of a Java bean class. Never <code>null</code>, return an empty list instead.
      * @throws Exception if the identity properties can not be resolved for any reason.
      */
-    List<PropertyDesc<?>> getIdProperties(BeanClass<?> beanClass) throws Exception;
+    List<PropertyDesc> getIdProperties(BeanClass<?> beanClass) throws Exception;
 }

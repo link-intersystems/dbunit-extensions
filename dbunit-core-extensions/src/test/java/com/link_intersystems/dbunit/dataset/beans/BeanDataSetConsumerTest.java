@@ -1,18 +1,19 @@
 package com.link_intersystems.dbunit.dataset.beans;
 
 import com.link_intersystems.ComponentTest;
+import com.link_intersystems.beans.BeanClassException;
+import com.link_intersystems.beans.BeansFactory;
 import com.link_intersystems.beans.java.TestBean;
 import com.link_intersystems.dbunit.dataset.EmployeeBeanFixture;
-import com.link_intersystems.dbunit.dataset.beans.java.JavaBeanTableMetaDataProvider;
 import com.link_intersystems.dbunit.dataset.dbunit.dataset.bean.EmployeeBean;
 import org.dbunit.dataset.DataSetException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.beans.IntrospectionException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -25,7 +26,7 @@ class BeanDataSetConsumerTest {
     private EmployeeBeanFixture employeeBeanFixture;
 
     @BeforeEach
-    void setUp() throws IntrospectionException {
+    void setUp() throws BeanClassException {
         employeeBeanFixture = new EmployeeBeanFixture();
         beanMetaDataProvider = employeeBeanFixture.createBeanMetaDataProvider();
         beanDataSetConsumer = new BeanDataSetConsumer(this.beanMetaDataProvider);
@@ -58,7 +59,7 @@ class BeanDataSetConsumerTest {
             }
         }
 
-        beanMetaDataProvider = new JavaBeanTableMetaDataProvider(NoBean.class);
+        beanMetaDataProvider = new DefaultBeanTableMetaDataProvider(BeansFactory.getDefault(), NoBean.class);
         beanDataSetConsumer = new BeanDataSetConsumer(beanMetaDataProvider);
 
         beanDataSetConsumer.startDataSet();
@@ -69,7 +70,7 @@ class BeanDataSetConsumerTest {
 
     @Test
     void beanTableMetaDataCanNotBeResolved() throws Exception {
-        beanMetaDataProvider = new JavaBeanTableMetaDataProvider(TestBean.class);
+        beanMetaDataProvider = new DefaultBeanTableMetaDataProvider(BeansFactory.getDefault(), TestBean.class);
 
         beanDataSetConsumer.startDataSet();
 

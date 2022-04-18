@@ -8,5 +8,5 @@ import org.dbunit.dataset.datatype.DataType;
  * @author - René Link {@literal <rene.link@link-intersystems.com>}
  */
 public interface PropertyDataTypeMapping {
-    DataType getDataType(BeanClass<?> beanClass, PropertyDesc<?> property);
+    DataType getDataType(BeanClass<?> beanClass, PropertyDesc property);
 }

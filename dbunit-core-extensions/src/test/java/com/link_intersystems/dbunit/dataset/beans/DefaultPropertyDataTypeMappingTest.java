@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.dataset.beans.java;
+package com.link_intersystems.dbunit.dataset.beans;
 
 import com.link_intersystems.UnitTest;
 import com.link_intersystems.beans.BeanClass;
@@ -15,7 +15,6 @@ import java.util.function.Supplier;
 
 import static java.text.MessageFormat.format;
 import static org.dbunit.dataset.datatype.DataType.*;
-import static org.dbunit.dataset.datatype.DataType.CHAR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -23,16 +22,16 @@ import static org.mockito.Mockito.when;
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 @UnitTest
-class DefaultJavaBeanPropertyDataTypeMappingTest {
+class DefaultPropertyDataTypeMappingTest {
 
-    private DefaultJavaBeanPropertyDataTypeMapping propertyDataTypeMapping;
+    private DefaultPropertyDataTypeMapping propertyDataTypeMapping;
 
     private BeanClass<?> beanClass;
-    private PropertyDesc<?> property;
+    private PropertyDesc property;
 
     @BeforeEach
     void setUp() {
-        propertyDataTypeMapping = new DefaultJavaBeanPropertyDataTypeMapping();
+        propertyDataTypeMapping = new DefaultPropertyDataTypeMapping();
 
         beanClass = Mockito.mock(BeanClass.class);
         property = Mockito.mock(PropertyDesc.class);

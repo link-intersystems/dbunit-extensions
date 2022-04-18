@@ -10,5 +10,5 @@ import org.dbunit.dataset.Column;
 public interface BeanMetaDataProvider {
 
 
-    PropertyDesc<Object>[] getProperties(Column[] columns);
+    PropertyDesc[] getProperties(Column[] columns);
 }

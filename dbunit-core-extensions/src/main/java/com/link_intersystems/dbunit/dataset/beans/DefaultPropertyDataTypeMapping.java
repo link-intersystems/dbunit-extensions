@@ -1,8 +1,7 @@
-package com.link_intersystems.dbunit.dataset.beans.java;
+package com.link_intersystems.dbunit.dataset.beans;
 
 import com.link_intersystems.beans.BeanClass;
 import com.link_intersystems.beans.PropertyDesc;
-import com.link_intersystems.dbunit.dataset.beans.PropertyDataTypeMapping;
 import org.dbunit.dataset.datatype.DataType;
 
 import java.math.BigDecimal;
@@ -35,13 +34,13 @@ import static org.dbunit.dataset.datatype.DataType.*;
  *     <li>{@link BigDecimal} => DECIMAL</li>
  * </ul>
  */
-public class DefaultJavaBeanPropertyDataTypeMapping implements PropertyDataTypeMapping {
+public class DefaultPropertyDataTypeMapping implements PropertyDataTypeMapping {
 
-    public static final PropertyDataTypeMapping INSTANCE = new DefaultJavaBeanPropertyDataTypeMapping();
+    public static final PropertyDataTypeMapping INSTANCE = new DefaultPropertyDataTypeMapping();
 
     private Map<Class<?>, DataType> dataTypeMap = new HashMap<>();
 
-    DefaultJavaBeanPropertyDataTypeMapping() {
+    DefaultPropertyDataTypeMapping() {
         configurePrimitiveTypes();
 
         dataTypeMap.put(String.class, VARCHAR);
@@ -78,7 +77,7 @@ public class DefaultJavaBeanPropertyDataTypeMapping implements PropertyDataTypeM
     }
 
     @Override
-    public DataType getDataType(BeanClass<?> beanClass, PropertyDesc<?> property) {
+    public DataType getDataType(BeanClass<?> beanClass, PropertyDesc property) {
         Class<?> javaType = property.getType();
         return dataTypeMap.get(javaType);
     }

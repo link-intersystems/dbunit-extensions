@@ -1,7 +1,9 @@
 package com.link_intersystems.dbunit.dataset.beans;
 
-import com.link_intersystems.beans.*;
-import com.link_intersystems.beans.java.JavaBean;
+import com.link_intersystems.beans.Property;
+import com.link_intersystems.beans.PropertyDesc;
+import com.link_intersystems.beans.PropertyDescList;
+import com.link_intersystems.beans.PropertyWriteException;
 import com.link_intersystems.dbunit.dataset.ColumnList;
 import com.link_intersystems.util.TypeConversionException;
 import com.link_intersystems.util.ValueConverter;
@@ -25,8 +27,8 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractBeanTableMetaData extends AbstractTableMetaData implements IBeanTableMetaData {
 
-    private Map<Column, PropertyDesc<Object>> columnMap;
-    private List<PropertyDesc<?>> idProperties;
+    private Map<Column, PropertyDesc> columnMap;
+    private List<PropertyDesc> idProperties;
     private BeanIdentity beanIdentity = BeanIdentity.NULL_IDENTITY;
     private ValueConverterRegistry valueConverterRegistry = new DataTypeValueConverterRegistry();
 
@@ -46,14 +48,14 @@ public abstract class AbstractBeanTableMetaData extends AbstractTableMetaData im
     @Override
     public Column[] getColumns() {
         if (columnMap == null) {
-            Map<Column, PropertyDesc<Object>> columnMap = new LinkedHashMap<>();
-            PropertyDescs<? extends PropertyDesc<?>> properties = getBeanClass().getProperties();
-            for (PropertyDesc<?> property : properties) {
-                if(property.getName().equals("class")){
+            Map<Column, PropertyDesc> columnMap = new LinkedHashMap<>();
+            PropertyDescList<? extends PropertyDesc> properties = getBeanClass().getProperties();
+            for (PropertyDesc property : properties) {
+                if (property.getName().equals("class")) {
                     continue;
                 }
                 Column column = createColumn(property);
-                columnMap.put(column, (PropertyDesc<Object>) property);
+                columnMap.put(column, property);
             }
             this.columnMap = columnMap;
         }
@@ -71,7 +73,7 @@ public abstract class AbstractBeanTableMetaData extends AbstractTableMetaData im
      * @param property a property of the {@link com.link_intersystems.beans.BeanClass}.
      * @return a {@link Column} that represents the given {@link Property}.
      */
-    protected Column createColumn(PropertyDesc<?> property) {
+    protected Column createColumn(PropertyDesc property) {
         String name = property.getName();
 
         DataType dataType = getDataType(property);
@@ -86,7 +88,7 @@ public abstract class AbstractBeanTableMetaData extends AbstractTableMetaData im
      * @param property a property of the {@link com.link_intersystems.beans.BeanClass}.
      * @return The {@link DataType} that the property's type is mapped to.
      */
-    protected abstract DataType getDataType(PropertyDesc<?> property);
+    protected abstract DataType getDataType(PropertyDesc property);
 
     @Override
     public Column[] getPrimaryKeys() throws DataSetException {
@@ -107,7 +109,7 @@ public abstract class AbstractBeanTableMetaData extends AbstractTableMetaData im
 
     @Override
     public Object getValue(Object bean, Column column) throws DataSetException {
-        PropertyDesc<?> property = columnMap.get(column);
+        PropertyDesc property = columnMap.get(column);
         Object propertyValue = getValue(bean, property);
         DataType dataType = column.getDataType();
         return dataType.typeCast(propertyValue);
@@ -119,19 +121,17 @@ public abstract class AbstractBeanTableMetaData extends AbstractTableMetaData im
      * @return the properties value.
      * @throws DataSetException if the value can not be determined.
      */
-    protected abstract Object getValue(Object bean, PropertyDesc<?> property) throws DataSetException;
+    protected abstract Object getValue(Object bean, PropertyDesc property) throws DataSetException;
 
     @Override
     public void setValue(Object bean, Column column, Object columnValue) throws DataSetException {
-        PropertyDesc<Object> propertyDesc = columnMap.get(column);
+        PropertyDesc propertyDesc = columnMap.get(column);
         try {
             Class<?> propertyType = propertyDesc.getType();
             ValueConverter valueConverter = valueConverterRegistry.getValueConverter(propertyType);
             Object propertyValue = valueConverter.convert(columnValue);
-            JavaBean<Object> javaBean = new JavaBean<>(bean);
-            Property<Object> property = javaBean.getProperty(propertyDesc);
-            property.setValue(propertyValue);
-        } catch (PropertyAccessException | TypeConversionException e) {
+            propertyDesc.setPropertyValue(bean, propertyValue);
+        } catch (PropertyWriteException | TypeConversionException e) {
             throw new DataSetException(e);
         }
     }
