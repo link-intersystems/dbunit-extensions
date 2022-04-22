@@ -7,16 +7,17 @@
     <parent>
         <groupId>com.link-intersystems</groupId>
         <artifactId>lis-central-jar</artifactId>
-        <version>8.0</version>
+        <version>8.1</version>
     </parent>
 
     <groupId>com.link-intersystems.dbunit</groupId>
-    <artifactId>dbunit-extensions-pom</artifactId>
+    <artifactId>lis-dbunit</artifactId>
     <packaging>pom</packaging>
     <version>1.0.0-SNAPSHOT</version>
 
     <modules>
-        <module>dbunit-core-extensions</module>
+        <module>lis-dbunit-util</module>
+        <module>lis-dbunit-beans</module>
     </modules>
 
     <properties>
