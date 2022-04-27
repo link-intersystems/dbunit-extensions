@@ -2,9 +2,9 @@ package com.link_intersystems.dbunit.dataset.beans;
 
 import com.link_intersystems.beans.BeanClassException;
 import com.link_intersystems.beans.BeansFactory;
-import com.link_intersystems.beans.java.TestBean;
-import com.link_intersystems.dbunit.dataset.EmployeeBeanFixture;
-import com.link_intersystems.dbunit.dataset.dbunit.dataset.bean.EmployeeBean;
+import com.link_intersystems.dbunit.dataset.beans.fixtures.TestBean;
+import com.link_intersystems.dbunit.dataset.beans.fixtures.EmployeeBeanFixture;
+import com.link_intersystems.dbunit.dataset.beans.fixtures.EmployeeBean;
 import com.link_intersystems.test.ComponentTest;
 import org.dbunit.dataset.DataSetException;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,7 +69,7 @@ class BeanDataSetConsumerTest {
     }
 
     @Test
-    void beanTableMetaDataCanNotBeResolved() throws Exception {
+    void beanTableMetaDataCanNotBeResolved() {
         beanMetaDataProvider = new DefaultBeanTableMetaDataProvider(BeansFactory.getDefault(), TestBean.class);
 
         beanDataSetConsumer.startDataSet();

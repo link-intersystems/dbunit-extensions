@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.dataset.dbunit.dataset.bean;
+package com.link_intersystems.dbunit.dataset.beans.fixtures;
 
 abstract class PrimitiveWrapperTypesBean {
 

@@ -1,14 +1,10 @@
-package com.link_intersystems.dbunit.dataset;
+package com.link_intersystems.dbunit.dataset.beans.fixtures;
 
 import com.link_intersystems.beans.*;
-import com.link_intersystems.beans.java.JavaBeanClass;
 import com.link_intersystems.dbunit.dataset.beans.BeanList;
 import com.link_intersystems.dbunit.dataset.beans.BeanTableMetaDataProvider;
 import com.link_intersystems.dbunit.dataset.beans.DefaultBeanTableMetaDataProvider;
-import com.link_intersystems.dbunit.dataset.dbunit.dataset.bean.DepartmentBean;
-import com.link_intersystems.dbunit.dataset.dbunit.dataset.bean.EmployeeBean;
 
-import java.beans.IntrospectionException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,11 +17,8 @@ public class EmployeeBeanFixture {
     private BeanClass<EmployeeBean> employeeBeanClass;
 
     public EmployeeBeanFixture() {
-        try {
-            employeeBeanClass = new JavaBeanClass<>(EmployeeBean.class);
-        } catch (IntrospectionException e) {
-            throw new RuntimeException(e);
-        }
+        BeansFactory beansFactory = BeansFactory.getDefault();
+        employeeBeanClass = beansFactory.createBeanClass(EmployeeBean.class);
     }
 
     public BeanClass<EmployeeBean> getEmployeeBeanClass() {

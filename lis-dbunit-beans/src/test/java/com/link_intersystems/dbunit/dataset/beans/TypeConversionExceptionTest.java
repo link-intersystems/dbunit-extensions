@@ -1,6 +1,6 @@
-package com.link_intersystems.util;
+package com.link_intersystems.dbunit.dataset.beans;
 
-import com.link_intersystems.UnitTest;
+import com.link_intersystems.test.UnitTest;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertSame;

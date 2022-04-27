@@ -53,7 +53,7 @@ public class BeanTableIterator implements ITableIterator {
         Class<?> beanClass = beanList.getBeanClass();
         try {
             IBeanTableMetaData beanTableMetaData = beanTableMetaDataProvider.getMetaData(beanClass);
-            return new BeanTable<>(beanList, beanTableMetaData);
+            return new BeanTable(beanList, beanTableMetaData);
         } catch (Exception e) {
             throw new DataSetException(e);
         }

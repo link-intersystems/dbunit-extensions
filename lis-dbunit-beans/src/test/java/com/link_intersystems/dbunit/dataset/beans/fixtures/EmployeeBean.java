@@ -1,9 +1,9 @@
-package com.link_intersystems.dbunit.dataset.dbunit.dataset.bean;
+package com.link_intersystems.dbunit.dataset.beans.fixtures;
 
 import java.util.Date;
 import java.util.Objects;
 
-import static com.link_intersystems.dbunit.dataset.util.DataFormatter.YYYY_MM_DD;
+import static com.link_intersystems.dbunit.dataset.beans.DataFormatter.YYYY_MM_DD;
 
 public class EmployeeBean {
 

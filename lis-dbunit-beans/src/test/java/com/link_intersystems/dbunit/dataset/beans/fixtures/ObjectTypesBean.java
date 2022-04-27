@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.dataset.dbunit.dataset.bean;
+package com.link_intersystems.dbunit.dataset.beans.fixtures;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

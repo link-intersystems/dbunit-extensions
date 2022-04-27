@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.dataset.beans;
 
-import com.link_intersystems.dbunit.dataset.dbunit.dataset.bean.EmployeeBean;
+import com.link_intersystems.dbunit.dataset.beans.fixtures.EmployeeBean;
 import com.link_intersystems.test.UnitTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

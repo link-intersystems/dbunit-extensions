@@ -15,5 +15,10 @@ public interface BeanTableMetaDataProvider {
      */
     IBeanTableMetaData getMetaData(Class<?> beanClass) throws Exception;
 
+    /**
+     * Returns a {@link IBeanTableMetaData} for a given table name.
+     *
+     * @param tableName the table name.
+     */
     IBeanTableMetaData getMetaData(String tableName);
 }

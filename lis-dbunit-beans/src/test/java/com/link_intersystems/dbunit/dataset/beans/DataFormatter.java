@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.dataset.util;
+package com.link_intersystems.dbunit.dataset.beans;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

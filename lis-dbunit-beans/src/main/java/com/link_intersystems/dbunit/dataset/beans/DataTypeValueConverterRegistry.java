@@ -1,10 +1,8 @@
 package com.link_intersystems.dbunit.dataset.beans;
 
 import com.link_intersystems.lang.ClassHierarchyComparator;
-import com.link_intersystems.lang.Constants;
 import com.link_intersystems.lang.Primitives;
-import com.link_intersystems.util.ValueConverter;
-import com.link_intersystems.util.ValueConverterRegistry;
+import com.link_intersystems.lang.reflect.Constants;
 import org.dbunit.dataset.datatype.DataType;
 
 import java.util.HashMap;
@@ -19,7 +17,6 @@ import java.util.Optional;
 public class DataTypeValueConverterRegistry implements ValueConverterRegistry {
 
     public static final ValueConverter UNKNOWN_VALUE_CONVERTER = new DataTypeValueConverter(DataType.UNKNOWN);
-
 
     private Map<Class<?>, DataTypeValueConverter> valueConverters = new HashMap<>();
 
@@ -43,14 +40,14 @@ public class DataTypeValueConverterRegistry implements ValueConverterRegistry {
         ValueConverter valueConverter = valueConverters.get(targetType);
 
         if (valueConverter == null) {
-            Optional<ValueConverter> accessibleConverter = tryFindAccessibleConverter(targetType);
+            Optional<ValueConverter> accessibleConverter = findAccessibleConverter(targetType);
             valueConverter = accessibleConverter.orElse(UNKNOWN_VALUE_CONVERTER);
         }
 
         return valueConverter;
     }
 
-    private Optional<ValueConverter> tryFindAccessibleConverter(Class<?> targetType) {
+    private Optional<ValueConverter> findAccessibleConverter(Class<?> targetType) {
         Optional<ValueConverter> accessibleValueConverter = Optional.empty();
 
         for (Map.Entry<Class<?>, DataTypeValueConverter> valueConverterEntry : valueConverters.entrySet()) {

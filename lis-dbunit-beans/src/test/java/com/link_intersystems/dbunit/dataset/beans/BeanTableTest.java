@@ -22,16 +22,16 @@ import static org.mockito.Mockito.when;
 class BeanTableTest {
 
     private IBeanTableMetaData metaDataProvider;
-    private BeanTable<String> beanTable;
+    private BeanTable beanTable;
     private Column valueColumn;
 
     @BeforeEach
     public void setUp() {
         BeanList<String> beanList = new BeanList<>(String.class, Arrays.asList("A", "B"));
-        metaDataProvider = mock(AbstractBeanTableMetaData.class);
+        metaDataProvider = mock(BeanTableMetaData.class);
 
         valueColumn = new Column("value", DataType.VARCHAR);
-        beanTable = new BeanTable<>(beanList, metaDataProvider);
+        beanTable = new BeanTable(beanList, metaDataProvider);
     }
 
     @Test

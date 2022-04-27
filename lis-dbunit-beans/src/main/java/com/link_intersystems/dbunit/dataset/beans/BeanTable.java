@@ -10,12 +10,12 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A {@link org.dbunit.dataset.ITable} adaption of a {@link BeanList}.
- *
- * @param <E>
+ * <p>
+ * Each property of the beans in this {@link BeanTable} will be available as columns.
  */
-public class BeanTable<E> extends AbstractTable {
+public class BeanTable extends AbstractTable {
 
-    private final BeanList<E> beanList;
+    private final BeanList<?> beanList;
     private IBeanTableMetaData beanTableMetaData;
 
     /**
@@ -24,7 +24,7 @@ public class BeanTable<E> extends AbstractTable {
      * @param beanList          the {@link BeanList} to adapt.
      * @param beanTableMetaData the metadata provider for the beans.
      */
-    public BeanTable(BeanList<E> beanList, IBeanTableMetaData beanTableMetaData) {
+    public BeanTable(BeanList<?> beanList, IBeanTableMetaData beanTableMetaData) {
         this.beanList = requireNonNull(beanList);
         this.beanTableMetaData = requireNonNull(beanTableMetaData);
     }
@@ -41,7 +41,7 @@ public class BeanTable<E> extends AbstractTable {
 
     @Override
     public Object getValue(int row, String columnName) throws DataSetException {
-        E bean = beanList.get(row);
+        Object bean = beanList.get(row);
         ColumnList columnList = beanTableMetaData.getColumnList();
         Column column = columnList.getColumn(columnName);
         return beanTableMetaData.getValue(bean, column);

@@ -45,7 +45,7 @@ public class BeanDataSetConsumer implements IDataSetConsumer {
         public void addRow(Object[] objects) throws DataSetException {
             BeanClass<?> beanClass = beanTableMetaData.getBeanClass();
             try {
-                Object bean = beanClass.newInstance();
+                Object bean = beanClass.newBeanInstance().getBeanObject();
                 Column[] columns = tableMetaData.getColumns();
                 for (int i = 0; i < columns.length; i++) {
                     Column column = columns[i];

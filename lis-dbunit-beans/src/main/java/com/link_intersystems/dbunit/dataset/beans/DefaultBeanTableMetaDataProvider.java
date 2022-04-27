@@ -7,6 +7,8 @@ import com.link_intersystems.beans.BeansFactory;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
@@ -14,15 +16,26 @@ public class DefaultBeanTableMetaDataProvider implements BeanTableMetaDataProvid
 
     private BeansFactory beansFactory;
 
-    private Map<Class<?>, IBeanTableMetaData> beanTableMetaDataByType = new HashMap<>();
-    private Map<String, IBeanTableMetaData> beanTableMetaDataByName = new HashMap<>();
+    private Map<Class<?>, BeanTableMetaData> beanTableMetaDataByType = new HashMap<>();
+    private Map<String, BeanTableMetaData> beanTableMetaDataByName = new HashMap<>();
+    private PropertyConversion propertyConversion;
 
     public DefaultBeanTableMetaDataProvider(Class<?>... beanClasses) throws BeanClassException {
-        this(BeansFactory.getDefault(), beanClasses);
+        this(BeansFactory.getDefault(), new DefaultPropertyConversion(), beanClasses);
+    }
+
+    public DefaultBeanTableMetaDataProvider(PropertyConversion propertyConversion, Class<?>... beanClasses) throws BeanClassException {
+        this(BeansFactory.getDefault(), propertyConversion, beanClasses);
     }
 
     public DefaultBeanTableMetaDataProvider(BeansFactory beansFactory, Class<?>... beanClasses) throws BeanClassException {
-        this.beansFactory = beansFactory;
+        this(beansFactory, new DefaultPropertyConversion(), beanClasses);
+    }
+
+
+    public DefaultBeanTableMetaDataProvider(BeansFactory beansFactory, PropertyConversion propertyConversion, Class<?>... beanClasses) throws BeanClassException {
+        this.beansFactory = requireNonNull(beansFactory);
+        this.propertyConversion = requireNonNull(propertyConversion);
 
         for (Class<?> beanClass : beanClasses) {
             registerBeanClass(beanClass);
@@ -31,9 +44,19 @@ public class DefaultBeanTableMetaDataProvider implements BeanTableMetaDataProvid
 
     public void registerBeanClass(Class<?> clazz) throws BeanClassException {
         BeanClass<?> beanClass = beansFactory.createBeanClass(clazz);
-        BeanTableMetaData beanTableMetaData = new BeanTableMetaData(beanClass);
+        BeanTableMetaData beanTableMetaData = new BeanTableMetaData(beanClass, propertyConversion);
         beanTableMetaDataByType.put(beanClass.getType(), beanTableMetaData);
         beanTableMetaDataByName.put(beanTableMetaData.getTableName(), beanTableMetaData);
+    }
+
+    public void setPropertyConversion(PropertyConversion propertyConversion) {
+        this.propertyConversion = propertyConversion;
+
+        beanTableMetaDataByType.values().forEach(bt -> bt.setPropertyConversion(propertyConversion));
+    }
+
+    public PropertyConversion getPropertyConversion() {
+        return propertyConversion;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.dataset.dbunit.dataset.bean;
+package com.link_intersystems.dbunit.dataset.beans;
 
 import com.link_intersystems.beans.BeanClass;
 import com.link_intersystems.beans.BeanClassException;
@@ -6,13 +6,12 @@ import com.link_intersystems.beans.BeansFactory;
 import com.link_intersystems.dbunit.dataset.ColumnList;
 import com.link_intersystems.dbunit.dataset.beans.BeanTableMetaData;
 import com.link_intersystems.dbunit.dataset.beans.IBeanTableMetaData;
+import com.link_intersystems.dbunit.dataset.beans.fixtures.PrimitiveTypesBean;
 import com.link_intersystems.test.ComponentTest;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.beans.IntrospectionException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

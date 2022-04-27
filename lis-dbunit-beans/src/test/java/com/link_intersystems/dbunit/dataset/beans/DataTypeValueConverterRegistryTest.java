@@ -1,7 +1,6 @@
 package com.link_intersystems.dbunit.dataset.beans;
 
 import com.link_intersystems.test.UnitTest;
-import com.link_intersystems.util.ValueConverter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;

@@ -1,4 +1,4 @@
-package com.link_intersystems.beans.java;
+package com.link_intersystems.dbunit.dataset.beans.fixtures;
 
 /**
  * @author - René Link {@literal <rene.link@link-intersystems.com>}

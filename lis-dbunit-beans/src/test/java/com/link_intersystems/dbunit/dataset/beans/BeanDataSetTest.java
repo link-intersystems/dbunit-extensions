@@ -1,9 +1,9 @@
 package com.link_intersystems.dbunit.dataset.beans;
 
 import com.link_intersystems.beans.BeanClassException;
-import com.link_intersystems.dbunit.dataset.EmployeeBeanFixture;
-import com.link_intersystems.dbunit.dataset.dbunit.dataset.bean.DepartmentBean;
-import com.link_intersystems.dbunit.dataset.dbunit.dataset.bean.EmployeeBean;
+import com.link_intersystems.dbunit.dataset.beans.fixtures.EmployeeBeanFixture;
+import com.link_intersystems.dbunit.dataset.beans.fixtures.DepartmentBean;
+import com.link_intersystems.dbunit.dataset.beans.fixtures.EmployeeBean;
 import com.link_intersystems.test.ComponentTest;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITable;
