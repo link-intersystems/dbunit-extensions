@@ -41,7 +41,6 @@ class BeanDataSetTest {
 
     @Test
     public void iterator() throws DataSetException {
-
         ITableIterator tableIterator = beanDataSet.createIterator(false);
 
         assertNextEmployeeTable(tableIterator);
@@ -51,7 +50,6 @@ class BeanDataSetTest {
 
     @Test
     public void reversedIterator() throws DataSetException {
-
         ITableIterator tableIterator = beanDataSet.createIterator(true);
 
         assertNextDepartmentTable(tableIterator);
@@ -72,8 +70,8 @@ class BeanDataSetTest {
 
     private void assertNextTable(ITableIterator tableIterator, int expected) throws DataSetException {
         assertTrue(tableIterator.next());
-        ITable employeeBeanTable = tableIterator.getTable();
-        assertNotNull(employeeBeanTable);
-        assertEquals(expected, employeeBeanTable.getRowCount());
+        ITable table = tableIterator.getTable();
+        assertNotNull(table);
+        assertEquals(expected, table.getRowCount());
     }
 }

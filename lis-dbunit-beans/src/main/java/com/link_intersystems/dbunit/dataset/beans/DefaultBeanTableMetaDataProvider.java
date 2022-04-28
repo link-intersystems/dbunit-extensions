@@ -49,16 +49,6 @@ public class DefaultBeanTableMetaDataProvider implements BeanTableMetaDataProvid
         beanTableMetaDataByName.put(beanTableMetaData.getTableName(), beanTableMetaData);
     }
 
-    public void setPropertyConversion(PropertyConversion propertyConversion) {
-        this.propertyConversion = propertyConversion;
-
-        beanTableMetaDataByType.values().forEach(bt -> bt.setPropertyConversion(propertyConversion));
-    }
-
-    public PropertyConversion getPropertyConversion() {
-        return propertyConversion;
-    }
-
     @Override
     public IBeanTableMetaData getMetaData(Class<?> beanClass) {
         return beanTableMetaDataByType.get(beanClass);

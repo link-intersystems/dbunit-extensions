@@ -1,9 +1,11 @@
 package com.link_intersystems.dbunit.dataset.beans;
 
+import org.dbunit.dataset.datatype.DataType;
+
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public interface ValueConverter {
+public interface DataTypeRegistry {
 
-    public Object convert(Object source) throws TypeConversionException;
+    DataType getDataType(Class<?> targetType);
 }

@@ -8,16 +8,16 @@ import static java.util.Objects.requireNonNull;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-class DataTypeValueConverter implements ValueConverter {
+class DataTypePropertyType implements PropertyType {
 
     private DataType dataType;
 
-    public DataTypeValueConverter(DataType dataType) {
+    public DataTypePropertyType(DataType dataType) {
         this.dataType = requireNonNull(dataType);
     }
 
     @Override
-    public Object convert(Object source) throws TypeConversionException {
+    public Object typeCast(Object source) throws TypeConversionException {
         try {
             return dataType.typeCast(source);
         } catch (TypeCastException e) {

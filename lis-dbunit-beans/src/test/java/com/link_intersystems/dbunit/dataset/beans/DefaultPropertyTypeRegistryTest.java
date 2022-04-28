@@ -22,9 +22,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 @UnitTest
-class DataTypeValueConverterRegistryTest {
+class DefaultPropertyTypeRegistryTest {
 
-    private DefaultPropertyConversion converterRegistry;
+    private DefaultPropertyTypeRegistry propertyTypeRegistry;
 
     static Stream<Class<?>> supportedValueConverterTargetTypes() {
         List<Class<?>> targetTypes = new ArrayList<>();
@@ -58,16 +58,15 @@ class DataTypeValueConverterRegistryTest {
 
     @BeforeEach
     void setUp() {
-        converterRegistry = new DefaultPropertyConversion();
+        propertyTypeRegistry = new DefaultPropertyTypeRegistry();
     }
 
     @ParameterizedTest
     @DisplayName("ValueConverters")
     @MethodSource("supportedValueConverterTargetTypes")
     void noValueConversions(Class<?> supportedType) {
-        ValueConverter valueConverter = converterRegistry.getValueConverter(supportedType);
-        assertNotEquals(DefaultPropertyConversion.UNKNOWN_VALUE_CONVERTER, valueConverter, "Should not be an unknown converter.");
+        PropertyType valueConverter = propertyTypeRegistry.getPropertyType(supportedType);
+        assertNotEquals(DefaultPropertyTypeRegistry.UNKNOWN_VALUE_CONVERTER, valueConverter, "Should not be an unknown converter.");
         assertNotNull(valueConverter, supportedType::getSimpleName);
     }
 }
-

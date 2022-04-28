@@ -4,21 +4,20 @@ import org.dbunit.dataset.datatype.DataType;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.AbstractMap;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.dbunit.dataset.datatype.DataType.*;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class DefaultDataTypeMap extends AbstractMap<Class<?>, DataType> {
+public class DefaultDataTypeRegistry implements DataTypeRegistry {
 
-    private Set<Entry<Class<?>, DataType>> entires = new HashSet<>();
+    private Map<Class<?>, DataType> dataTypes = new HashMap<>();
 
-    public DefaultDataTypeMap() {
+    public DefaultDataTypeRegistry() {
         configurePrimitiveTypes();
 
         registerDataType(String.class, VARCHAR);
@@ -55,11 +54,11 @@ public class DefaultDataTypeMap extends AbstractMap<Class<?>, DataType> {
     }
 
     private void registerDataType(Class<?> clazz, DataType dataType) {
-        entires.add(new SimpleEntry<>(clazz, dataType));
+        dataTypes.put(clazz, dataType);
     }
 
     @Override
-    public Set<Entry<Class<?>, DataType>> entrySet() {
-        return entires;
+    public DataType getDataType(Class<?> targetType) {
+        return dataTypes.get(targetType);
     }
 }

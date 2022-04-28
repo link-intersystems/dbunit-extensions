@@ -36,10 +36,6 @@ public class BeanTableMetaData extends AbstractTableMetaData implements IBeanTab
         this.propertyConversion = requireNonNull(propertyConversion);
     }
 
-    public void setPropertyConversion(PropertyConversion propertyConversion) {
-        this.propertyConversion = requireNonNull(propertyConversion);
-    }
-
     @Override
     public BeanClass<?> getBeanClass() {
         return beanClass;
