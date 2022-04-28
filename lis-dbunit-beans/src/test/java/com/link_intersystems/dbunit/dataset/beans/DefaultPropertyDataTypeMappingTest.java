@@ -24,14 +24,14 @@ import static org.mockito.Mockito.when;
 @UnitTest
 class DefaultPropertyDataTypeMappingTest {
 
-    private DefaultPropertyDataTypeMapping propertyDataTypeMapping;
+    private DefaultPropertyConversion propertyDataTypeMapping;
 
     private BeanClass<?> beanClass;
     private PropertyDesc property;
 
     @BeforeEach
     void setUp() {
-        propertyDataTypeMapping = new DefaultPropertyDataTypeMapping();
+        propertyDataTypeMapping = new DefaultPropertyConversion();
 
         beanClass = Mockito.mock(BeanClass.class);
         property = Mockito.mock(PropertyDesc.class);
