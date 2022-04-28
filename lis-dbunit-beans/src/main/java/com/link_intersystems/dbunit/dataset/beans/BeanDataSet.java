@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.stream.Stream;
 
 import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -19,6 +20,17 @@ public class BeanDataSet extends AbstractDataSet {
 
     private final List<BeanList<?>> beansDataSet;
     private final BeanTableMetaDataProvider beanTableMetaDataProvider;
+
+    /**
+     * returns a {@link BeanDataSet} based on a single collection of Java beans.
+     *
+     * @param beanList                  the list of Java beans that returned {@link org.dbunit.dataset.IDataSet}
+     *                                  should contain.
+     */
+    public static BeanDataSet singletonSet(BeanList<?> beanList) {
+        List<BeanList<?>> beanLists = singletonList(beanList);
+        return singletonSet(beanList, createDefaultBeanTableMetaDataProvider(beanLists));
+    }
 
     /**
      * returns a {@link BeanDataSet} based on a single collection of Java beans.
@@ -58,6 +70,11 @@ public class BeanDataSet extends AbstractDataSet {
      *                                  {@link org.dbunit.dataset.ITableMetaData} for the beans.
      */
     public BeanDataSet(List<BeanList<?>> beansDataSet, BeanTableMetaDataProvider beanTableMetaDataProvider) {
+        this.beanTableMetaDataProvider = requireNonNull(beanTableMetaDataProvider);
+        this.beansDataSet = getUniqueBeansDataSet(beansDataSet);
+    }
+
+    private List<BeanList<?>> getUniqueBeansDataSet(List<BeanList<?>> beansDataSet) {
         Map<Class<?>, List<BeanList<?>>> beanLists = new LinkedHashMap<>();
 
         for (BeanList<?> beanList : beansDataSet) {
@@ -66,10 +83,9 @@ public class BeanDataSet extends AbstractDataSet {
             allListsForClass.add(beanList);
         }
 
-        this.beansDataSet = beanLists.values().stream()
+        return beanLists.values().stream()
                 .flatMap(this::joinBeanLists)
                 .collect(toList());
-        this.beanTableMetaDataProvider = beanTableMetaDataProvider;
     }
 
     private Stream<BeanList<?>> joinBeanLists(List<BeanList<?>> lists) {
