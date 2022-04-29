@@ -127,11 +127,11 @@ public class BeanTableMetaData extends AbstractTableMetaData implements IBeanTab
     @Override
     public void setValue(Object bean, Column column, Object columnValue) throws DataSetException {
         PropertyDesc propertyDesc = propertyDescByColumn.get(column);
-        try {
-            Object propertyValue = propertyConversion.toPropertyValue(columnValue, propertyDesc);
-            propertyDesc.setPropertyValue(bean, propertyValue);
-        } catch (PropertyWriteException e) {
-            throw new DataSetException(e);
-        }
+        setValue(bean, columnValue, propertyDesc);
+    }
+
+    protected void setValue(Object bean, Object columnValue, PropertyDesc propertyDesc) throws DataSetException {
+        Object propertyValue = propertyConversion.toPropertyValue(columnValue, propertyDesc);
+        propertyDesc.setPropertyValue(bean, propertyValue);
     }
 }

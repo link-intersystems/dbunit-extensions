@@ -1,10 +1,12 @@
 package com.link_intersystems.dbunit.dataset.beans;
 
 import com.link_intersystems.util.ReversedList;
-import org.dbunit.dataset.AbstractDataSet;
-import org.dbunit.dataset.ITableIterator;
+import org.dbunit.dataset.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static java.util.Collections.singletonList;
@@ -24,8 +26,8 @@ public class BeanDataSet extends AbstractDataSet {
     /**
      * returns a {@link BeanDataSet} based on a single collection of Java beans.
      *
-     * @param beanList                  the list of Java beans that returned {@link org.dbunit.dataset.IDataSet}
-     *                                  should contain.
+     * @param beanList the list of Java beans that returned {@link org.dbunit.dataset.IDataSet}
+     *                 should contain.
      */
     public static BeanDataSet singletonSet(BeanList<?> beanList) {
         List<BeanList<?>> beanLists = singletonList(beanList);
@@ -93,14 +95,25 @@ public class BeanDataSet extends AbstractDataSet {
     }
 
     @Override
-    protected ITableIterator createIterator(boolean reversed) {
-        List<BeanList<?>> beanLists = Collections.unmodifiableList(beansDataSet);
+    protected ITableIterator createIterator(boolean reversed) throws DataSetException {
+        List<ITable> beanTables = getBeanTables();
 
         if (reversed) {
-            beanLists = new ReversedList<>(beanLists);
+            beanTables = new ReversedList<>(beanTables);
         }
 
-        return new BeanTableIterator(beanLists, beanTableMetaDataProvider);
+        return new DefaultTableIterator(beanTables.toArray(new ITable[0]));
+    }
+
+    protected List<ITable> getBeanTables() throws DataSetException {
+        List<ITable> beanTables = new ArrayList<>();
+
+        for (BeanList<?> beanList : beansDataSet) {
+            Class<?> beanClass = beanList.getBeanClass();
+            IBeanTableMetaData metaData = beanTableMetaDataProvider.getMetaData(beanClass);
+            beanTables.add(new BeanTable(beanList, metaData));
+        }
+        return beanTables;
     }
 
 }

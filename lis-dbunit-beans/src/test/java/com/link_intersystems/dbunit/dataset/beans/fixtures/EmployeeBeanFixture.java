@@ -4,6 +4,7 @@ import com.link_intersystems.beans.*;
 import com.link_intersystems.dbunit.dataset.beans.BeanList;
 import com.link_intersystems.dbunit.dataset.beans.BeanTableMetaDataProvider;
 import com.link_intersystems.dbunit.dataset.beans.DefaultBeanTableMetaDataProvider;
+import com.link_intersystems.dbunit.dataset.beans.DefaultPropertyConversion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class EmployeeBeanFixture {
     }
 
     public BeanTableMetaDataProvider createBeanMetaDataProvider() throws BeanClassException {
-        DefaultBeanTableMetaDataProvider metaDataProvider = new DefaultBeanTableMetaDataProvider();
+        DefaultBeanTableMetaDataProvider metaDataProvider = new DefaultBeanTableMetaDataProvider(new DefaultPropertyConversion());
         metaDataProvider.registerBeanClass(EmployeeBean.class);
         metaDataProvider.registerBeanClass(DepartmentBean.class);
         return metaDataProvider;

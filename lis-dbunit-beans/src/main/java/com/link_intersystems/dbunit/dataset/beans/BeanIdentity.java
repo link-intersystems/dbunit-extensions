@@ -15,8 +15,6 @@ import static java.util.Collections.emptyList;
  */
 public interface BeanIdentity {
 
-    public static final BeanIdentity NULL_IDENTITY = beanClass -> emptyList();
-
     /**
      * Returns the identity properties of a Java bean class.
      *

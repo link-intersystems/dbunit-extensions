@@ -4,8 +4,12 @@ import com.link_intersystems.beans.BeanClass;
 import com.link_intersystems.beans.PropertyDesc;
 import com.link_intersystems.beans.PropertyDescList;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -32,18 +36,23 @@ public class DefaultBeanIdentity implements BeanIdentity {
 
     @Override
     public List<PropertyDesc> getIdProperties(BeanClass<?> beanClass) {
-        List<PropertyDesc> propertyDescs = new ArrayList<>();
-
         PropertyDescList properties = beanClass.getProperties();
 
         Predicate<PropertyDesc> idPropertyDescPredicate = pd -> idPropertyNames.contains(pd.getName());
-        Optional<PropertyDesc> idPropertyDescOptional = properties.stream()
+        return properties.stream()
                 .filter(idPropertyDescPredicate)
-                .findFirst();
+                .sorted(this::idPropertyNamesOrder)
+                .collect(Collectors.toList());
+    }
 
-        idPropertyDescOptional.ifPresent(propertyDescs::add);
+    private int idPropertyNamesOrder(PropertyDesc desc1, PropertyDesc desc2) {
+        String name1 = desc1.getName();
+        int index1 = idPropertyNames.indexOf(name1);
 
-        return propertyDescs;
+        String name2 = desc2.getName();
+        int index2 = idPropertyNames.indexOf(name2);
+
+        return Integer.compare(index1, index2);
     }
 }
 

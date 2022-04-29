@@ -1,5 +1,7 @@
 package com.link_intersystems.dbunit.dataset.beans;
 
+import org.dbunit.dataset.DataSetException;
+
 /**
  * Provides {@link IBeanTableMetaData} for a given {@link Class}.
  *
@@ -11,9 +13,9 @@ public interface BeanTableMetaDataProvider {
      * Returns the {@link IBeanTableMetaData} for a given bean class.
      *
      * @param beanClass the bean class.
-     * @throws Exception if the metadata can not be resolved.
+     * @throws DataSetException if the metadata can not be resolved.
      */
-    IBeanTableMetaData getMetaData(Class<?> beanClass) throws Exception;
+    IBeanTableMetaData getMetaData(Class<?> beanClass) throws DataSetException;
 
     /**
      * Returns a {@link IBeanTableMetaData} for a given table name.

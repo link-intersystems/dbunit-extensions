@@ -5,7 +5,6 @@ import com.link_intersystems.beans.PropertyDesc;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.datatype.DataType;
-import org.dbunit.dataset.datatype.TypeCastException;
 
 import static java.util.Objects.requireNonNull;
 
@@ -41,11 +40,7 @@ public class DefaultPropertyConversion implements PropertyConversion {
     public Object toPropertyValue(Object columnValue, PropertyDesc propertyDesc) throws DataSetException {
         Class<?> propertyClass = propertyDesc.getType();
         PropertyType propertyType = propertyTypeRegistry.getPropertyType(propertyClass);
-        try {
-            return propertyType.typeCast(columnValue);
-        } catch (TypeConversionException e) {
-            throw new TypeCastException(e);
-        }
+        return propertyType.typeCast(columnValue);
     }
 
 
