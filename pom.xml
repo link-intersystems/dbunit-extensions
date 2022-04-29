@@ -21,7 +21,7 @@
     </modules>
 
     <properties>
-        <dbunit.version>2.4.8</dbunit.version>
+        <dbunit.version>[2.4.6,2.7.3]</dbunit.version>
     </properties>
 
     <dependencies>
