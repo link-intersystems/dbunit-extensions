@@ -1,6 +1,5 @@
 package com.link_intersystems.dbunit.dataset.beans;
 
-import com.link_intersystems.lang.ClassHierarchyComparator;
 import com.link_intersystems.lang.Primitives;
 import com.link_intersystems.lang.reflect.Constants;
 import org.dbunit.dataset.datatype.DataType;
@@ -20,7 +19,23 @@ public class DefaultPropertyTypeRegistry implements PropertyTypeRegistry {
 
     public DefaultPropertyTypeRegistry() {
         Constants<DataType> dataTypeConstants = new Constants<>(DataType.class);
-        dataTypeConstants.stream().sorted(ClassHierarchyComparator.objectsComparator()).forEach(this::registerPropertyType);
+
+        Map<Class<?>, DataType> mostGenericTypes = new HashMap<>();
+
+        for (DataType dataType : dataTypeConstants) {
+            Class typeClass = dataType.getTypeClass();
+
+            DataType existentType = mostGenericTypes.get(typeClass);
+            if (existentType == null || isMoreGeneric(dataType, existentType)) {
+                mostGenericTypes.put(typeClass, dataType);
+            }
+        }
+
+        mostGenericTypes.values().stream().forEach(this::registerPropertyType);
+    }
+
+    private boolean isMoreGeneric(DataType dataType, DataType compareToDataType) {
+        return dataType.getClass().isAssignableFrom(compareToDataType.getTypeClass());
     }
 
     private void registerPropertyType(DataType dataType) {
