@@ -16,7 +16,8 @@ class TypeConversionExceptionTest {
         RuntimeException re = new RuntimeException();
         TypeConversionException typeConversionException = new TypeConversionException(re);
 
-        assertSame(re, typeConversionException.getCause());
+        Throwable cause = typeConversionException.getCause();
+        assertSame(re, cause);
     }
 
 }

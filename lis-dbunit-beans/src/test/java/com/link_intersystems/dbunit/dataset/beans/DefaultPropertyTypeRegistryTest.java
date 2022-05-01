@@ -26,7 +26,7 @@ class DefaultPropertyTypeRegistryTest {
 
     private DefaultPropertyTypeRegistry propertyTypeRegistry;
 
-    static Stream<Class<?>> supportedValueConverterTargetTypes() {
+    static Stream<Class<?>> supportedPropertyTypes() {
         List<Class<?>> targetTypes = new ArrayList<>();
 
         targetTypes.add(Integer.class);
@@ -62,9 +62,9 @@ class DefaultPropertyTypeRegistryTest {
     }
 
     @ParameterizedTest
-    @DisplayName("ValueConverters")
-    @MethodSource("supportedValueConverterTargetTypes")
-    void noValueConversions(Class<?> supportedType) {
+    @DisplayName("Supported PropertyTypes")
+    @MethodSource("supportedPropertyTypes")
+    void supportedPropertyTypes(Class<?> supportedType) {
         PropertyType valueConverter = propertyTypeRegistry.getPropertyType(supportedType);
         assertNotEquals(DefaultPropertyTypeRegistry.UNKNOWN_VALUE_CONVERTER, valueConverter, "Should not be an unknown converter.");
         assertNotNull(valueConverter, supportedType::getSimpleName);
