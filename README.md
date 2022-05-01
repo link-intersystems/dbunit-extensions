@@ -5,12 +5,9 @@
 
 # DBUnit compatibility 
 
-![DBUnit Compatibility Test](https://github.com/link-intersystems/dbunit-extensions/workflows/DBUnit%20Compatibility%20Tests/badge.svg)
+The dbunit compatibility tests, test this library against dbunit versions 2.4.6 - 2.7.3.
 
-    <dependency>
-        <groupId>org.dbunit</groupId>
-        <artifactId>dbunit</artifactId>
-        <version>[2.4.6,2.7.3]</version>
-    </dependency>
+![DBUnit Compatibility Test](https://github.com/link-intersystems/dbunit-extensions/workflows/DBUnit%20Compatibility%20Tests/badge.svg) 
+
 
 
