@@ -21,13 +21,20 @@ public class JdbcMetaDataRepository {
     private Connection connection;
     private String[] tableTypes;
 
+    private JdbcContext context;
+
 
     public JdbcMetaDataRepository(Connection connection) {
         this(connection, new String[]{"TABLE"});
     }
 
-    public JdbcMetaDataRepository(Connection connection, String[] tableTypes) {
+    public JdbcMetaDataRepository(Connection connection, String... tableTypes) {
+        this(connection, null, tableTypes);
+    }
+
+    public JdbcMetaDataRepository(Connection connection, JdbcContext context, String... tableTypes) {
         this.connection = connection;
+        this.context = context;
         this.tableTypes = tableTypes;
     }
 
@@ -42,9 +49,17 @@ public class JdbcMetaDataRepository {
 
     private ScopedDatabaseMetaData getScopedDatabaseMetaData() throws SQLException {
         DatabaseMetaData metaData = connection.getMetaData();
-        String catalog = connection.getCatalog();
-        String schema = connection.getSchema();
-        return new ScopedDatabaseMetaData(metaData, catalog, schema);
+        JdbcContext context = getContext();
+        return new ScopedDatabaseMetaData(metaData, context.getCatalog(), context.getSchema());
+    }
+
+    private JdbcContext getContext() throws SQLException {
+        if (context == null) {
+            String catalog = connection.getCatalog();
+            String schema = connection.getSchema();
+            context = new JdbcContext(catalog, schema);
+        }
+        return context;
     }
 
     public JdbcTableMetaData getTableMetaData(String tableName) throws SQLException {

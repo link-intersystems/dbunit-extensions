@@ -1,6 +1,7 @@
 package com.link_intersystems.dbunit.repository.meta;
 
 import com.link_intersystems.dbunit.repository.jdbc.JdbcColumnMetaData;
+import com.link_intersystems.dbunit.repository.jdbc.JdbcContext;
 import com.link_intersystems.dbunit.repository.jdbc.JdbcMetaDataRepository;
 import com.link_intersystems.dbunit.repository.jdbc.JdbcTableMetaData;
 import org.dbunit.database.IDatabaseConnection;
@@ -57,9 +58,13 @@ public class TableMetaDataRepository {
     }
 
     public TableMetaDataRepository(IDatabaseConnection databaseConnection, TableType... tableTypes) throws DataSetException {
+        this(databaseConnection, null, tableTypes);
+    }
+
+    public TableMetaDataRepository(IDatabaseConnection databaseConnection, JdbcContext jdbcContext, TableType... tableTypes) throws DataSetException {
         this.databaseConnection = databaseConnection;
         try {
-            jdbcMetaDataRepository = new JdbcMetaDataRepository(databaseConnection.getConnection(), TableType.toNames(tableTypes));
+            jdbcMetaDataRepository = new JdbcMetaDataRepository(databaseConnection.getConnection(), jdbcContext, TableType.toNames(tableTypes));
         } catch (SQLException e) {
             throw new DataSetException(e);
         }
