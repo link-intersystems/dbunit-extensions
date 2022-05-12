@@ -1,9 +1,9 @@
-package com.link_intersystems.dbunit.repository.meta;
+package com.link_intersystems.dbunit.dataset.meta;
 
-import com.link_intersystems.dbunit.repository.jdbc.JdbcColumnMetaData;
-import com.link_intersystems.dbunit.repository.jdbc.JdbcContext;
-import com.link_intersystems.dbunit.repository.jdbc.JdbcMetaDataRepository;
-import com.link_intersystems.dbunit.repository.jdbc.JdbcTableMetaData;
+import com.link_intersystems.dbunit.dataset.jdbc.JdbcColumnMetaData;
+import com.link_intersystems.dbunit.dataset.jdbc.JdbcContext;
+import com.link_intersystems.dbunit.dataset.jdbc.JdbcMetaDataRepository;
+import com.link_intersystems.dbunit.dataset.jdbc.JdbcTableMetaData;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.database.IMetadataHandler;
 import org.dbunit.dataset.*;

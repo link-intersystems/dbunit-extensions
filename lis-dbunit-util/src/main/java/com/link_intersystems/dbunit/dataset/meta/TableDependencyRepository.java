@@ -1,9 +1,9 @@
-package com.link_intersystems.dbunit.repository.meta;
+package com.link_intersystems.dbunit.dataset.meta;
 
-import com.link_intersystems.dbunit.repository.jdbc.ColumnDescription;
-import com.link_intersystems.dbunit.repository.jdbc.JdbcForeignKey;
-import com.link_intersystems.dbunit.repository.jdbc.JdbcForeignKeyEntry;
-import com.link_intersystems.dbunit.repository.jdbc.JdbcMetaDataRepository;
+import com.link_intersystems.dbunit.dataset.jdbc.ColumnDescription;
+import com.link_intersystems.dbunit.dataset.jdbc.JdbcForeignKey;
+import com.link_intersystems.dbunit.dataset.jdbc.JdbcForeignKeyEntry;
+import com.link_intersystems.dbunit.dataset.jdbc.JdbcMetaDataRepository;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;

@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.repository.jdbc;
+package com.link_intersystems.dbunit.dataset.jdbc;
 
 import java.text.MessageFormat;
 import java.util.AbstractList;
