@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.dataset;
 
-import com.link_intersystems.dbunit.dataset.meta.Dependency;
+import com.link_intersystems.dbunit.meta.Dependency;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITable;

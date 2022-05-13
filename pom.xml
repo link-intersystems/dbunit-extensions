@@ -25,6 +25,7 @@
         <junit.jupiter.version>5.8.2</junit.jupiter.version>
         <mockito.version>4.4.0</mockito.version>
         <slf4j.version>1.7.36</slf4j.version>
+        <lis-commons.version>1.3.1-SNAPSHOT</lis-commons.version>
     </properties>
 
     <dependencies>
@@ -58,6 +59,38 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.link-intersystems.commons</groupId>
+                <artifactId>lis-commons-beans</artifactId>
+                <version>${lis-commons.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.link-intersystems.commons</groupId>
+                <artifactId>lis-commons-lang</artifactId>
+                <version>${lis-commons.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.link-intersystems.commons</groupId>
+                <artifactId>lis-commons-util</artifactId>
+                <version>${lis-commons.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.link-intersystems.commons</groupId>
+                <artifactId>lis-commons-jdbc</artifactId>
+                <version>${lis-commons.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.link-intersystems.commons</groupId>
+                <artifactId>lis-commons-test</artifactId>
+                <version>${lis-commons.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.link-intersystems.dbunit</groupId>
+                <artifactId>lis-dbunit-util</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.dbunit</groupId>
                 <artifactId>dbunit</artifactId>

@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.dataset.meta;
+package com.link_intersystems.dbunit.meta;
 
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;

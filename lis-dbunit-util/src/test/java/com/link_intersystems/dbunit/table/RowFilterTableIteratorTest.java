@@ -1,6 +1,7 @@
-package com.link_intersystems.dbunit.dataset;
+package com.link_intersystems.dbunit.table;
 
 import com.link_intersystems.ComponentTest;
+import com.link_intersystems.dbunit.table.RowFilterTableIterator;
 import org.dbunit.dataset.*;
 import org.dbunit.dataset.filter.IRowFilter;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +24,7 @@ class RowFilterTableIteratorTest {
     @BeforeEach
     void setUp() throws DataSetException {
         DefaultDataSet beanDataSet = new DefaultDataSet();
-        DefaultTable employeeTable = new DefaultTable("EmployeeBean");
+        DefaultTable employeeTable = new DefaultTable("Employee");
         beanDataSet.addTable(employeeTable);
         employeeTable.addRow(new Object[]{});
         employeeTable.addRow(new Object[]{});
@@ -44,7 +45,7 @@ class RowFilterTableIteratorTest {
         ITableMetaData tableMetaData = rowFilterTableIterator.getTableMetaData();
         assertNotNull(tableMetaData);
 
-        assertEquals("EmployeeBean", tableMetaData.getTableName());
+        assertEquals("Employee", tableMetaData.getTableName());
 
     }
 

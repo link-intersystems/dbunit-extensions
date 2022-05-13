@@ -1,6 +1,5 @@
-package com.link_intersystems.dbunit.dataset;
+package com.link_intersystems.dbunit.table;
 
-import com.link_intersystems.dbunit.dataset.filter.IRowFilterFactory;
 import org.dbunit.dataset.*;
 import org.dbunit.dataset.filter.IRowFilter;
 

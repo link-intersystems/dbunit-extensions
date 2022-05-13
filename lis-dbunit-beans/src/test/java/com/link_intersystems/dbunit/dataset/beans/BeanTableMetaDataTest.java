@@ -1,14 +1,13 @@
 package com.link_intersystems.dbunit.dataset.beans;
 
 import com.link_intersystems.beans.*;
-import com.link_intersystems.dbunit.dataset.ColumnList;
+import com.link_intersystems.dbunit.table.ColumnList;
 import com.link_intersystems.dbunit.dataset.beans.fixtures.PrimitiveTypesBean;
 import com.link_intersystems.test.ComponentTest;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

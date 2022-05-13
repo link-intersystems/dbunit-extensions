@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.dataset.table;
+package com.link_intersystems.dbunit.table;
 
 import org.dbunit.dataset.*;
 import org.slf4j.Logger;

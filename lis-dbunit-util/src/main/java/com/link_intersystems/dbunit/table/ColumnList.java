@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.dataset;
+package com.link_intersystems.dbunit.table;
 
 import org.dbunit.dataset.Column;
 
@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static com.link_intersystems.dbunit.dataset.ColumnPredicates.byName;
-import static com.link_intersystems.dbunit.dataset.ColumnPredicates.byNameIgnoreCase;
+import static com.link_intersystems.dbunit.table.ColumnPredicates.byName;
+import static com.link_intersystems.dbunit.table.ColumnPredicates.byNameIgnoreCase;
 
 /**
  * A {@link ColumnList} provides methods that apply to a list of {@link Column}s.

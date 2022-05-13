@@ -1,6 +1,7 @@
-package com.link_intersystems.dbunit.dataset;
+package com.link_intersystems.dbunit.table;
 
 import com.link_intersystems.UnitTest;
+import com.link_intersystems.dbunit.table.ColumnPredicates;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.datatype.DataType;
 import org.junit.jupiter.api.BeforeEach;

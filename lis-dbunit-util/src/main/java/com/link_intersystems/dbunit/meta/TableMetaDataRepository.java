@@ -1,9 +1,6 @@
-package com.link_intersystems.dbunit.dataset.meta;
+package com.link_intersystems.dbunit.meta;
 
-import com.link_intersystems.dbunit.dataset.jdbc.JdbcColumnMetaData;
-import com.link_intersystems.dbunit.dataset.jdbc.JdbcContext;
-import com.link_intersystems.dbunit.dataset.jdbc.JdbcMetaDataRepository;
-import com.link_intersystems.dbunit.dataset.jdbc.JdbcTableMetaData;
+import com.link_intersystems.jdbc.*;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.database.IMetadataHandler;
 import org.dbunit.dataset.*;
@@ -25,7 +22,7 @@ public class TableMetaDataRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(TableMetaDataRepository.class);
 
-    private JdbcMetaDataRepository jdbcMetaDataRepository;
+    private MetaDataRepository jdbcMetaDataRepository;
     private AbstractTableMetaData abstractTableMetaData = new AbstractTableMetaData() {
         @Override
         public String getTableName() {
@@ -64,7 +61,7 @@ public class TableMetaDataRepository {
     public TableMetaDataRepository(IDatabaseConnection databaseConnection, JdbcContext jdbcContext, TableType... tableTypes) throws DataSetException {
         this.databaseConnection = databaseConnection;
         try {
-            jdbcMetaDataRepository = new JdbcMetaDataRepository(databaseConnection.getConnection(), jdbcContext, TableType.toNames(tableTypes));
+            jdbcMetaDataRepository = new MetaDataRepository(databaseConnection.getConnection(), jdbcContext, TableType.toNames(tableTypes));
         } catch (SQLException e) {
             throw new DataSetException(e);
         }
@@ -72,33 +69,36 @@ public class TableMetaDataRepository {
 
     public ITableMetaData getTableMetaData(String tableName) throws DataSetException {
         try {
-            JdbcTableMetaData jdbcTableMetaData = jdbcMetaDataRepository.getTableMetaData(tableName);
+            TableMetaData tableMetaData = jdbcMetaDataRepository.getTableMetaData(tableName);
             IDataTypeFactory dataTypeFactory = abstractTableMetaData.getDataTypeFactory(databaseConnection);
 
-            List<JdbcColumnMetaData> columnMetaDataList = jdbcMetaDataRepository.getColumnMetaDataList(jdbcTableMetaData);
+            List<ColumnMetaData> columnMetaDataList = jdbcMetaDataRepository.getColumnMetaDataList(tableMetaData);
             List<Column> columns = new ArrayList<>();
 
-            for (JdbcColumnMetaData jdbcColumnMetaData : columnMetaDataList) {
+            for (ColumnMetaData jdbcColumnMetaData : columnMetaDataList) {
                 Column columnFromDbMetaData = createColumnFromDbMetaData(jdbcColumnMetaData, dataTypeFactory);
                 columns.add(columnFromDbMetaData);
             }
 
-            return new DefaultTableMetaData(tableName, columns.stream().toArray(Column[]::new));
+            PrimaryKey primaryKey = jdbcMetaDataRepository.getPrimaryKey(tableName);
+            String[] primaryKeyNames = primaryKey.stream().map(ColumnMetaData::getColumnName).toArray(String[]::new);
+
+            return new DefaultTableMetaData(tableName, columns.stream().toArray(Column[]::new), primaryKeyNames);
         } catch (SQLException e) {
             throw new DataSetException(e);
         }
     }
 
-    private Column createColumnFromDbMetaData(JdbcColumnMetaData jdbcColumnMetaData, IDataTypeFactory dataTypeFactory) throws SQLException, DataTypeException {
+    private Column createColumnFromDbMetaData(ColumnMetaData columnMetaData, IDataTypeFactory dataTypeFactory) throws SQLException, DataTypeException {
 
         if (logger.isTraceEnabled()) {
-            logger.trace("createColumnFromMetaData(jdbcColumnMetaData={}, dataTypeFactory={}) - start", new Object[]{jdbcColumnMetaData, dataTypeFactory});
+            logger.trace("createColumnFromMetaData(columnMetaData={}, dataTypeFactory={}) - start", new Object[]{columnMetaData, dataTypeFactory});
         }
 
-        String catalogName = jdbcColumnMetaData.getCatalogName();
-        String schemaName = jdbcColumnMetaData.getSchemaName();
-        String tableName = jdbcColumnMetaData.getTypeName();
-        String columnName = jdbcColumnMetaData.getColumnName();
+        String catalogName = columnMetaData.getCatalogName();
+        String schemaName = columnMetaData.getSchemaName();
+        String tableName = columnMetaData.getTypeName();
+        String columnName = columnMetaData.getColumnName();
 
         catalogName = this.trim(catalogName);
         schemaName = this.trim(schemaName);
@@ -121,7 +121,7 @@ public class TableMetaDataRepository {
 
             Column var12;
             try {
-                Column column = createColumn(jdbcColumnMetaData, dataTypeFactory);
+                Column column = createColumn(columnMetaData, dataTypeFactory);
                 var12 = column;
                 return var12;
             } catch (IllegalStateException var16) {
@@ -137,22 +137,22 @@ public class TableMetaDataRepository {
         return value == null ? null : value.trim();
     }
 
-    private Column createColumn(JdbcColumnMetaData jdbcColumnMetaData, IDataTypeFactory dataTypeFactory) throws DataTypeException {
-        String tableName = jdbcColumnMetaData.getTableName();
-        String columnName = jdbcColumnMetaData.getColumnName();
-        int sqlType = jdbcColumnMetaData.getDataType();
+    private Column createColumn(ColumnMetaData columnMetaData, IDataTypeFactory dataTypeFactory) throws DataTypeException {
+        String tableName = columnMetaData.getTableName();
+        String columnName = columnMetaData.getColumnName();
+        int sqlType = columnMetaData.getDataType();
         if (sqlType == 2001) {
-            sqlType = jdbcColumnMetaData.getSourceDataType();
+            sqlType = columnMetaData.getSourceDataType();
         }
 
-        String sqlTypeName = jdbcColumnMetaData.getTypeName();
-        int nullable = jdbcColumnMetaData.getNullable();
-        String remarks = jdbcColumnMetaData.getRemarks();
-        String columnDefaultValue = jdbcColumnMetaData.getColumnDefaultValue();
+        String sqlTypeName = columnMetaData.getTypeName();
+        int nullable = columnMetaData.getNullable();
+        String remarks = columnMetaData.getRemarks();
+        String columnDefaultValue = columnMetaData.getColumnDefaultValue();
         String isAutoIncrement = Column.AutoIncrement.NO.getKey();
 
         try {
-            isAutoIncrement = jdbcColumnMetaData.getIsAutoincrement();
+            isAutoIncrement = columnMetaData.getIsAutoincrement();
         } catch (Exception var13) {
             String msg = "Could not retrieve the 'isAutoIncrement' property because not yet running on Java 1.5 - defaulting to NO. Table={}, Column={}";
             logger.debug("Could not retrieve the 'isAutoIncrement' property because not yet running on Java 1.5 - defaulting to NO. Table={}, Column={}", new Object[]{tableName, columnName, var13});

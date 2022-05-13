@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.dataset.beans;
 
-import com.link_intersystems.dbunit.dataset.ColumnList;
+import com.link_intersystems.dbunit.table.ColumnList;
 import org.dbunit.dataset.AbstractTable;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;

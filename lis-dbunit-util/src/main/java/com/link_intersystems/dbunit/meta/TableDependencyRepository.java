@@ -1,9 +1,9 @@
-package com.link_intersystems.dbunit.dataset.meta;
+package com.link_intersystems.dbunit.meta;
 
-import com.link_intersystems.dbunit.dataset.jdbc.ColumnDescription;
-import com.link_intersystems.dbunit.dataset.jdbc.JdbcForeignKey;
-import com.link_intersystems.dbunit.dataset.jdbc.JdbcForeignKeyEntry;
-import com.link_intersystems.dbunit.dataset.jdbc.JdbcMetaDataRepository;
+import com.link_intersystems.jdbc.ColumnDescription;
+import com.link_intersystems.jdbc.ForeignKey;
+import com.link_intersystems.jdbc.ForeignKeyEntry;
+import com.link_intersystems.jdbc.MetaDataRepository;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;
@@ -26,7 +26,7 @@ public class TableDependencyRepository {
     private IDatabaseConnection databaseConnection;
     private TableMetaDataRepository tableMetaDataRepository;
 
-    private JdbcMetaDataRepository jdbcMetaDataRepository;
+    private MetaDataRepository jdbcMetaDataRepository;
 
     public TableDependencyRepository(IDatabaseConnection databaseConnection, TableMetaDataRepository tableMetaDataRepository) {
         this.databaseConnection = databaseConnection;
@@ -35,8 +35,8 @@ public class TableDependencyRepository {
 
     public List<Dependency> getIncomingDependencies(String tableName) throws DataSetException {
         try {
-            JdbcMetaDataRepository jdbcMetaDataRepository = getJdbcMetaDataRepository();
-            List<JdbcForeignKey> exportedKeys = jdbcMetaDataRepository.getExportedKeys(tableName);
+            MetaDataRepository jdbcMetaDataRepository = getMetaDataRepository();
+            List<ForeignKey> exportedKeys = jdbcMetaDataRepository.getExportedKeys(tableName);
             return mapToDependency(exportedKeys);
         } catch (SQLException e) {
             throw new DataSetException(e);
@@ -45,19 +45,19 @@ public class TableDependencyRepository {
 
     public List<Dependency> getOutgoingDependencies(String tableName) throws DataSetException {
         try {
-            JdbcMetaDataRepository jdbcMetaDataRepository = getJdbcMetaDataRepository();
-            List<JdbcForeignKey> exportedKeys = jdbcMetaDataRepository.getImportedKeys(tableName);
+            MetaDataRepository metaDataRepository = getMetaDataRepository();
+            List<ForeignKey> exportedKeys = metaDataRepository.getImportedKeys(tableName);
             return mapToDependency(exportedKeys);
         } catch (SQLException e) {
             throw new DataSetException(e);
         }
     }
 
-    public JdbcMetaDataRepository getJdbcMetaDataRepository() throws DataSetException {
+    public MetaDataRepository getMetaDataRepository() throws DataSetException {
         if (jdbcMetaDataRepository == null) {
             try {
                 Connection connection = databaseConnection.getConnection();
-                jdbcMetaDataRepository = new JdbcMetaDataRepository(connection);
+                jdbcMetaDataRepository = new MetaDataRepository(connection);
             } catch (SQLException e) {
                 throw new DataSetException(e);
             }
@@ -65,16 +65,16 @@ public class TableDependencyRepository {
         return jdbcMetaDataRepository;
     }
 
-    private List<Dependency> mapToDependency(List<JdbcForeignKey> foreignKeys) throws DataSetException {
+    private List<Dependency> mapToDependency(List<ForeignKey> foreignKeys) throws DataSetException {
         List<Dependency> dependencies = new ArrayList<>();
-        for (JdbcForeignKey foreignKey : foreignKeys) {
+        for (ForeignKey foreignKey : foreignKeys) {
             Dependency dependency = mapToDependency(foreignKey);
             dependencies.add(dependency);
         }
         return dependencies;
     }
 
-    private Dependency mapToDependency(JdbcForeignKey foreignKey) throws DataSetException {
+    private Dependency mapToDependency(ForeignKey foreignKey) throws DataSetException {
         List<TableColumn> pkColumns = getColumns(foreignKey, this::getPkColumn);
         List<TableColumn> fkColumns = getColumns(foreignKey, this::getFkColumn);
 
@@ -95,7 +95,7 @@ public class TableDependencyRepository {
 
     @FunctionalInterface
     private static interface ColumnGetter {
-        public TableColumn getColumn(JdbcForeignKeyEntry foreignKeyEntry) throws DataSetException;
+        public TableColumn getColumn(ForeignKeyEntry foreignKeyEntry) throws DataSetException;
     }
 
     private class TableColumn {
@@ -116,10 +116,10 @@ public class TableDependencyRepository {
         }
     }
 
-    private List<TableColumn> getColumns(JdbcForeignKey foreignKey, ColumnGetter columnGetter) throws DataSetException {
+    private List<TableColumn> getColumns(ForeignKey foreignKey, ColumnGetter columnGetter) throws DataSetException {
         List<TableColumn> columns = new ArrayList<>();
 
-        for (JdbcForeignKeyEntry entry : foreignKey) {
+        for (ForeignKeyEntry entry : foreignKey) {
             TableColumn column = columnGetter.getColumn(entry);
             columns.add(column);
         }
@@ -127,11 +127,11 @@ public class TableDependencyRepository {
         return columns;
     }
 
-    private TableColumn getPkColumn(JdbcForeignKeyEntry foreignKeyEntry) throws DataSetException {
+    private TableColumn getPkColumn(ForeignKeyEntry foreignKeyEntry) throws DataSetException {
         return getColumn(foreignKeyEntry.getPkColumnDescription());
     }
 
-    private TableColumn getFkColumn(JdbcForeignKeyEntry foreignKeyEntry) throws DataSetException {
+    private TableColumn getFkColumn(ForeignKeyEntry foreignKeyEntry) throws DataSetException {
         return getColumn(foreignKeyEntry.getFkColumnDescription());
     }
 

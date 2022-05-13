@@ -1,13 +1,13 @@
-package com.link_intersystems.dbunit.dataset.filter;
+package com.link_intersystems.dbunit.table;
 
 import com.link_intersystems.UnitTest;
+import com.link_intersystems.dbunit.table.CellRowFilter;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IRowValueProvider;
 import org.dbunit.dataset.NoSuchColumnException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.function.Predicate;
 
 import static java.util.Arrays.asList;

@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.dataset;
+package com.link_intersystems.dbunit.table;
 
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.datatype.DataType;
