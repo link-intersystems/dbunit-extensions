@@ -22,7 +22,7 @@ public class TableMetaDataRepository {
 
     private static final Logger logger = LoggerFactory.getLogger(TableMetaDataRepository.class);
 
-    private MetaDataRepository jdbcMetaDataRepository;
+    private ConnectionMetaData connectionMetaData;
     private AbstractTableMetaData abstractTableMetaData = new AbstractTableMetaData() {
         @Override
         public String getTableName() {
@@ -61,7 +61,7 @@ public class TableMetaDataRepository {
     public TableMetaDataRepository(IDatabaseConnection databaseConnection, JdbcContext jdbcContext, TableType... tableTypes) throws DataSetException {
         this.databaseConnection = databaseConnection;
         try {
-            jdbcMetaDataRepository = new MetaDataRepository(databaseConnection.getConnection(), jdbcContext, TableType.toNames(tableTypes));
+            connectionMetaData = new ConnectionMetaData(databaseConnection.getConnection(), jdbcContext, TableType.toNames(tableTypes));
         } catch (SQLException e) {
             throw new DataSetException(e);
         }
@@ -69,10 +69,10 @@ public class TableMetaDataRepository {
 
     public ITableMetaData getTableMetaData(String tableName) throws DataSetException {
         try {
-            TableMetaData tableMetaData = jdbcMetaDataRepository.getTableMetaData(tableName);
+            TableMetaData tableMetaData = connectionMetaData.getTableMetaData(tableName);
             IDataTypeFactory dataTypeFactory = abstractTableMetaData.getDataTypeFactory(databaseConnection);
 
-            List<ColumnMetaData> columnMetaDataList = jdbcMetaDataRepository.getColumnMetaDataList(tableMetaData);
+            List<ColumnMetaData> columnMetaDataList = connectionMetaData.getColumnMetaDataList(tableMetaData);
             List<Column> columns = new ArrayList<>();
 
             for (ColumnMetaData jdbcColumnMetaData : columnMetaDataList) {
@@ -80,7 +80,7 @@ public class TableMetaDataRepository {
                 columns.add(columnFromDbMetaData);
             }
 
-            PrimaryKey primaryKey = jdbcMetaDataRepository.getPrimaryKey(tableName);
+            PrimaryKey primaryKey = connectionMetaData.getPrimaryKey(tableName);
             String[] primaryKeyNames = primaryKey.stream().map(ColumnMetaData::getColumnName).toArray(String[]::new);
 
             return new DefaultTableMetaData(tableName, columns.stream().toArray(Column[]::new), primaryKeyNames);

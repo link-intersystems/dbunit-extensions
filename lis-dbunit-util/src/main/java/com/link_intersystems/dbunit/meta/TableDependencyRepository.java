@@ -1,9 +1,9 @@
 package com.link_intersystems.dbunit.meta;
 
 import com.link_intersystems.jdbc.ColumnDescription;
+import com.link_intersystems.jdbc.ConnectionMetaData;
 import com.link_intersystems.jdbc.ForeignKey;
 import com.link_intersystems.jdbc.ForeignKeyEntry;
-import com.link_intersystems.jdbc.MetaDataRepository;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;
@@ -26,7 +26,7 @@ public class TableDependencyRepository {
     private IDatabaseConnection databaseConnection;
     private TableMetaDataRepository tableMetaDataRepository;
 
-    private MetaDataRepository jdbcMetaDataRepository;
+    private ConnectionMetaData jdbcConnectionMetaData;
 
     public TableDependencyRepository(IDatabaseConnection databaseConnection, TableMetaDataRepository tableMetaDataRepository) {
         this.databaseConnection = databaseConnection;
@@ -35,8 +35,8 @@ public class TableDependencyRepository {
 
     public List<Dependency> getIncomingDependencies(String tableName) throws DataSetException {
         try {
-            MetaDataRepository jdbcMetaDataRepository = getMetaDataRepository();
-            List<ForeignKey> exportedKeys = jdbcMetaDataRepository.getExportedKeys(tableName);
+            ConnectionMetaData jdbcConnectionMetaData = getConnectionMetaData();
+            List<ForeignKey> exportedKeys = jdbcConnectionMetaData.getExportedKeys(tableName);
             return mapToDependency(exportedKeys);
         } catch (SQLException e) {
             throw new DataSetException(e);
@@ -45,7 +45,7 @@ public class TableDependencyRepository {
 
     public List<Dependency> getOutgoingDependencies(String tableName) throws DataSetException {
         try {
-            MetaDataRepository metaDataRepository = getMetaDataRepository();
+            ConnectionMetaData metaDataRepository = getConnectionMetaData();
             List<ForeignKey> exportedKeys = metaDataRepository.getImportedKeys(tableName);
             return mapToDependency(exportedKeys);
         } catch (SQLException e) {
@@ -53,16 +53,16 @@ public class TableDependencyRepository {
         }
     }
 
-    public MetaDataRepository getMetaDataRepository() throws DataSetException {
-        if (jdbcMetaDataRepository == null) {
+    public ConnectionMetaData getConnectionMetaData() throws DataSetException {
+        if (jdbcConnectionMetaData == null) {
             try {
                 Connection connection = databaseConnection.getConnection();
-                jdbcMetaDataRepository = new MetaDataRepository(connection);
+                jdbcConnectionMetaData = new ConnectionMetaData(connection);
             } catch (SQLException e) {
                 throw new DataSetException(e);
             }
         }
-        return jdbcMetaDataRepository;
+        return jdbcConnectionMetaData;
     }
 
     private List<Dependency> mapToDependency(List<ForeignKey> foreignKeys) throws DataSetException {
