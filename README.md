@@ -9,7 +9,7 @@ The dbunit compatibility tests, test this library against dbunit versions 2.4.6 
 
 ![DBUnit Compatibility Test](https://github.com/link-intersystems/dbunit-extensions/workflows/DBUnit%20Compatibility%20Tests/badge.svg)
 
-All modules in this project are at compatible with the dbunit versions within the tested range. 
+All modules in this project are at least compatible with the dbunit versions within the tested range. 
 Limitations and exceptions are listed below.
 
 ## lis-dbunit-beans

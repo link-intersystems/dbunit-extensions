@@ -1,6 +1,5 @@
 package com.link_intersystems.dbunit.table;
 
-import com.link_intersystems.dbunit.dataset.DependentEntityStatement;
 import com.link_intersystems.dbunit.meta.Dependency;
 import com.link_intersystems.dbunit.meta.TableDependencyRepository;
 import com.link_intersystems.dbunit.meta.TableMetaDataRepository;
@@ -26,14 +25,14 @@ public class TableDependencyLoader {
 
     private final TableDependencyRepository tableDependencyRepository;
     private final TableMetaDataRepository tableMetaDataRepository;
-    private final DependentEntityStatement dependentEntityStatement;
+    private final DependentTableStatement dependentEntityStatement;
 
 
     public TableDependencyLoader(IDatabaseConnection databaseConnection) throws DataSetException {
         tableMetaDataRepository = new TableMetaDataRepository(databaseConnection);
         tableDependencyRepository = new TableDependencyRepository(databaseConnection, tableMetaDataRepository);
         try {
-            dependentEntityStatement = new DependentEntityStatement(databaseConnection.getConnection());
+            dependentEntityStatement = new DependentTableStatement(databaseConnection.getConnection());
         } catch (SQLException e) {
             throw new DataSetException(e);
         }
@@ -41,12 +40,12 @@ public class TableDependencyLoader {
 
     public List<ITable> getOutgoingTables(ITable sourceTable) throws DataSetException {
         Map<String, ITable> tableContext = new LinkedHashMap<>();
-        getOutgoingTablesImpl(sourceTable, tableContext);
+        getOutgoingTables(sourceTable, tableContext);
         return new ArrayList<>(tableContext.values());
     }
 
 
-    private void getOutgoingTablesImpl(ITable sourceTable, Map<String, ITable> tableContext) throws DataSetException {
+    private void getOutgoingTables(ITable sourceTable, Map<String, ITable> tableContext) throws DataSetException {
         ITableMetaData tableMetaData = sourceTable.getTableMetaData();
         List<Dependency> outgoingDependencies = tableDependencyRepository.getOutgoingDependencies(tableMetaData.getTableName());
 
@@ -66,7 +65,7 @@ public class TableDependencyLoader {
                         targetTable = new DistinctCompositeTable(targetTableMetaData, targetTable, existingTable);
                     }
                     tableContext.put(tableName, targetTable);
-                    getOutgoingTablesImpl(targetTable, tableContext);
+                    getOutgoingTables(targetTable, tableContext);
                 }
             } catch (SQLException e) {
                 throw new DataSetException(e);
