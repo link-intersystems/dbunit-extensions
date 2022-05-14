@@ -9,7 +9,7 @@ import org.junit.platform.suite.api.Suite;
  *  @author - René Link {@literal <rene.link@link-intersystems.com>}
  */
 @Suite
-@SelectPackages("com.link_intersystems")
+@SelectPackages("com.link_intersystems.dbunit")
 @IncludeTags({"UnitTest"})
 public class UnitTestSuite {
 
