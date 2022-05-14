@@ -1,6 +1,7 @@
 package com.link_intersystems.dbunit.dataset;
 
 import com.link_intersystems.BuildProperties;
+import com.link_intersystems.ComponentTest;
 import com.link_intersystems.dbunit.table.TableQueries;
 import com.link_intersystems.test.db.sakila.SakilaTestTBExtension;
 import com.link_intersystems.test.jdbc.H2InMemoryDB;
@@ -26,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 @ExtendWith(SakilaTestTBExtension.class)
+@ComponentTest
 public class ConsistentDataSetLoaderTest {
 
     private ConsistentDataSetLoader dataSetLoader;
