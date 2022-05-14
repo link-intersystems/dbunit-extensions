@@ -3,7 +3,7 @@ package com.link_intersystems.dbunit.dataset;
 import com.link_intersystems.BuildProperties;
 import com.link_intersystems.ComponentTest;
 import com.link_intersystems.dbunit.table.TableQueries;
-import com.link_intersystems.test.db.sakila.SakilaTestTBExtension;
+import com.link_intersystems.test.db.sakila.SakilaTestDBExtension;
 import com.link_intersystems.test.jdbc.H2InMemoryDB;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-@ExtendWith(SakilaTestTBExtension.class)
+@ExtendWith(SakilaTestDBExtension.class)
 @ComponentTest
 public class ConsistentDataSetLoaderTest {
 
@@ -47,7 +47,7 @@ public class ConsistentDataSetLoaderTest {
         assertArrayEquals(new String[]{"film_actor", "film", "language", "actor"}, tableNames);
 
         ITable filmActorTable = dataSet.getTable("film_actor");
-        assertEquals(3, filmActorTable.getRowCount());
+        assertEquals(3, filmActorTable.getRowCount(), "film_actor entity count");
         TableQueries filmActorTableQueries = new TableQueries(filmActorTable);
 
         assertNotNull(filmActorTableQueries.getRowById(9, 200));
@@ -55,19 +55,19 @@ public class ConsistentDataSetLoaderTest {
         assertNotNull(filmActorTableQueries.getRowById(139, 200));
 
         ITable actorTable = dataSet.getTable("actor");
-        assertEquals(3, actorTable.getRowCount());
+        assertEquals(3, actorTable.getRowCount(), "actor entity count");
         TableQueries actorTableQueries = new TableQueries(actorTable);
         assertNotNull(actorTableQueries.getRowById(9));
         assertNotNull(actorTableQueries.getRowById(102));
         assertNotNull(actorTableQueries.getRowById(139));
 
         ITable filmTable = dataSet.getTable("film");
-        assertEquals(1, filmTable.getRowCount());
+        assertEquals(1, filmTable.getRowCount(), "film entity count");
         TableQueries filmTableQueries = new TableQueries(filmTable);
         assertNotNull(filmTableQueries.getRowById(200));
 
         ITable languageTable = dataSet.getTable("language");
-        assertEquals(1, languageTable.getRowCount());
+        assertEquals(1, languageTable.getRowCount(), "language entity count");
         TableQueries languageTableQueries = new TableQueries(languageTable);
         assertNotNull(languageTableQueries.getRowById(1));
     }

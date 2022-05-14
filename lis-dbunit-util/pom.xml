@@ -17,11 +17,6 @@
             <artifactId>lis-commons-beans</artifactId>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.29</version>
-        </dependency>
-        <dependency>
             <groupId>com.link-intersystems.commons</groupId>
             <artifactId>lis-commons-jdbc</artifactId>
         </dependency>

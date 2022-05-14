@@ -21,13 +21,13 @@
     </modules>
 
     <properties>
-        <lis-dbunit-extensions.verion>${project.version}</lis-dbunit-extensions.verion>
+        <lis-dbunit-extensions.verion>1.0.0-SNAPSHOT</lis-dbunit-extensions.verion>
         <lis-commons.version>1.4.0</lis-commons.version>
         <dbunit.version>2.7.3</dbunit.version>
         <junit.jupiter.version>5.8.2</junit.jupiter.version>
         <mockito.version>4.4.0</mockito.version>
         <slf4j.version>1.7.36</slf4j.version>
-        <lis-commons.version>1.4.0</lis-commons.version>
+        <lis-commons.version>1.4.2-SNAPSHOT</lis-commons.version>
     </properties>
 
     <dependencies>
@@ -80,17 +80,27 @@
                 <groupId>com.link-intersystems.commons</groupId>
                 <artifactId>lis-commons-test</artifactId>
                 <version>${lis-commons.version}</version>
+                <type>test-jar</type>
                 <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.link-intersystems.dbunit</groupId>
-                <artifactId>lis-dbunit-util</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
             </dependency>
 
             <dependency>
                 <groupId>com.link-intersystems.dbunit</groupId>
                 <artifactId>lis-dbunit-util</artifactId>
+                <version>${lis-dbunit-extensions.verion}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.link-intersystems.dbunit</groupId>
+                <artifactId>lis-dbunit-util</artifactId>
+                <type>test-jar</type>
+                <classifier>tests</classifier>
+                <version>${lis-dbunit-extensions.verion}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.link-intersystems.dbunit</groupId>
+                <artifactId>lis-dbunit-util</artifactId>
+                <type>test-jar</type>
+                <scope>test</scope>
                 <version>${lis-dbunit-extensions.verion}</version>
             </dependency>
 
@@ -233,4 +243,14 @@
             </build>
         </profile>
     </profiles>
+
+    <repositories>
+        <repository>
+            <id>snapshots-sonatype</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 </project>

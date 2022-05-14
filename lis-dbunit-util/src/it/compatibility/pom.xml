@@ -6,19 +6,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.link-intersystems</groupId>
-        <artifactId>lis-central-jar</artifactId>
-        <version>8.1</version>
+        <groupId>com.link-intersystems.dbunit</groupId>
+        <artifactId>lis-dbunit</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <groupId>com.link-intersystems.dbunit.integration-tests</groupId>
     <artifactId>lis-dbunit-compatibility-pom</artifactId>
     <version>1</version>
     <packaging>pom</packaging>
-
-    <properties>
-        <lis-dbunit.version>1.0.0-SNAPSHOT</lis-dbunit.version>
-    </properties>
 
     <dependencyManagement>
         <dependencies>
@@ -39,26 +35,16 @@
         <dependency>
             <groupId>com.link-intersystems.dbunit</groupId>
             <artifactId>lis-dbunit-util</artifactId>
-            <version>${lis-dbunit.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.dbunit</groupId>
-                    <artifactId>dbunit</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.link-intersystems.dbunit</groupId>
             <artifactId>lis-dbunit-util</artifactId>
-            <version>${lis-dbunit.version}</version>
-            <scope>test</scope>
             <type>test-jar</type>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.dbunit</groupId>
-                    <artifactId>dbunit</artifactId>
-                </exclusion>
-            </exclusions>
+            <classifier>tests</classifier>
+        </dependency>
+        <dependency>
+            <groupId>com.link-intersystems.commons</groupId>
+            <artifactId>lis-commons-test</artifactId>
         </dependency>
     </dependencies>
 
