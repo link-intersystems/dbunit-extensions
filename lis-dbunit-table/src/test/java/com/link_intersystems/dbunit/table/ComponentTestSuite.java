@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit;
+package com.link_intersystems.dbunit.table;
 
 import org.junit.platform.suite.api.ExcludeClassNamePatterns;
 import org.junit.platform.suite.api.IncludeTags;
@@ -10,7 +10,7 @@ import org.junit.platform.suite.api.Suite;
  */
 @Suite
 @SelectPackages("com.link_intersystems.dbunit")
-@IncludeTags({"UnitTest"})
-public class UnitTestSuite {
+@IncludeTags({"ComponentTest"})
+public class ComponentTestSuite {
 
 }

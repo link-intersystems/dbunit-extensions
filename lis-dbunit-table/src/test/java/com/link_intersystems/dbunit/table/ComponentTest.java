@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit;
+package com.link_intersystems.dbunit.table;
 
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Tag;

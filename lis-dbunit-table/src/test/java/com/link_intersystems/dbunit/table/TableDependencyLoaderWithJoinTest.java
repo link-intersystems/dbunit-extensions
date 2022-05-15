@@ -1,14 +1,11 @@
 package com.link_intersystems.dbunit.table;
 
-import com.link_intersystems.dbunit.ComponentTest;
-import com.link_intersystems.dbunit.LisDatabaseConfig;
 import com.link_intersystems.dbunit.statement.JoinDependencyStatementFactory;
 import com.link_intersystems.test.db.sakila.SakilaTestDBExtension;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITable;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -19,6 +19,7 @@
         <module>lis-dbunit-util</module>
         <module>lis-dbunit-beans</module>
         <module>lis-dbunit-dataset</module>
+        <module>lis-dbunit-table</module>
     </modules>
 
     <properties>

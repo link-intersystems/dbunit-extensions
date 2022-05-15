@@ -1,6 +1,5 @@
 package com.link_intersystems.dbunit.table;
 
-import com.link_intersystems.dbunit.UnitTest;
 import com.link_intersystems.test.db.sakila.SakilaTestDBExtension;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.dataset.DataSetException;

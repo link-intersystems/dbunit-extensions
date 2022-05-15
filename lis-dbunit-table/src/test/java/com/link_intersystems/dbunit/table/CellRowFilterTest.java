@@ -1,6 +1,5 @@
 package com.link_intersystems.dbunit.table;
 
-import com.link_intersystems.dbunit.UnitTest;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IRowValueProvider;
 import org.dbunit.dataset.NoSuchColumnException;
@@ -10,7 +9,8 @@ import org.junit.jupiter.api.Test;
 import java.util.function.Predicate;
 
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
