@@ -25,6 +25,11 @@
             <artifactId>lis-commons-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.link-intersystems.dbunit</groupId>
+            <artifactId>lis-dbunit-meta</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

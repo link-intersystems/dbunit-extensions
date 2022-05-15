@@ -20,6 +20,7 @@
         <module>lis-dbunit-beans</module>
         <module>lis-dbunit-dataset</module>
         <module>lis-dbunit-table</module>
+        <module>lis-dbunit-meta</module>
     </modules>
 
     <properties>
