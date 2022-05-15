@@ -1,7 +1,6 @@
-package com.link_intersystems.dbunit.table;
+package com.link_intersystems.dbunit.dataset;
 
-import com.link_intersystems.dbunit.ComponentTest;
-import com.link_intersystems.dbunit.dataset.RowFilteredDataSet;
+import com.link_intersystems.test.ComponentTest;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.DefaultDataSet;
 import org.dbunit.dataset.DefaultTable;

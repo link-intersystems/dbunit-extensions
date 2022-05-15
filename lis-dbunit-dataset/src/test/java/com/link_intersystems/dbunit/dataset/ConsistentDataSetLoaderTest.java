@@ -1,8 +1,7 @@
 package com.link_intersystems.dbunit.dataset;
 
-import com.link_intersystems.dbunit.BuildProperties;
-import com.link_intersystems.dbunit.ComponentTest;
 import com.link_intersystems.dbunit.table.TableUtil;
+import com.link_intersystems.test.ComponentTest;
 import com.link_intersystems.test.db.sakila.SakilaTestDBExtension;
 import com.link_intersystems.test.jdbc.H2Database;
 import org.dbunit.DatabaseUnitException;
