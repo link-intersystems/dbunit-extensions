@@ -1,16 +1,12 @@
 package com.link_intersystems.dbunit.table;
 
 import org.dbunit.dataset.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
+import static java.text.MessageFormat.format;
 
 public class DistinctCompositeTable extends AbstractTable {
-    private static final Logger logger = LoggerFactory.getLogger(DistinctCompositeTable.class);
     private final ITableMetaData _metaData;
     private final ITable effectiveTable;
 
@@ -22,9 +18,38 @@ public class DistinctCompositeTable extends AbstractTable {
         this(new DefaultTableMetaData(newName, table.getTableMetaData().getColumns(), table.getTableMetaData().getPrimaryKeys()), table);
     }
 
+    public DistinctCompositeTable(ITable table, ITable... moreTables) throws DataSetException {
+        this(table.getTableMetaData(), add(moreTables, table));
+    }
+
+    private static ITable[] add(ITable[] sourceTables, ITable toAdd) {
+        ITable[] result = new ITable[sourceTables.length + 1];
+        System.arraycopy(sourceTables, 0, result, 0, sourceTables.length);
+        result[sourceTables.length] = toAdd;
+        return result;
+    }
+
     public DistinctCompositeTable(ITableMetaData metaData, ITable... tables) throws DataSetException {
         this._metaData = metaData;
+        for (ITable table : tables) {
+            if (!tableMetaDataEquals(metaData, table.getTableMetaData())) {
+                String msg = format("tables are not compatible with the metadata {0}", metaData);
+                throw new IllegalArgumentException(msg);
+            }
+        }
         this.effectiveTable = mergeTables(metaData, tables);
+    }
+
+    private boolean tableMetaDataEquals(ITableMetaData metaData1, ITableMetaData metaData2) throws DataSetException {
+        if (!metaData1.getTableName().equals(metaData2.getTableName())) {
+            return false;
+        }
+
+        if (!Arrays.equals(metaData1.getColumns(), metaData2.getColumns())) {
+            return false;
+        }
+
+        return Arrays.equals(metaData1.getPrimaryKeys(), metaData2.getPrimaryKeys());
     }
 
 

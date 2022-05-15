@@ -1,7 +1,6 @@
 package com.link_intersystems.dbunit.table;
 
-import com.link_intersystems.UnitTest;
-import com.link_intersystems.dbunit.table.CellRowFilter;
+import com.link_intersystems.dbunit.UnitTest;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IRowValueProvider;
 import org.dbunit.dataset.NoSuchColumnException;

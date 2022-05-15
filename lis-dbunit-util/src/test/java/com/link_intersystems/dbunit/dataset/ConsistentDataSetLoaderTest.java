@@ -1,10 +1,10 @@
 package com.link_intersystems.dbunit.dataset;
 
-import com.link_intersystems.BuildProperties;
-import com.link_intersystems.ComponentTest;
-import com.link_intersystems.dbunit.table.TableQueries;
+import com.link_intersystems.dbunit.BuildProperties;
+import com.link_intersystems.dbunit.ComponentTest;
+import com.link_intersystems.dbunit.table.TableUtil;
 import com.link_intersystems.test.db.sakila.SakilaTestDBExtension;
-import com.link_intersystems.test.jdbc.H2InMemoryDB;
+import com.link_intersystems.test.jdbc.H2Database;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.DatabaseDataSet;
@@ -44,11 +44,11 @@ public class ConsistentDataSetLoaderTest {
         IDataSet dataSet = dataSetLoader.load("SELECT * from film_actor where film_actor.film_id = ?", Integer.valueOf(200));
 
         String[] tableNames = dataSet.getTableNames();
-        assertArrayEquals(new String[]{"film_actor", "film", "language", "actor"}, tableNames);
+        assertArrayEquals(new String[]{"film_actor", "film", "actor", "language"}, tableNames);
 
         ITable filmActorTable = dataSet.getTable("film_actor");
         assertEquals(3, filmActorTable.getRowCount(), "film_actor entity count");
-        TableQueries filmActorTableQueries = new TableQueries(filmActorTable);
+        TableUtil filmActorTableQueries = new TableUtil(filmActorTable);
 
         assertNotNull(filmActorTableQueries.getRowById(9, 200));
         assertNotNull(filmActorTableQueries.getRowById(102, 200));
@@ -56,25 +56,25 @@ public class ConsistentDataSetLoaderTest {
 
         ITable actorTable = dataSet.getTable("actor");
         assertEquals(3, actorTable.getRowCount(), "actor entity count");
-        TableQueries actorTableQueries = new TableQueries(actorTable);
+        TableUtil actorTableQueries = new TableUtil(actorTable);
         assertNotNull(actorTableQueries.getRowById(9));
         assertNotNull(actorTableQueries.getRowById(102));
         assertNotNull(actorTableQueries.getRowById(139));
 
         ITable filmTable = dataSet.getTable("film");
         assertEquals(1, filmTable.getRowCount(), "film entity count");
-        TableQueries filmTableQueries = new TableQueries(filmTable);
+        TableUtil filmTableQueries = new TableUtil(filmTable);
         assertNotNull(filmTableQueries.getRowById(200));
 
         ITable languageTable = dataSet.getTable("language");
         assertEquals(1, languageTable.getRowCount(), "language entity count");
-        TableQueries languageTableQueries = new TableQueries(languageTable);
+        TableUtil languageTableQueries = new TableUtil(languageTable);
         assertNotNull(languageTableQueries.getRowById(1));
     }
 
     @Test
     void sakilaExport() throws SQLException, DatabaseUnitException, IOException {
-        DatabaseDataSet databaseDataSet = new DatabaseDataSet(databaseConnection, true, H2InMemoryDB.SYSTEM_TABLE_PREDICATE.negate()::test);
+        DatabaseDataSet databaseDataSet = new DatabaseDataSet(databaseConnection, false, H2Database.SYSTEM_TABLE_PREDICATE.negate()::test);
 
         BuildProperties buildProperties = new BuildProperties();
         File buildOutputDirectory = buildProperties.getBuildOutputDirectory();

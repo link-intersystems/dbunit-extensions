@@ -27,7 +27,7 @@
         <junit.jupiter.version>5.8.2</junit.jupiter.version>
         <mockito.version>4.4.0</mockito.version>
         <slf4j.version>1.7.36</slf4j.version>
-        <lis-commons.version>1.4.2</lis-commons.version>
+        <lis-commons.version>1.4.3-SNAPSHOT</lis-commons.version>
     </properties>
 
     <dependencies>

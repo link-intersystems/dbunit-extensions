@@ -1,7 +1,6 @@
 package com.link_intersystems.dbunit.table;
 
-import com.link_intersystems.ComponentTest;
-import com.link_intersystems.dbunit.table.RowFilterTableIterator;
+import com.link_intersystems.dbunit.ComponentTest;
 import org.dbunit.dataset.*;
 import org.dbunit.dataset.filter.IRowFilter;
 import org.junit.jupiter.api.BeforeEach;

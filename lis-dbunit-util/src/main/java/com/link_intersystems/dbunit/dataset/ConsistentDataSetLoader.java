@@ -2,6 +2,8 @@ package com.link_intersystems.dbunit.dataset;
 
 import com.link_intersystems.dbunit.meta.TableDependencyRepository;
 import com.link_intersystems.dbunit.meta.TableMetaDataRepository;
+import com.link_intersystems.dbunit.table.ListSnapshot;
+import com.link_intersystems.dbunit.table.TableContext;
 import com.link_intersystems.dbunit.table.TableDependencyLoader;
 import org.dbunit.database.CachedResultSetTable;
 import org.dbunit.database.ForwardOnlyResultSetTable;
@@ -57,13 +59,29 @@ public class ConsistentDataSetLoader {
                 ITableMetaData tableMetaData = tableMetaDataRepository.getTableMetaData(tableName);
                 ForwardOnlyResultSetTable forwardOnlyResultSetTable = new ForwardOnlyResultSetTable(tableMetaData, resultSet);
                 CachedResultSetTable mainTable = new CachedResultSetTable(forwardOnlyResultSetTable);
-                dataSetTables.add(mainTable);
-                List<ITable> outgoingTables = entityDependencyLoader.getOutgoingTables(mainTable);
+                List<ITable> outgoingTables = loadOutgoingTables(entityDependencyLoader, mainTable);
                 dataSetTables.addAll(outgoingTables);
             }
         }
 
         return dataSetTables;
+    }
+
+    private List<ITable> loadOutgoingTables(TableDependencyLoader entityDependencyLoader, ITable table) throws DataSetException {
+        TableContext tableContext = new TableContext();
+        tableContext.add(table);
+        loadOutgoingTables(entityDependencyLoader, table, tableContext);
+        return tableContext;
+    }
+
+    private void loadOutgoingTables(TableDependencyLoader entityDependencyLoader, ITable table, TableContext tableContext) throws DataSetException {
+        ListSnapshot<ITable> beforeLoad = tableContext.getSnapshot();
+        entityDependencyLoader.loadOutgoingTables(table, tableContext);
+        List<ITable> loadedTables = beforeLoad.diff(tableContext);
+
+        for (ITable outgoingTable : loadedTables) {
+            loadOutgoingTables(entityDependencyLoader, outgoingTable, tableContext);
+        }
     }
 
 
