@@ -27,19 +27,15 @@ public class TableUtil {
         return getRows(0, rowCount);
     }
 
-    public RowList getRows(String[] columnNames, Object[] columnValues) throws DataSetException {
-        if (columnNames.length != columnValues.length) {
-            throw new IllegalArgumentException("Column names must and column values must be of same size");
-        }
-
+    public RowList getRows(ColumnValue[] columnValues) throws DataSetException {
         RowList rows = new RowList(table.getTableMetaData());
 
         nextRow:
         for (int i = 0; i < table.getRowCount(); i++) {
-            for (int j = 0; j < columnNames.length; j++) {
-                String columnName = columnNames[j];
-                Object columnValue = table.getValue(i, columnName);
-                if (!Objects.equals(columnValues[j], columnValue)) {
+            for (int j = 0; j < columnValues.length; j++) {
+                ColumnValue columnValue = columnValues[j];
+                Object cellValue = table.getValue(i, columnValue.getColumnName());
+                if (!Objects.equals(columnValues[j].getValue(), cellValue)) {
                     continue nextRow;
                 }
             }
@@ -47,6 +43,20 @@ public class TableUtil {
         }
 
         return rows;
+    }
+
+    public RowList getRows(String[] columnNames, Object... values) throws DataSetException {
+        if (columnNames.length != values.length) {
+            throw new IllegalArgumentException("Column names must and column values must be of same size");
+        }
+
+        ColumnValue[] columnValues = new ColumnValue[columnNames.length];
+
+        for (int i = 0; i < columnNames.length; i++) {
+            columnValues[i] = new ColumnValue(columnNames[i], values[i]);
+        }
+
+        return getRows(columnValues);
     }
 
     public Row getRowById(Object... idValues) throws DataSetException {
