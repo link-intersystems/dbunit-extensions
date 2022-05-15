@@ -33,6 +33,10 @@ public class Dependency {
         public List<Column> getColumns() {
             return Collections.unmodifiableList(columns);
         }
+
+        public String getTableName() {
+            return getTableMetaData().getTableName();
+        }
     }
 
     private final String name;
