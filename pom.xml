@@ -154,11 +154,6 @@
                 <version>${lis-commons.version}</version>
                 <scope>test</scope>
             </dependency>
-            <dependency>
-                <groupId>com.link-intersystems.dbunit</groupId>
-                <artifactId>lis-dbunit-util</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
-            </dependency>
 
             <dependency>
                 <groupId>org.dbunit</groupId>

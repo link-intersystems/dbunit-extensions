@@ -14,10 +14,6 @@
     <dependencies>
         <dependency>
             <groupId>com.link-intersystems.dbunit</groupId>
-            <artifactId>lis-dbunit-util</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.link-intersystems.dbunit</groupId>
             <artifactId>lis-dbunit-table</artifactId>
         </dependency>
         <dependency>
