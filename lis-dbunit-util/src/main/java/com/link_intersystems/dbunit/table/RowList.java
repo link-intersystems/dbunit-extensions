@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.table;
 
-import org.dbunit.dataset.Column;
+import org.dbunit.dataset.*;
 
 import java.text.MessageFormat;
 import java.util.AbstractList;
@@ -13,11 +13,17 @@ import java.util.List;
  */
 public class RowList extends AbstractList<Row> {
 
-    private Column[] columns;
+    private final Column[] columns;
+    private ITableMetaData tableMetaData;
     private List<Row> rows = new ArrayList<>();
 
-    public RowList(Column[] columns) {
-        this.columns = columns;
+    public RowList(ITableMetaData tableMetaData) throws DataSetException {
+        this.tableMetaData = tableMetaData;
+        columns = tableMetaData.getColumns();
+    }
+
+    public ITableMetaData getTableMetaData() {
+        return tableMetaData;
     }
 
     @Override
@@ -52,5 +58,15 @@ public class RowList extends AbstractList<Row> {
     @Override
     public int size() {
         return rows.size();
+    }
+
+    public ITable toTable() throws DataSetException {
+        DefaultTable defaultTable = new DefaultTable(getTableMetaData());
+
+        for (Row row : rows) {
+            defaultTable.addRow(row.toArray());
+        }
+
+        return defaultTable;
     }
 }

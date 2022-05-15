@@ -42,7 +42,7 @@ public class SakilaDBFixture {
     public ITable[] getSplittedTables(String tableName, int splitSize) throws DataSetException {
         ITable table = getTable(tableName);
         TableUtil tableUtil = new TableUtil(table);
-        return tableUtil.splitTable(splitSize);
+        return tableUtil.getPartitionedTables(splitSize);
 
     }
 }

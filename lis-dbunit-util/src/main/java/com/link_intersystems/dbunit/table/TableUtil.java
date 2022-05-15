@@ -1,6 +1,9 @@
 package com.link_intersystems.dbunit.table;
 
-import org.dbunit.dataset.*;
+import org.dbunit.dataset.Column;
+import org.dbunit.dataset.DataSetException;
+import org.dbunit.dataset.ITable;
+import org.dbunit.dataset.ITableMetaData;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -29,7 +32,7 @@ public class TableUtil {
             throw new IllegalArgumentException("Column names must and column values must be of same size");
         }
 
-        RowList rows = new RowList(table.getTableMetaData().getColumns());
+        RowList rows = new RowList(table.getTableMetaData());
 
         nextRow:
         for (int i = 0; i < table.getRowCount(); i++) {
@@ -85,7 +88,7 @@ public class TableUtil {
     }
 
     public RowList getRows(int startIndexInclusive, int endIndexExclusive) throws DataSetException {
-        RowList rows = new RowList(table.getTableMetaData().getColumns());
+        RowList rows = new RowList(table.getTableMetaData());
 
         int rowCount = table.getRowCount();
         int maxIndexExclusive = Math.min(rowCount, endIndexExclusive);
@@ -98,28 +101,18 @@ public class TableUtil {
         return rows;
     }
 
-    public ITable createTable(List<Row> rows) throws DataSetException {
-        RowList rowList = new RowList(table.getTableMetaData().getColumns());
-        rowList.addAll(rows);
-        DefaultTable defaultTable = new DefaultTable(table.getTableMetaData());
 
-        for (Row row : rowList) {
-            defaultTable.addRow(row.toArray());
+    public ITable[] getPartitionedTables(int partitionSize) throws DataSetException {
+        if (partitionSize < 1) {
+            throw new IllegalArgumentException("partitionSize must be 1 or greater");
         }
-
-        return defaultTable;
-    }
-
-    public ITable[] splitTable(int partitionSize) throws DataSetException {
 
         int rowCount = table.getRowCount();
         ITable[] spittedTables = new ITable[(int) Math.ceil(rowCount / (double) partitionSize)];
-        TableUtil tableUtil = new TableUtil(table);
-
 
         for (int i = 0, tableIndex = 0; tableIndex < spittedTables.length; i += partitionSize, tableIndex++) {
-            List<Row> rows = tableUtil.getRows(i, i + partitionSize);
-            ITable tablePartition = createTable(rows);
+            RowList rows = getRows(i, i + partitionSize);
+            ITable tablePartition = rows.toTable();
             spittedTables[tableIndex] = tablePartition;
         }
 

@@ -33,7 +33,7 @@ class RowListTest {
 
         actorTable = sakilaDBFixture.getTable("actor");
         actorTableUtil = new TableUtil(actorTable);
-        actorRows = new RowList(actorTable.getTableMetaData().getColumns());
+        actorRows = new RowList(actorTable.getTableMetaData());
     }
 
     @Test
