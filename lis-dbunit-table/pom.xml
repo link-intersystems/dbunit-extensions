@@ -15,7 +15,11 @@
     <dependencies>
         <dependency>
             <groupId>com.link-intersystems.dbunit</groupId>
-            <artifactId>lis-dbunit-util</artifactId>
+            <artifactId>lis-dbunit-sql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.link-intersystems.dbunit</groupId>
+            <artifactId>lis-dbunit-meta</artifactId>
         </dependency>
         <dependency>
             <groupId>com.link-intersystems.commons</groupId>

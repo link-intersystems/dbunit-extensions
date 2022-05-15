@@ -16,11 +16,11 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <modules>
-        <module>lis-dbunit-util</module>
         <module>lis-dbunit-beans</module>
         <module>lis-dbunit-dataset</module>
         <module>lis-dbunit-table</module>
         <module>lis-dbunit-meta</module>
+        <module>lis-dbunit-sql</module>
     </modules>
 
     <properties>
@@ -64,6 +64,27 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.link-intersystems.dbunit</groupId>
+                <artifactId>lis-dbunit-sql</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.link-intersystems.dbunit</groupId>
+                <artifactId>lis-dbunit-meta</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.link-intersystems.dbunit</groupId>
+                <artifactId>lis-dbunit-dataset</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.link-intersystems.dbunit</groupId>
+                <artifactId>lis-dbunit-table</artifactId>
+                <version>1.0.0-SNAPSHOT</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.link-intersystems.commons</groupId>
                 <artifactId>lis-commons-beans</artifactId>
