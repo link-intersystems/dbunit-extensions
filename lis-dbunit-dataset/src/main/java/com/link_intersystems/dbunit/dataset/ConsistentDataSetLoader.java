@@ -41,7 +41,7 @@ public class ConsistentDataSetLoader {
         }
     }
 
-    private List<ITable> load(Connection connection, String sqlQuery, Object[] args) throws SQLException, DataSetException {
+    protected List<ITable> load(Connection connection, String sqlQuery, Object[] args) throws DataSetException {
         List<ITable> dataSetTables = new ArrayList<>();
 
         TableDependencyLoader entityDependencyLoader = new TableDependencyLoader(databaseConnection);
@@ -62,6 +62,8 @@ public class ConsistentDataSetLoader {
                 List<ITable> outgoingTables = loadOutgoingTables(entityDependencyLoader, mainTable);
                 dataSetTables.addAll(outgoingTables);
             }
+        } catch (SQLException e) {
+            throw new DataSetException(e);
         }
 
         return dataSetTables;

@@ -23,7 +23,7 @@
 
     <properties>
         <lis-dbunit-extensions.verion>1.0.1-SNAPSHOT</lis-dbunit-extensions.verion>
-        <lis-commons.version>1.4.3</lis-commons.version>
+        <lis-commons.version>1.5.0</lis-commons.version>
         <junit.jupiter.version>5.8.2</junit.jupiter.version>
         <mockito.version>4.4.0</mockito.version>
         <slf4j.version>1.7.36</slf4j.version>
@@ -129,6 +129,12 @@
             <dependency>
                 <groupId>com.link-intersystems.commons</groupId>
                 <artifactId>lis-commons-test</artifactId>
+                <version>${lis-commons.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.link-intersystems.commons</groupId>
+                <artifactId>lis-commons-test-db</artifactId>
                 <version>${lis-commons.version}</version>
                 <scope>test</scope>
             </dependency>

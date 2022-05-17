@@ -1,6 +1,5 @@
 package com.link_intersystems.dbunit.dataset;
 
-import com.link_intersystems.UnitTestSuite;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 import com.link_intersystems.test.UnitTest;

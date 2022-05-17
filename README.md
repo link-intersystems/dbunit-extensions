@@ -52,28 +52,28 @@ Here is an example based on the sakila sample database provided by mysql.
     
     ITable filmActorTable = dataSet.getTable("film_actor");
     assertEquals(3, filmActorTable.getRowCount(), "film_actor entity count");
-    TableUtil filmActorTableQueries = new TableUtil(filmActorTable);
+    TableUtil filmActorUtil = new TableUtil(filmActorTable);
     
-    assertNotNull(filmActorTableQueries.getRowById(9, 200));
-    assertNotNull(filmActorTableQueries.getRowById(102, 200));
-    assertNotNull(filmActorTableQueries.getRowById(139, 200));
+    assertNotNull(filmActorUtil.getRowById(9, 200));
+    assertNotNull(filmActorUtil.getRowById(102, 200));
+    assertNotNull(filmActorUtil.getRowById(139, 200));
     
     ITable actorTable = dataSet.getTable("actor");
     assertEquals(3, actorTable.getRowCount(), "actor entity count");
-    TableUtil actorTableQueries = new TableUtil(actorTable);
-    assertNotNull(actorTableQueries.getRowById(9));
-    assertNotNull(actorTableQueries.getRowById(102));
-    assertNotNull(actorTableQueries.getRowById(139));
+    TableUtil actorUtil = new TableUtil(actorTable);
+    assertNotNull(actorUtil.getRowById(9));
+    assertNotNull(actorUtil.getRowById(102));
+    assertNotNull(actorUtil.getRowById(139));
     
     ITable filmTable = dataSet.getTable("film");
     assertEquals(1, filmTable.getRowCount(), "film entity count");
-    TableUtil filmTableQueries = new TableUtil(filmTable);
-    assertNotNull(filmTableQueries.getRowById(200));
+    TableUtil filmUtil = new TableUtil(filmTable);
+    assertNotNull(filmUtil.getRowById(200));
     
     ITable languageTable = dataSet.getTable("language");
     assertEquals(1, languageTable.getRowCount(), "language entity count");
-    TableUtil languageTableQueries = new TableUtil(languageTable);
-    assertNotNull(languageTableQueries.getRowById(1));
+    TableUtil languageUtil = new TableUtil(languageTable);
+    assertNotNull(languageUtil.getRowById(1));
 
 
 
