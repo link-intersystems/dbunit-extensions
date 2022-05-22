@@ -75,5 +75,23 @@ Here is an example based on the sakila sample database provided by mysql.
     TableUtil languageUtil = new TableUtil(languageTable);
     assertNotNull(languageUtil.getRowById(1));
 
+## lis-dbunit-sql
 
+Provides support for generating sql insert scripts from a IDataSet.
+
+    // Instantiate a SqlDialect (com.link-intersystems.commons:lis-commons-sql or com.link-intersystems.commons:lis-commons-sql-hibernate)
+    SqlDialect sqlDialect = new DefaultSqlDialect();
+
+    // Create a SqlStatementWriter that generates the sql script.
+    Writer writer = ....; // from java.io
+    SqlStatementWriter sqlStatementWriter = new SqlStatementWriter(sqlDialect, writer);
+
+    // Configure the output format if needed
+    SqlFormatSettings sqlFormatSettings = new SqlFormatSettings();
+    sqlStatementWriter.setSqlFormatSettings(sqlFormatSettings);
+    
+    IDataSet dataSet = ...; // A dbunit data set to export.
+    DataSetProducerAdapter dataSetProducerAdapter = new DataSetProducerAdapter(dataSet);
+    dataSetProducerAdapter.setConsumer(sqlStatementWriter);
+    dataSetProducerAdapter.produce();
 
