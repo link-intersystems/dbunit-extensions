@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.table;
 
-import com.link_intersystems.dbunit.statement.JoinDependencyStatementFactory;
+import com.link_intersystems.dbunit.sql.statement.JoinDependencyStatementFactory;
 import com.link_intersystems.test.db.sakila.SakilaTestDBExtension;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;

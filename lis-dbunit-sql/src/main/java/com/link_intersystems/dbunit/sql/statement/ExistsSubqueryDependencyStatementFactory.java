@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.statement;
+package com.link_intersystems.dbunit.sql.statement;
 
 import com.link_intersystems.dbunit.meta.Dependency;
 import org.dbunit.database.DatabaseConfig;
@@ -10,7 +10,6 @@ import org.dbunit.dataset.ITableMetaData;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.stream.Collectors;
 
 /**

@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.statement;
+package com.link_intersystems.dbunit.sql.statement;
 
 import org.dbunit.dataset.DataSetException;
 
