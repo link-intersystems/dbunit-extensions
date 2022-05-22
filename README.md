@@ -79,7 +79,11 @@ Here is an example based on the sakila sample database provided by mysql.
 
 Provides support for generating sql insert scripts from a IDataSet.
 
-    // Instantiate a SqlDialect (com.link-intersystems.commons:lis-commons-sql or com.link-intersystems.commons:lis-commons-sql-hibernate)
+    // Instantiate a SqlDialect 
+    // Either from 
+    // - com.link-intersystems.commons:lis-commons-sql 
+    // or 
+    // - com.link-intersystems.commons:lis-commons-sql-hibernate)
     SqlDialect sqlDialect = new DefaultSqlDialect();
 
     // Create a SqlStatementWriter that generates the sql script.
