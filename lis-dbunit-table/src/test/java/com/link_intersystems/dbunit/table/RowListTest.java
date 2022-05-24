@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.table;
 
-import com.link_intersystems.test.db.sakila.SakilaTestDBExtension;
+import com.link_intersystems.test.db.sakila.SakilaSlimTestDBExtension;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITable;
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 @UnitTest
-@ExtendWith(SakilaTestDBExtension.class)
+@ExtendWith(SakilaSlimTestDBExtension.class)
 class RowListTest {
 
     private SakilaDBFixture sakilaDBFixture;

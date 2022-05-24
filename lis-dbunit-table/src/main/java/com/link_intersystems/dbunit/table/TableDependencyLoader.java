@@ -5,6 +5,7 @@ import com.link_intersystems.dbunit.meta.TableDependencyRepository;
 import com.link_intersystems.dbunit.meta.TableMetaDataRepository;
 import com.link_intersystems.dbunit.sql.statement.DependencyStatementFactory;
 import com.link_intersystems.dbunit.sql.statement.ExistsSubqueryDependencyStatementFactory;
+import com.link_intersystems.dbunit.sql.statement.JoinDependencyStatementFactory;
 import com.link_intersystems.dbunit.sql.statement.SqlStatement;
 import org.dbunit.database.CachedResultSetTable;
 import org.dbunit.database.DatabaseConfig;
@@ -26,6 +27,46 @@ import java.util.Objects;
  */
 public class TableDependencyLoader {
 
+    public static enum DependencyDirection {
+        OUTGOING {
+            @Override
+            public List<Dependency> getDependencies(TableDependencyRepository tableDependencyRepository, String tableName) throws DataSetException {
+                return tableDependencyRepository.getOutgoingDependencies(tableName);
+            }
+
+            @Override
+            public Dependency.Edge getSourceEdge(Dependency dependency) {
+                return dependency.getSourceEdge();
+            }
+
+            @Override
+            public Dependency.Edge getTargetEdge(Dependency dependency) {
+                return dependency.getTargetEdge();
+            }
+        }, INCOMING {
+            @Override
+            public List<Dependency> getDependencies(TableDependencyRepository tableDependencyRepository, String tableName) throws DataSetException {
+                return tableDependencyRepository.getIncomingDependencies(tableName);
+            }
+
+            @Override
+            public Dependency.Edge getSourceEdge(Dependency dependency) {
+                return dependency.getTargetEdge();
+            }
+
+            @Override
+            public Dependency.Edge getTargetEdge(Dependency dependency) {
+                return dependency.getSourceEdge();
+            }
+        };
+
+        public abstract List<Dependency> getDependencies(TableDependencyRepository tableDependencyRepository, String tableName) throws DataSetException;
+
+        public abstract Dependency.Edge getSourceEdge(Dependency dependency);
+
+        public abstract Dependency.Edge getTargetEdge(Dependency dependency);
+    }
+
     private final IDatabaseConnection databaseConnection;
 
     private final TableDependencyRepository tableDependencyRepository;
@@ -33,7 +74,7 @@ public class TableDependencyLoader {
     private final TableMetaDataRepository tableMetaDataRepository;
 
     public TableDependencyLoader(IDatabaseConnection databaseConnection) throws DataSetException {
-        this(databaseConnection, ExistsSubqueryDependencyStatementFactory.INSTANCE);
+        this(databaseConnection, JoinDependencyStatementFactory.INSTANCE);
     }
 
     public TableDependencyLoader(IDatabaseConnection databaseConnection, DependencyStatementFactory dependencyStatementFactory) throws DataSetException {
@@ -44,18 +85,23 @@ public class TableDependencyLoader {
         this.dependencyStatementFactory = Objects.requireNonNull(dependencyStatementFactory);
     }
 
-    public void loadOutgoingTables(ITable sourceTable, TableContext loadContext) throws DataSetException {
-        ITableMetaData tableMetaData = sourceTable.getTableMetaData();
-        List<Dependency> outgoingDependencies = tableDependencyRepository.getOutgoingDependencies(tableMetaData.getTableName());
 
-        for (Dependency outgoingDependency : outgoingDependencies) {
-            loadOutgoingDependency(sourceTable, outgoingDependency, loadContext);
+    public void loadTables(ITable sourceTable, DependencyDirection direction, TableContext loadContext) throws DataSetException {
+        ITableMetaData tableMetaData = sourceTable.getTableMetaData();
+        List<Dependency> dependencies = direction.getDependencies(tableDependencyRepository, tableMetaData.getTableName());
+
+        for (Dependency dependency : dependencies) {
+            if (loadContext.follow(dependency)) {
+                loadDependency(sourceTable, dependency, direction, loadContext);
+            }
         }
     }
 
-    private void loadOutgoingDependency(ITable sourceTable, Dependency outgoingDependency, TableContext loadContext) throws DataSetException {
+    private void loadDependency(ITable sourceTable, Dependency dependency, DependencyDirection direction, TableContext loadContext) throws DataSetException {
         DatabaseConfig config = databaseConnection.getConfig();
-        SqlStatement sqlStatement = dependencyStatementFactory.create(config, sourceTable, outgoingDependency);
+        Dependency.Edge sourceEdge = direction.getSourceEdge(dependency);
+        Dependency.Edge targetEdge = direction.getTargetEdge(dependency);
+        SqlStatement sqlStatement = dependencyStatementFactory.create(config, sourceTable, sourceEdge, targetEdge);
 
         try {
             Connection connection = databaseConnection.getConnection();

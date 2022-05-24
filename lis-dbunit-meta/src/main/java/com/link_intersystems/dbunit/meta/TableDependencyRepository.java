@@ -46,8 +46,8 @@ public class TableDependencyRepository {
     public List<Dependency> getOutgoingDependencies(String tableName) throws DataSetException {
         try {
             ConnectionMetaData metaDataRepository = getConnectionMetaData();
-            List<ForeignKey> exportedKeys = metaDataRepository.getImportedKeys(tableName);
-            return mapToDependency(exportedKeys);
+            List<ForeignKey> importedKeys = metaDataRepository.getImportedKeys(tableName);
+            return mapToDependency(importedKeys);
         } catch (SQLException e) {
             throw new DataSetException(e);
         }

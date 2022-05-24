@@ -4,10 +4,7 @@ import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITableMetaData;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -37,6 +34,20 @@ public class Dependency {
         public String getTableName() {
             return getTableMetaData().getTableName();
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Edge edge = (Edge) o;
+            return Objects.equals(tableMetaData, edge.tableMetaData) &&
+                    Objects.equals(columns, edge.columns);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(tableMetaData, columns);
+        }
     }
 
     private final String name;
@@ -59,5 +70,20 @@ public class Dependency {
 
     public Edge getTargetEdge() {
         return targetEdge;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Dependency that = (Dependency) o;
+        return Objects.equals(name, that.name) &&
+                Objects.equals(targetEdge, that.targetEdge) &&
+                Objects.equals(sourceEdge, that.sourceEdge);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, targetEdge, sourceEdge);
     }
 }

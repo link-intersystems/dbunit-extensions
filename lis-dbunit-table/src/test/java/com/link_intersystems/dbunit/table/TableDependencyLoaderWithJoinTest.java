@@ -1,7 +1,7 @@
 package com.link_intersystems.dbunit.table;
 
 import com.link_intersystems.dbunit.sql.statement.JoinDependencyStatementFactory;
-import com.link_intersystems.test.db.sakila.SakilaTestDBExtension;
+import com.link_intersystems.test.db.sakila.SakilaSlimTestDBExtension;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.dataset.DataSetException;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 @ComponentTest
-@ExtendWith(SakilaTestDBExtension.class)
+@ExtendWith(SakilaSlimTestDBExtension.class)
 class TableDependencyLoaderWithJoinTest {
 
     private DatabaseConnection databaseConnection;
@@ -40,7 +40,7 @@ class TableDependencyLoaderWithJoinTest {
         ITable filmActorTable = sakilaDBFixture.getTable("film_actor");
         TableContext tableContext = new TableContext();
 
-        tableDependencyLoader.loadOutgoingTables(filmActorTable, tableContext);
+        tableDependencyLoader.loadTables(filmActorTable, TableDependencyLoader.DependencyDirection.OUTGOING, tableContext);
 
         assertEquals(2, tableContext.size());
 

@@ -1,13 +1,9 @@
 package com.link_intersystems.dbunit.sql.statement;
 
 import com.link_intersystems.dbunit.meta.Dependency;
-import org.dbunit.database.DatabaseConfig;
 import org.dbunit.dataset.Column;
-import org.dbunit.dataset.DataSetException;
-import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.ITableMetaData;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,14 +11,12 @@ import java.util.stream.Collectors;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class ExistsSubqueryDependencyStatementFactory implements DependencyStatementFactory {
+public class ExistsSubqueryDependencyStatementFactory extends AbstractDependencyStatementFactory {
 
     public static final ExistsSubqueryDependencyStatementFactory INSTANCE = new ExistsSubqueryDependencyStatementFactory();
 
-    public SqlStatement create(DatabaseConfig config, ITable sourceTable, Dependency dependency) throws DataSetException {
-        Dependency.Edge sourceEdge = dependency.getSourceEdge();
-        Dependency.Edge targetEdge = dependency.getTargetEdge();
-
+    @Override
+    protected String createSql(Dependency.Edge sourceEdge, Dependency.Edge targetEdge, List<List<Object>> joinIds) {
         StringBuilder stmtBuilder = new StringBuilder("SELECT ");
 
         stmtBuilder.append("*");
@@ -41,7 +35,7 @@ public class ExistsSubqueryDependencyStatementFactory implements DependencyState
         stmtBuilder.append(sourceTableName);
         stmtBuilder.append(" s WHERE ");
 
-        CharSequence joinColumns = getJoin(dependency, "s", "t");
+        CharSequence joinColumns = getJoin(sourceEdge, "s", targetEdge, "t");
         stmtBuilder.append(joinColumns);
 
         stmtBuilder.append(" AND (");
@@ -51,32 +45,23 @@ public class ExistsSubqueryDependencyStatementFactory implements DependencyState
         List<String> columnCriteria = sourceColumns.stream()
                 .map(c -> new ColumnCriteria("s", c.getColumnName()).toString()).collect(Collectors.toList());
         String singleColumnCriteriaString = String.join(" AND ", columnCriteria);
-        int rowCount = sourceTable.getRowCount();
-        String columnCriteriaString = String.join(" OR ", Collections.nCopies(rowCount, "(" + singleColumnCriteriaString + ")"));
+
+
+        String columnCriteriaString = String.join(" OR ", Collections.nCopies(sourceColumns.size() * joinIds.size(), "(" + singleColumnCriteriaString + ")"));
         stmtBuilder.append(columnCriteriaString);
 
         stmtBuilder.append(")");
 
         stmtBuilder.append(")");
 
-        List<Object> args = new ArrayList<>();
-
-        for (int i = 0; i < rowCount; i++) {
-            for (int columnIndex = 0; columnIndex < sourceColumns.size(); columnIndex++) {
-                Column column = sourceColumns.get(columnIndex);
-                Object columnValue = sourceTable.getValue(i, column.getColumnName());
-                args.add(columnValue);
-            }
-        }
-
-        return new SqlStatement(stmtBuilder, args);
+        return stmtBuilder.toString();
     }
 
 
-    private CharSequence getJoin(Dependency dependency, String sourceAlias, String targetAlias) {
+    private CharSequence getJoin(Dependency.Edge sourceEdge, String sourceAlias, Dependency.Edge targetEdge, String targetAlias) {
         StringBuilder joinBuilder = new StringBuilder();
 
-        List<ColumnJoin> joinColumns = ColumnJoin.of(dependency, sourceAlias, targetAlias);
+        List<ColumnJoin> joinColumns = ColumnJoin.of(sourceEdge, sourceAlias, targetEdge, targetAlias);
 
         List<String> columnJoins = joinColumns.stream().map(ColumnJoin::toString).collect(Collectors.toList());
 

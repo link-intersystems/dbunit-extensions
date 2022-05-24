@@ -12,14 +12,12 @@ import java.util.ListIterator;
  */
 public class ColumnJoin {
 
-    public static List<ColumnJoin> of(Dependency dependency, String sourceAlias, String targetAlias) {
+    public static List<ColumnJoin> of(Dependency.Edge sourceEdge, String sourceAlias, Dependency.Edge targetEdge, String targetAlias) {
         List<ColumnJoin> joinColumns = new ArrayList<>();
 
-        Dependency.Edge sourceEdge = dependency.getSourceEdge();
         List<Column> sourceColumns = sourceEdge.getColumns();
         ListIterator<Column> sourceColumnIterator = sourceColumns.listIterator();
 
-        Dependency.Edge targetEdge = dependency.getTargetEdge();
         List<Column> targetColumns = targetEdge.getColumns();
         ListIterator<Column> targetColumnIterator = targetColumns.listIterator();
 

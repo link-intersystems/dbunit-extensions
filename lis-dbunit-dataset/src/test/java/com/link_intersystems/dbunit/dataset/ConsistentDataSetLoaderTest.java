@@ -2,6 +2,7 @@ package com.link_intersystems.dbunit.dataset;
 
 import com.link_intersystems.dbunit.table.TableUtil;
 import com.link_intersystems.test.ComponentTest;
+import com.link_intersystems.test.db.sakila.SakilaSlimTestDBExtension;
 import com.link_intersystems.test.db.sakila.SakilaTestDBExtension;
 import com.link_intersystems.test.jdbc.H2Database;
 import org.dbunit.DatabaseUnitException;
@@ -19,6 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -73,14 +75,14 @@ public class ConsistentDataSetLoaderTest {
 
     @Test
     void sakilaExport() throws SQLException, DatabaseUnitException, IOException {
-        DatabaseDataSet databaseDataSet = new DatabaseDataSet(databaseConnection, false, H2Database.SYSTEM_TABLE_PREDICATE.negate()::test);
+        IDataSet dataSet = dataSetLoader.load("SELECT * from actor where actor_id in (1)");
 
         BuildProperties buildProperties = new BuildProperties();
         File buildOutputDirectory = buildProperties.getBuildOutputDirectory();
 
-        File exportFile = new File(buildOutputDirectory, "sakila.xml");
+        File exportFile = new File(buildOutputDirectory, "sakila-2.xml");
         FlatXmlWriter flatXmlWriter = new FlatXmlWriter(new FileOutputStream(exportFile));
-        flatXmlWriter.write(databaseDataSet);
+        flatXmlWriter.write(dataSet);
     }
 }
 

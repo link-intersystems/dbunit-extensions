@@ -10,5 +10,5 @@ import org.dbunit.dataset.ITable;
  */
 public interface DependencyStatementFactory {
 
-    public SqlStatement create(DatabaseConfig config, ITable sourceTable, Dependency dependency) throws DataSetException;
+    public SqlStatement create(DatabaseConfig config, ITable sourceTable, Dependency.Edge sourceEdge, Dependency.Edge targetEdge) throws DataSetException;
 }

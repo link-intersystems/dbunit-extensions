@@ -2,6 +2,7 @@ package com.link_intersystems.dbunit.dataset;
 
 import com.link_intersystems.dbunit.meta.TableDependencyRepository;
 import com.link_intersystems.dbunit.meta.TableMetaDataRepository;
+import com.link_intersystems.dbunit.sql.statement.JoinDependencyStatementFactory;
 import com.link_intersystems.dbunit.table.ListSnapshot;
 import com.link_intersystems.dbunit.table.TableContext;
 import com.link_intersystems.dbunit.table.TableDependencyLoader;
@@ -22,7 +23,6 @@ public class ConsistentDataSetLoader {
     private final IDatabaseConnection databaseConnection;
     private final TableDependencyRepository tableDependencyRepository;
     private final TableMetaDataRepository tableMetaDataRepository;
-
 
     public ConsistentDataSetLoader(IDatabaseConnection databaseConnection) throws DataSetException {
         this.databaseConnection = databaseConnection;
@@ -72,20 +72,20 @@ public class ConsistentDataSetLoader {
     private List<ITable> loadOutgoingTables(TableDependencyLoader entityDependencyLoader, ITable table) throws DataSetException {
         TableContext tableContext = new TableContext();
         tableContext.add(table);
-        loadOutgoingTables(entityDependencyLoader, table, tableContext);
+        loadTables(entityDependencyLoader, table, tableContext);
+
         return tableContext;
     }
 
-    private void loadOutgoingTables(TableDependencyLoader entityDependencyLoader, ITable table, TableContext tableContext) throws DataSetException {
+    private void loadTables(TableDependencyLoader entityDependencyLoader, ITable table, TableContext tableContext) throws DataSetException {
         ListSnapshot<ITable> beforeLoad = tableContext.getSnapshot();
-        entityDependencyLoader.loadOutgoingTables(table, tableContext);
+        entityDependencyLoader.loadTables(table, TableDependencyLoader.DependencyDirection.OUTGOING, tableContext);
         List<ITable> loadedTables = beforeLoad.diff(tableContext);
 
         for (ITable outgoingTable : loadedTables) {
-            loadOutgoingTables(entityDependencyLoader, outgoingTable, tableContext);
+            loadTables(entityDependencyLoader, outgoingTable, tableContext);
         }
     }
-
 
 }
 

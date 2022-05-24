@@ -1,5 +1,6 @@
 package com.link_intersystems.dbunit.table;
 
+import com.link_intersystems.dbunit.meta.Dependency;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITable;
 
@@ -11,7 +12,7 @@ import java.util.*;
 public class TableContext extends AbstractList<ITable> {
 
     private List<ITable> tables = new ArrayList<>();
-
+    private Set<Dependency> traversedDependencies = new HashSet<>();
 
     public Map<String, ITable> toMap() {
         LinkedHashMap<String, ITable> map = new LinkedHashMap<>();
@@ -96,5 +97,9 @@ public class TableContext extends AbstractList<ITable> {
 
     public ListSnapshot<ITable> getSnapshot() {
         return new ListSnapshot(this);
+    }
+
+    public boolean follow(Dependency dependency) {
+        return traversedDependencies.add(dependency);
     }
 }

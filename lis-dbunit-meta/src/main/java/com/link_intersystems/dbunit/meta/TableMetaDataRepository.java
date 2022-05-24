@@ -11,9 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -48,6 +46,8 @@ public class TableMetaDataRepository {
         }
     }
 
+    private Map<String, ITableMetaData> tableMetaDataCache = new HashMap<>();
+
     private IDatabaseConnection databaseConnection;
 
     public TableMetaDataRepository(IDatabaseConnection databaseConnection) throws DataSetException {
@@ -68,6 +68,17 @@ public class TableMetaDataRepository {
     }
 
     public ITableMetaData getTableMetaData(String tableName) throws DataSetException {
+        ITableMetaData tableMetaData = tableMetaDataCache.get(tableName);
+
+        if (tableMetaData == null) {
+            tableMetaData = createTableMetaData(tableName);
+            tableMetaDataCache.put(tableName, tableMetaData);
+        }
+
+        return tableMetaData;
+    }
+
+    private ITableMetaData createTableMetaData(String tableName) throws DataSetException {
         try {
             TableMetaData tableMetaData = connectionMetaData.getTableMetaData(tableName);
             IDataTypeFactory dataTypeFactory = abstractTableMetaData.getDataTypeFactory(databaseConnection);
