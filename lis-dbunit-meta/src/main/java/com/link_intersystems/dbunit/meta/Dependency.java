@@ -5,6 +5,7 @@ import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITableMetaData;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -48,6 +49,12 @@ public class Dependency {
         public int hashCode() {
             return Objects.hash(tableMetaData, columns);
         }
+
+        @Override
+        public String toString() {
+            String columnNames = columns.stream().map(Column::getColumnName).collect(Collectors.joining(", "));
+            return tableMetaData.getTableName() + "(" + columnNames + ")";
+        }
     }
 
     private final String name;
@@ -85,5 +92,10 @@ public class Dependency {
     @Override
     public int hashCode() {
         return Objects.hash(name, targetEdge, sourceEdge);
+    }
+
+    @Override
+    public String toString() {
+        return name + "<" + sourceEdge + " -> " + targetEdge + ">";
     }
 }

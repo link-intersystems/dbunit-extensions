@@ -1,9 +1,8 @@
 package com.link_intersystems.dbunit.sql.statement;
 
-import org.dbunit.dataset.DataSetException;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +21,10 @@ public class SqlStatement {
         public T apply(PreparedStatement ps) throws Exception;
     }
 
+    public static interface ResultSetMapper<T> {
+        public T apply(ResultSet rs) throws Exception;
+    }
+
     private CharSequence sql;
     private List<Object> arguments = new ArrayList<>();
 
@@ -37,7 +40,7 @@ public class SqlStatement {
         });
     }
 
-    public <T> T executeQuery(Connection connection, PreparedStatementFunction<T> preparedStatementConsumer) throws Exception {
+    public <T> T executeQuery(Connection connection, PreparedStatementFunction<T> preparedStatementConsumer) throws SQLException {
         try (PreparedStatement ps = connection.prepareStatement(sql.toString())) {
 
 
@@ -47,7 +50,42 @@ public class SqlStatement {
                 ps.setObject(paramIndex++, argument);
             }
 
-            return preparedStatementConsumer.apply(ps);
+            try {
+                return preparedStatementConsumer.apply(ps);
+            } catch (Exception e) {
+                throw new SQLException(e);
+            }
         }
+    }
+
+    public <T> T processResultSet(Connection connection, ResultSetMapper<T> resultSetMapper) throws SQLException {
+        T queryResults = executeQuery(connection, ps -> {
+
+            if (ps.execute()) {
+                ResultSet rs = ps.getResultSet();
+                return resultSetMapper.apply(rs);
+            }
+
+            return null;
+        });
+
+        return queryResults;
+    }
+
+    public <T> List<T> processQuery(Connection connection, ResultSetMapper<T> resultSetMapper) throws SQLException {
+
+
+        List<T> queryResults = processResultSet(connection, rs -> {
+            List<T> results = new ArrayList<>();
+
+            while (rs.next()) {
+                T result = resultSetMapper.apply(rs);
+                results.add(result);
+            }
+
+            return results;
+        });
+
+        return queryResults;
     }
 }

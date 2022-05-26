@@ -102,4 +102,8 @@ public class TableContext extends AbstractList<ITable> {
     public boolean follow(Dependency dependency) {
         return traversedDependencies.add(dependency);
     }
+
+    public List<ITable> getUniqueTables() {
+        return this;
+    }
 }
