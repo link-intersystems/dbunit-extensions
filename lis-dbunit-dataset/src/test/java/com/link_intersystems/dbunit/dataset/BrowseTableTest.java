@@ -1,12 +1,12 @@
 package com.link_intersystems.dbunit.dataset;
 
-import com.link_intersystems.dbunit.dsl.BrowseTable;
+import com.link_intersystems.dbunit.dataset.browser.BrowseTable;
 import org.junit.jupiter.api.Test;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-class TableBrowseNodeTest {
+class BrowseTableTest {
 
 
 
@@ -18,6 +18,7 @@ class TableBrowseNodeTest {
         filmActor.browse("film").natural();
         BrowseTable inventory = filmActor.browse("inventory").on("film_id").references("film_id");
         inventory.browse("store");
+
 
     }
 

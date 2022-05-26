@@ -1,9 +1,6 @@
 package com.link_intersystems.dbunit.dataset.browser;
 
-import com.link_intersystems.dbunit.dsl.BrowseTableReference;
-import com.link_intersystems.dbunit.dsl.BrowseTable;
-import com.link_intersystems.dbunit.meta.TableReference;
-import com.link_intersystems.dbunit.meta.TableReferenceEdge;
+import com.link_intersystems.jdbc.TableReference;
 
 import java.util.Arrays;
 
@@ -20,8 +17,8 @@ class TargetBrowseNodeReferenceResolver implements TableReferenceResolver {
         String[] targetColumns = targetBrowseNode.getTargetColumns();
 
         if (sourceColumns != null && targetColumns != null) {
-            TableReferenceEdge sourceEdge = new TableReferenceEdge(sourceTableName, Arrays.asList(sourceColumns));
-            TableReferenceEdge targetEdge = new TableReferenceEdge(targetTableName, Arrays.asList(targetColumns));
+            TableReference.Edge sourceEdge = new TableReference.Edge(sourceTableName, Arrays.asList(sourceColumns));
+            TableReference.Edge targetEdge = new TableReference.Edge(targetTableName, Arrays.asList(targetColumns));
             String name = "user_defined(" + sourceTableName + "->" + targetTableName + ")";
             return new TableReference(name, sourceEdge, targetEdge);
         }

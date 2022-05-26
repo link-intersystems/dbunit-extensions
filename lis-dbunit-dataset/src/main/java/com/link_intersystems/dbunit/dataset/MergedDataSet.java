@@ -8,15 +8,18 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
+ * A {@link IDataSet} that merges multiple tables of the same name into one eliminates row duplicates according to the
+ * primary key specification of the {@link ITableMetaData} of the tables.
+ *
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class MergedTablesDataSet extends AbstractDataSet {
+public class MergedDataSet extends AbstractDataSet {
 
     private List<ITable> tableList;
 
     private IDataSet mergedDataSet;
 
-    public MergedTablesDataSet(List<ITable> tableList) {
+    public MergedDataSet(List<ITable> tableList) {
         this.tableList = tableList;
     }
 

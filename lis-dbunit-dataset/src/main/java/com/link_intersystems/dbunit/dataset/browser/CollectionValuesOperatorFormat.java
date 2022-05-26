@@ -1,13 +1,24 @@
 package com.link_intersystems.dbunit.dataset.browser;
 
 import java.lang.reflect.Array;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
+import static java.util.Collections.nCopies;
+import static java.util.stream.Collectors.joining;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class InOperatorFormat implements SqlOperatorFormat {
+public class CollectionValuesOperatorFormat extends AbstractOperatorFormat {
+
+    public CollectionValuesOperatorFormat(String operator) {
+        super(operator);
+    }
+
+
     @Override
     public SqlOperator format(Object value) {
         int size = -1;
@@ -23,8 +34,8 @@ public class InOperatorFormat implements SqlOperatorFormat {
             arguments = Arrays.asList(array);
         }
 
-        String argumentPlaceholder = Collections.nCopies(size, "?").stream().collect(Collectors.joining(", "));
+        String argumentPlaceholder = nCopies(size, "?").stream().collect(joining(", "));
 
-        return new SqlOperator("in (" + argumentPlaceholder + ")", arguments);
+        return new SqlOperator(getOperator() + " (" + argumentPlaceholder + ")", arguments);
     }
 }

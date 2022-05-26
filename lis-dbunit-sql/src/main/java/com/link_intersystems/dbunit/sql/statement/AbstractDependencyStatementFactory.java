@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.sql.statement;
 
-import com.link_intersystems.dbunit.meta.TableReferenceEdge;
+import com.link_intersystems.jdbc.TableReference;
 import org.dbunit.dataset.ITable;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public abstract class AbstractDependencyStatementFactory implements DependencyStatementFactory {
 
     @Override
-    public SqlStatement create(ITable sourceTable, TableReferenceEdge sourceEdge, TableReferenceEdge targetEdge) throws Exception {
+    public SqlStatement create(ITable sourceTable, TableReference.Edge sourceEdge, TableReference.Edge targetEdge) throws Exception {
         List<String> sourceColumns = sourceEdge.getColumns();
 
         Set<List<Object>> statementArgs = new LinkedHashSet<>();
@@ -41,5 +41,5 @@ public abstract class AbstractDependencyStatementFactory implements DependencySt
         return new SqlStatement(sql, expandedArgs);
     }
 
-    protected abstract String createSql(TableReferenceEdge sourceEdge, TableReferenceEdge targetEdge, List<List<Object>> joinIds);
+    protected abstract String createSql(TableReference.Edge sourceEdge, TableReference.Edge targetEdge, List<List<Object>> joinIds);
 }

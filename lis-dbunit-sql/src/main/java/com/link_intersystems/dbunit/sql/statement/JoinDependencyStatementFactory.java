@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.sql.statement;
 
-import com.link_intersystems.dbunit.meta.TableReferenceEdge;
+import com.link_intersystems.jdbc.TableReference;
 
 import java.util.Collections;
 import java.util.List;
@@ -14,7 +14,7 @@ public class JoinDependencyStatementFactory extends AbstractDependencyStatementF
     public static final DependencyStatementFactory INSTANCE = new JoinDependencyStatementFactory();
 
     @Override
-    protected String createSql(TableReferenceEdge sourceEdge, TableReferenceEdge targetEdge, List<List<Object>> joinIds) {
+    protected String createSql(TableReference.Edge sourceEdge, TableReference.Edge targetEdge, List<List<Object>> joinIds) {
         StringBuilder stmtBuilder = new StringBuilder("SELECT distinct ");
 
         String targetTableName = targetEdge.getTableName();
@@ -51,7 +51,7 @@ public class JoinDependencyStatementFactory extends AbstractDependencyStatementF
         return stmtBuilder.toString();
     }
 
-    private CharSequence getJoin(TableReferenceEdge sourceEdge, TableReferenceEdge targetEdge) {
+    private CharSequence getJoin(TableReference.Edge sourceEdge, TableReference.Edge targetEdge) {
         StringBuilder joinBuilder = new StringBuilder();
 
 

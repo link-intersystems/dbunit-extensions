@@ -1,15 +1,9 @@
 package com.link_intersystems.dbunit.dataset.browser;
 
-import com.link_intersystems.dbunit.dsl.BrowseTable;
-import com.link_intersystems.dbunit.dsl.BrowseTableReference;
-import com.link_intersystems.dbunit.dsl.TableCriteria;
-import com.link_intersystems.dbunit.dsl.TableCriterion;
-import com.link_intersystems.dbunit.meta.TableReference;
-import com.link_intersystems.dbunit.meta.TableReferenceEdge;
-import com.link_intersystems.dbunit.meta.TableReferenceRepository;
 import com.link_intersystems.dbunit.sql.statement.JoinDependencyStatementFactory;
 import com.link_intersystems.dbunit.sql.statement.SqlStatement;
 import com.link_intersystems.jdbc.ConnectionMetaData;
+import com.link_intersystems.jdbc.TableReference;
 import org.dbunit.dataset.ITable;
 
 import java.util.*;
@@ -24,12 +18,19 @@ public class DefaultTableBrowseSqlFactory implements TableBrowseSqlFactory {
 
     public DefaultTableBrowseSqlFactory(ConnectionMetaData connectionMetaData) {
         resolverChain.add(new TargetBrowseNodeReferenceResolver());
-        TableReferenceRepository tableReferenceMetaData = new TableReferenceRepository(connectionMetaData);
-        resolverChain.add(new MetaDataTableReferenceResolver(tableReferenceMetaData));
+        resolverChain.add(new MetaDataTableReferenceResolver(connectionMetaData));
 
-        operatorToSqlMap.put("eq", new EqualOperatorFormat());
-        operatorToSqlMap.put("in", new InOperatorFormat());
-        operatorToSqlMap.put("like", new LikeOperatorFormat());
+        registerOperators(operatorToSqlMap);
+    }
+
+    protected void registerOperators(Map<String, SqlOperatorFormat> operatorToSqlMap) {
+        operatorToSqlMap.put("eq", new SingleValueOperatorFormat("="));
+        operatorToSqlMap.put("gt", new SingleValueOperatorFormat(">"));
+        operatorToSqlMap.put("gte", new SingleValueOperatorFormat(">="));
+        operatorToSqlMap.put("lt", new SingleValueOperatorFormat("<"));
+        operatorToSqlMap.put("lte", new SingleValueOperatorFormat("<="));
+        operatorToSqlMap.put("in", new CollectionValuesOperatorFormat("in"));
+        operatorToSqlMap.put("like", new SingleValueOperatorFormat("like"));
     }
 
     @Override
@@ -76,8 +77,8 @@ public class DefaultTableBrowseSqlFactory implements TableBrowseSqlFactory {
     public SqlStatement createSqlStatement(BrowseTableReference targetTableBrowseRefeference, ITable sourceTable) throws Exception {
         TableReference tableReference = resolveTableReference(sourceTable.getTableMetaData().getTableName(), targetTableBrowseRefeference);
 
-        TableReferenceEdge sourceEdge = tableReference.getSourceEdge();
-        TableReferenceEdge targetEdge = tableReference.getTargetEdge();
+        TableReference.Edge sourceEdge = tableReference.getSourceEdge();
+        TableReference.Edge targetEdge = tableReference.getTargetEdge();
 
         JoinDependencyStatementFactory statementFactory = new JoinDependencyStatementFactory();
 
@@ -88,7 +89,7 @@ public class DefaultTableBrowseSqlFactory implements TableBrowseSqlFactory {
 
         BrowseTable targetTableRef = targetTableBrowseRefeference.getTargetTableRef();
         TableCriteria criteria = targetTableRef.getCriteria();
-        if(criteria != null){
+        if (criteria != null) {
             sb.append(" and ");
             appendCriteria(sb, arguments, criteria);
         }

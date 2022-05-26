@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.table;
 
-import com.link_intersystems.dbunit.meta.TableReference;
+import com.link_intersystems.jdbc.TableReference;
 import org.dbunit.dataset.ITable;
 
 import java.util.*;

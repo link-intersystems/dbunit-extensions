@@ -1,8 +1,7 @@
 package com.link_intersystems.dbunit.dataset.browser;
 
-import com.link_intersystems.dbunit.dsl.BrowseTableReference;
-import com.link_intersystems.dbunit.meta.TableReference;
-import com.link_intersystems.dbunit.meta.TableReferenceException;
+import com.link_intersystems.jdbc.TableReference;
+import com.link_intersystems.jdbc.TableReferenceException;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}

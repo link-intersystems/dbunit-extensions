@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.dsl;
+package com.link_intersystems.dbunit.dataset.browser;
 
 import java.util.ArrayList;
 import java.util.List;

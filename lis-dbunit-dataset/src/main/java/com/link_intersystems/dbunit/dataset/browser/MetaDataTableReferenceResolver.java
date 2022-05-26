@@ -1,10 +1,8 @@
 package com.link_intersystems.dbunit.dataset.browser;
 
-import com.link_intersystems.dbunit.dsl.BrowseTableReference;
-import com.link_intersystems.dbunit.dsl.BrowseTable;
-import com.link_intersystems.dbunit.meta.TableReference;
-import com.link_intersystems.dbunit.meta.TableReferenceException;
-import com.link_intersystems.dbunit.meta.TableReferenceRepository;
+import com.link_intersystems.jdbc.ConnectionMetaData;
+import com.link_intersystems.jdbc.TableReference;
+import com.link_intersystems.jdbc.TableReferenceException;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -17,10 +15,10 @@ import static java.text.MessageFormat.format;
  */
 class MetaDataTableReferenceResolver implements TableReferenceResolver {
 
-    private final TableReferenceRepository tableReferenceMetaData;
+    private ConnectionMetaData connectionMetaData;
 
-    MetaDataTableReferenceResolver(TableReferenceRepository tableReferenceMetaData) {
-        this.tableReferenceMetaData = tableReferenceMetaData;
+    MetaDataTableReferenceResolver(ConnectionMetaData connectionMetaData) {
+        this.connectionMetaData = connectionMetaData;
     }
 
     @Override
@@ -29,11 +27,11 @@ class MetaDataTableReferenceResolver implements TableReferenceResolver {
         String targetTableName = targetTableRef.getTableName();
 
         try {
-            List<TableReference> outgoingDependencies = tableReferenceMetaData.getOutgoingReferences(sourceTableName);
+            List<TableReference> outgoingDependencies = connectionMetaData.getOutgoingReferences(sourceTableName);
             TableReference targetTableReference = outgoingDependencies.stream().filter(d -> d.getTargetEdge().getTableName().equals(targetTableName)).findFirst().orElse(null);
 
             if (targetTableReference == null) {
-                List<TableReference> incomingDependencies = tableReferenceMetaData.getIncomingReferences(sourceTableName);
+                List<TableReference> incomingDependencies = connectionMetaData.getIncomingReferences(sourceTableName);
                 targetTableReference = incomingDependencies.stream().filter(d -> d.getSourceEdge().getTableName().equals(sourceTableName)).findFirst().orElse(null);
 
                 if (targetTableReference == null) {
@@ -56,4 +54,5 @@ class MetaDataTableReferenceResolver implements TableReferenceResolver {
             throw new TableReferenceException(e);
         }
     }
+
 }

@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.dsl;
+package com.link_intersystems.dbunit.dataset.browser;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -14,6 +14,26 @@ public class ColumnCriteriaBuilder {
 
     public void eq(Object value) {
         TableCriterion tableCriterion = new TableCriterion(columnName, "eq", value);
+        tableRef.addCriterion(tableCriterion);
+    }
+
+    public void gt(Object value) {
+        TableCriterion tableCriterion = new TableCriterion(columnName, "gt", value);
+        tableRef.addCriterion(tableCriterion);
+    }
+
+    public void gte(Object value) {
+        TableCriterion tableCriterion = new TableCriterion(columnName, "gte", value);
+        tableRef.addCriterion(tableCriterion);
+    }
+
+    public void lt(Object value) {
+        TableCriterion tableCriterion = new TableCriterion(columnName, "lt", value);
+        tableRef.addCriterion(tableCriterion);
+    }
+
+    public void lte(Object value) {
+        TableCriterion tableCriterion = new TableCriterion(columnName, "lte", value);
         tableRef.addCriterion(tableCriterion);
     }
 

@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.sql.statement;
 
-import com.link_intersystems.dbunit.meta.TableReferenceEdge;
+import com.link_intersystems.jdbc.TableReference;
 
 import java.util.Collections;
 import java.util.List;
@@ -14,7 +14,7 @@ public class ExistsSubqueryDependencyStatementFactory extends AbstractDependency
     public static final ExistsSubqueryDependencyStatementFactory INSTANCE = new ExistsSubqueryDependencyStatementFactory();
 
     @Override
-    protected String createSql(TableReferenceEdge sourceEdge, TableReferenceEdge targetEdge, List<List<Object>> joinIds) {
+    protected String createSql(TableReference.Edge sourceEdge, TableReference.Edge targetEdge, List<List<Object>> joinIds) {
         StringBuilder stmtBuilder = new StringBuilder("SELECT ");
 
         stmtBuilder.append("*");
@@ -54,7 +54,7 @@ public class ExistsSubqueryDependencyStatementFactory extends AbstractDependency
     }
 
 
-    private CharSequence getJoin(TableReferenceEdge sourceEdge, String sourceAlias, TableReferenceEdge targetEdge, String targetAlias) {
+    private CharSequence getJoin(TableReference.Edge sourceEdge, String sourceAlias, TableReference.Edge targetEdge, String targetAlias) {
         StringBuilder joinBuilder = new StringBuilder();
 
         List<ColumnJoin> joinColumns = ColumnJoin.of(sourceEdge, sourceAlias, targetEdge, targetAlias);

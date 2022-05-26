@@ -1,15 +1,12 @@
 package com.link_intersystems.dbunit.table;
 
 import com.link_intersystems.dbunit.meta.TableMetaDataRepository;
-import com.link_intersystems.dbunit.meta.TableReference;
-import com.link_intersystems.dbunit.meta.TableReferenceEdge;
-import com.link_intersystems.dbunit.meta.TableReferenceRepository;
 import com.link_intersystems.dbunit.sql.statement.DependencyStatementFactory;
 import com.link_intersystems.dbunit.sql.statement.JoinDependencyStatementFactory;
 import com.link_intersystems.dbunit.sql.statement.SqlStatement;
 import com.link_intersystems.jdbc.ConnectionMetaData;
+import com.link_intersystems.jdbc.TableReference;
 import org.dbunit.database.CachedResultSetTable;
-import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.ForwardOnlyResultSetTable;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.DataSetException;
@@ -22,57 +19,59 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 public class TableDependencyLoader {
 
+
     public static enum DependencyDirection {
         OUTGOING {
             @Override
-            public List<TableReference> getDependencies(TableReferenceRepository tableDependencyRepository, String tableName) throws SQLException {
-                return tableDependencyRepository.getOutgoingReferences(tableName);
+            public List<TableReference> getDependencies(ConnectionMetaData connectionMetaData, String tableName) throws SQLException {
+                return connectionMetaData.getImportedKeys(tableName).stream().map(TableReference::new).collect(Collectors.toList());
             }
 
             @Override
-            public TableReferenceEdge getSourceEdge(TableReference dependency) {
+            public TableReference.Edge getSourceEdge(TableReference dependency) {
                 return dependency.getSourceEdge();
             }
 
             @Override
-            public TableReferenceEdge getTargetEdge(TableReference dependency) {
+            public TableReference.Edge getTargetEdge(TableReference dependency) {
                 return dependency.getTargetEdge();
             }
         }, INCOMING {
             @Override
-            public List<TableReference> getDependencies(TableReferenceRepository tableDependencyRepository, String tableName) throws SQLException {
-                return tableDependencyRepository.getIncomingReferences(tableName);
+            public List<TableReference> getDependencies(ConnectionMetaData connectionMetaData, String tableName) throws SQLException {
+                return connectionMetaData.getExportedKeys(tableName).stream().map(TableReference::new).collect(Collectors.toList());
             }
 
             @Override
-            public TableReferenceEdge getSourceEdge(TableReference dependency) {
+            public TableReference.Edge getSourceEdge(TableReference dependency) {
                 return dependency.getTargetEdge();
             }
 
             @Override
-            public TableReferenceEdge getTargetEdge(TableReference dependency) {
+            public TableReference.Edge getTargetEdge(TableReference dependency) {
                 return dependency.getSourceEdge();
             }
         };
 
-        public abstract List<TableReference> getDependencies(TableReferenceRepository tableDependencyRepository, String tableName) throws DataSetException, SQLException;
+        public abstract List<TableReference> getDependencies(ConnectionMetaData connectionMetaData, String tableName) throws DataSetException, SQLException;
 
-        public abstract TableReferenceEdge getSourceEdge(TableReference dependency);
+        public abstract TableReference.Edge getSourceEdge(TableReference dependency);
 
-        public abstract TableReferenceEdge getTargetEdge(TableReference dependency);
+        public abstract TableReference.Edge getTargetEdge(TableReference dependency);
     }
 
     private final IDatabaseConnection databaseConnection;
 
-    private final TableReferenceRepository tableDependencyRepository;
     private DependencyStatementFactory dependencyStatementFactory;
     private final TableMetaDataRepository tableMetaDataRepository;
+    private final ConnectionMetaData connectionMetaData;
 
     public TableDependencyLoader(IDatabaseConnection databaseConnection) throws DataSetException {
         this(databaseConnection, JoinDependencyStatementFactory.INSTANCE);
@@ -83,8 +82,7 @@ public class TableDependencyLoader {
 
         tableMetaDataRepository = new TableMetaDataRepository(databaseConnection);
         try {
-            ConnectionMetaData connectionMetaData = new ConnectionMetaData(databaseConnection.getConnection());
-            tableDependencyRepository = new TableReferenceRepository(connectionMetaData);
+            connectionMetaData = new ConnectionMetaData(databaseConnection.getConnection());
             this.dependencyStatementFactory = Objects.requireNonNull(dependencyStatementFactory);
         } catch (SQLException e) {
             throw new DataSetException(e);
@@ -96,7 +94,7 @@ public class TableDependencyLoader {
         ITableMetaData tableMetaData = sourceTable.getTableMetaData();
 
         try {
-            List<TableReference> dependencies = direction.getDependencies(tableDependencyRepository, tableMetaData.getTableName());
+            List<TableReference> dependencies = direction.getDependencies(connectionMetaData, tableMetaData.getTableName());
 
 
             for (TableReference dependency : dependencies) {
@@ -110,8 +108,8 @@ public class TableDependencyLoader {
     }
 
     private void loadDependency(ITable sourceTable, TableReference dependency, DependencyDirection direction, TableContext loadContext) throws DataSetException {
-        TableReferenceEdge sourceEdge = direction.getSourceEdge(dependency);
-        TableReferenceEdge targetEdge = direction.getTargetEdge(dependency);
+        TableReference.Edge sourceEdge = direction.getSourceEdge(dependency);
+        TableReference.Edge targetEdge = direction.getTargetEdge(dependency);
 
         try {
             SqlStatement sqlStatement = dependencyStatementFactory.create(sourceTable, sourceEdge, targetEdge);

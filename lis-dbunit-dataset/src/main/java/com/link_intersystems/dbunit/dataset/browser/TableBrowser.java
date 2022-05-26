@@ -1,8 +1,6 @@
 package com.link_intersystems.dbunit.dataset.browser;
 
-import com.link_intersystems.dbunit.dataset.MergedTablesDataSet;
-import com.link_intersystems.dbunit.dsl.BrowseTable;
-import com.link_intersystems.dbunit.dsl.BrowseTableReference;
+import com.link_intersystems.dbunit.dataset.MergedDataSet;
 import com.link_intersystems.dbunit.meta.TableMetaDataRepository;
 import com.link_intersystems.dbunit.sql.statement.SqlStatement;
 import com.link_intersystems.dbunit.table.TableContext;
@@ -109,7 +107,7 @@ public class TableBrowser {
     }
 
     public IDataSet getDataSet() {
-        return new MergedTablesDataSet(tableContext);
+        return new MergedDataSet(tableContext);
     }
 
 }

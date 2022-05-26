@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class SqlOperator {
+class SqlOperator {
     private String sql;
     private List<Object> arguments;
 

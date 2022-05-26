@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.dataset.loader;
 
-import com.link_intersystems.dbunit.dataset.MergedTablesDataSet;
+import com.link_intersystems.dbunit.dataset.MergedDataSet;
 import com.link_intersystems.dbunit.meta.TableMetaDataRepository;
 import com.link_intersystems.dbunit.table.ListSnapshot;
 import com.link_intersystems.dbunit.table.TableContext;
@@ -34,7 +34,7 @@ public class ConsistentDataSetLoader {
         try {
             Connection connection = databaseConnection.getConnection();
             List<ITable> tables = load(connection, sqlQuery, args);
-            return new MergedTablesDataSet(tables);
+            return new MergedDataSet(tables);
         } catch (SQLException e) {
             throw new DataSetException(e);
         }

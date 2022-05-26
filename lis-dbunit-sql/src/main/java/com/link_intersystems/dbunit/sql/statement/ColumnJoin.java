@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.sql.statement;
 
-import com.link_intersystems.dbunit.meta.TableReferenceEdge;
+import com.link_intersystems.jdbc.TableReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.ListIterator;
  */
 public class ColumnJoin {
 
-    public static List<ColumnJoin> of(TableReferenceEdge sourceEdge, String sourceAlias, TableReferenceEdge targetEdge, String targetAlias) {
+    public static List<ColumnJoin> of(TableReference.Edge sourceEdge, String sourceAlias, TableReference.Edge targetEdge, String targetAlias) {
         List<ColumnJoin> joinColumns = new ArrayList<>();
 
         List<String> sourceColumns = sourceEdge.getColumns();
