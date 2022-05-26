@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 @ExtendWith(SakilaSlimTestDBExtension.class)
-class SqlStatementWriterTest {
+class SqlScriptWriterTest {
 
     public static final String SELECT_ACTOR = "select * from actor where actor_id = ?";
     private H2Database sakilaDatabase;
@@ -55,7 +55,7 @@ class SqlStatementWriterTest {
 
         StringWriter writer = new StringWriter();
         SqlDialect sqlDialect = new DefaultSqlDialect();
-        SqlStatementWriter sqlStatementWriter = new SqlStatementWriter(sqlDialect, writer);
+        SqlScriptWriter sqlStatementWriter = new SqlScriptWriter(sqlDialect, writer);
         SqlFormatSettings sqlFormatSettings = new SqlFormatSettings();
         sqlStatementWriter.setSqlFormatSettings(sqlFormatSettings);
 

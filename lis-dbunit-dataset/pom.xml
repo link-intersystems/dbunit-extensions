@@ -15,6 +15,10 @@
             <artifactId>lis-dbunit-table</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.link-intersystems.dbunit</groupId>
+            <artifactId>lis-dbunit-sql</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.link-intersystems.commons</groupId>
             <artifactId>lis-commons-test-db</artifactId>
             <scope>test</scope>

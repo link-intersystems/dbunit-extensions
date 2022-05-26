@@ -17,13 +17,21 @@ public class InsertSqlBuilder {
 
     private String delimiter = ";";
     private SqlDialect sqlDialect;
+    private String schema;
 
     public InsertSqlBuilder(SqlDialect sqlDialect) {
         this.sqlDialect = sqlDialect;
     }
 
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
+
     public String createInsertSql(ITableMetaData metaData, Object[] values) throws DataSetException {
         String tableName = metaData.getTableName();
+        if (schema != null) {
+            tableName = schema + "." + tableName;
+        }
         InsertSql insertSql = sqlDialect.createInsertSql(tableName);
 
         Column[] columns = metaData.getColumns();

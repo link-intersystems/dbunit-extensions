@@ -3,9 +3,9 @@ package com.link_intersystems.dbunit.dataset.browser;
 import com.link_intersystems.jdbc.ConnectionMetaData;
 import com.link_intersystems.jdbc.TableReference;
 import com.link_intersystems.jdbc.TableReferenceException;
+import com.link_intersystems.jdbc.TableReferenceList;
 
 import java.sql.SQLException;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.text.MessageFormat.format;
@@ -27,12 +27,12 @@ class MetaDataTableReferenceResolver implements TableReferenceResolver {
         String targetTableName = targetTableRef.getTableName();
 
         try {
-            List<TableReference> outgoingDependencies = connectionMetaData.getOutgoingReferences(sourceTableName);
+            TableReferenceList outgoingDependencies = connectionMetaData.getOutgoingReferences(sourceTableName);
             TableReference targetTableReference = outgoingDependencies.stream().filter(d -> d.getTargetEdge().getTableName().equals(targetTableName)).findFirst().orElse(null);
 
             if (targetTableReference == null) {
-                List<TableReference> incomingDependencies = connectionMetaData.getIncomingReferences(sourceTableName);
-                targetTableReference = incomingDependencies.stream().filter(d -> d.getSourceEdge().getTableName().equals(sourceTableName)).findFirst().orElse(null);
+                TableReferenceList incomingDependencies = connectionMetaData.getIncomingReferences(sourceTableName);
+                targetTableReference = incomingDependencies.stream().filter(d -> d.getSourceEdge().getTableName().equals(targetTableName)).findFirst().orElse(null);
 
                 if (targetTableReference == null) {
                     String outgoingReferencesMsg = outgoingDependencies.stream().map(Object::toString).map(s -> "\n\t\t- " + s).collect(Collectors.joining());
@@ -46,6 +46,8 @@ class MetaDataTableReferenceResolver implements TableReferenceResolver {
                             incomingReferencesMsg);
                     throw new TableReferenceException(msg);
                 }
+
+                targetTableReference = new TableReference("reveresed_" + targetTableReference.getName(), targetTableReference.getTargetEdge(), targetTableReference.getSourceEdge());
 
             }
 

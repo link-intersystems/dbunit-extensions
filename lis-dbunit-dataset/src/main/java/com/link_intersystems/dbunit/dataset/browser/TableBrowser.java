@@ -91,7 +91,7 @@ public class TableBrowser {
         }
     }
 
-    private void browseRef(ITable sourceTable, BrowseTableReference targetBrowseReference) throws DataSetException, SQLException {
+    private void browseRef(ITable sourceTable, BrowseTableReference targetBrowseReference) throws SQLException {
         BrowseTable targetTableRef = targetBrowseReference.getTargetTableRef();
 
         try {

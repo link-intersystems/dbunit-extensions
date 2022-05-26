@@ -12,19 +12,19 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Objects;
 
-public class SqlStatementWriter extends DefaultConsumer {
+public class SqlScriptWriter extends DefaultConsumer {
 
     private PrintWriter writer;
-    private SqlFormatSettings sqlFormatSettings;
+    private SqlFormatSettings sqlFormatSettings = new SqlFormatSettings();
     private ITableMetaData currMetaData;
     private InsertSqlBuilder insertSqlBuilder;
 
 
-    public SqlStatementWriter(SqlDialect sqlDialect, Writer writer) {
+    public SqlScriptWriter(SqlDialect sqlDialect, Writer writer) {
         this(new InsertSqlBuilder(sqlDialect), writer);
     }
 
-    public SqlStatementWriter(InsertSqlBuilder insertSqlBuilder, Writer writer) {
+    public SqlScriptWriter(InsertSqlBuilder insertSqlBuilder, Writer writer) {
         this.insertSqlBuilder = insertSqlBuilder;
         this.writer = new PrintWriter(writer);
     }
@@ -35,6 +35,10 @@ public class SqlStatementWriter extends DefaultConsumer {
 
     public void setSqlFormatSettings(SqlFormatSettings sqlFormatSettings) {
         this.sqlFormatSettings = Objects.requireNonNull(sqlFormatSettings);
+    }
+
+    public void setSchema(String schema) {
+        insertSqlBuilder.setSchema(schema);
     }
 
     @Override
@@ -61,6 +65,7 @@ public class SqlStatementWriter extends DefaultConsumer {
 
     private String formatSql(String insertSql) {
         SqlFormatSettings sqlFormatSettings = getSqlFormatSettings();
+
         SqlFormatter sqlFormatter = sqlFormatSettings.getSqlFormatter();
 
         if (sqlFormatter != null) {
