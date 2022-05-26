@@ -7,4 +7,8 @@ public class TableReferenceException extends RuntimeException {
     public TableReferenceException(String msg) {
         super(msg);
     }
+
+    public TableReferenceException(Throwable cause) {
+        super(cause);
+    }
 }

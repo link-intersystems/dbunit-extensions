@@ -6,26 +6,26 @@ import java.util.List;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class TableBrowseRef {
+public class BrowseTable {
 
     private String tableName;
-    private List<TableBrowseNode> browseNodes = new ArrayList<>();
+    private List<BrowseTableReference> references = new ArrayList<>();
     private TableCriteria tableCriteria;
 
-    public TableBrowseRef(String tableName) {
+    public BrowseTable(String tableName) {
         this.tableName = tableName;
     }
 
-    public TableBrowse browse(String joinTableName) {
-        return new TableBrowse(this, joinTableName);
+    public OngoingTableBrowse browse(String joinTableName) {
+        return new OngoingTableBrowse(this, joinTableName);
     }
 
-    public TableBrowseRef browseNatural(String joinTableName) {
+    public BrowseTable browseNatural(String joinTableName) {
         return browse(joinTableName).natural();
     }
 
-    void addBrowse(TableBrowseNode join) {
-        browseNodes.add(join);
+    void addBrowse(BrowseTableReference join) {
+        references.add(join);
     }
 
     public ColumnCriteriaBuilder with(String columnName) {
@@ -39,13 +39,6 @@ public class TableBrowseRef {
         tableCriteria.addCriterion(tableCriterion);
     }
 
-    public void accept(TableRefVisitor visitor) {
-        visitor.visitRootTable(getTableName());
-
-        browseNodes.forEach(bn -> visitor.visit(TableBrowseRef.this, bn));
-
-    }
-
     public String getTableName() {
         return tableName;
     }
@@ -54,7 +47,7 @@ public class TableBrowseRef {
         return tableCriteria;
     }
 
-    public List<TableBrowseNode> getBrowseNodes() {
-        return browseNodes;
+    public List<BrowseTableReference> getReferences() {
+        return references;
     }
 }

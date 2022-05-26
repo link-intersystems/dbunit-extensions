@@ -6,5 +6,5 @@ package com.link_intersystems.dbunit.dsl;
 public interface TableRefVisitor {
     void visitRootTable(String tableName);
 
-    void visit(TableBrowseRef sourceTableRef, TableBrowseNode browseNode);
+    void visit(BrowseTable sourceTableRef, BrowseTableReference browseNode);
 }

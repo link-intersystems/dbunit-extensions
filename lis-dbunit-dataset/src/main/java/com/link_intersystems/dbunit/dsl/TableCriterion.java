@@ -8,7 +8,7 @@ public class TableCriterion {
     private String op;
     private Object value;
 
-    public TableCriterion(String columnName, String op, Object value) {
+    TableCriterion(String columnName, String op, Object value) {
         this.columnName = columnName;
         this.op = op;
         this.value = value;

@@ -3,13 +3,13 @@ package com.link_intersystems.dbunit.dsl;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class TableBrowseNode {
+public class BrowseTableReference {
 
-    private TableBrowseRef targetNode;
+    private BrowseTable targetNode;
     private String[] sourceColumns;
     private String[] targetColumns;
 
-    public TableBrowseNode(TableBrowseRef targetNode) {
+    BrowseTableReference(BrowseTable targetNode) {
         this.targetNode = targetNode;
     }
 
@@ -21,7 +21,7 @@ public class TableBrowseNode {
         this.targetColumns = targetColumns;
     }
 
-    public TableBrowseRef getTargetTableRef() {
+    public BrowseTable getTargetTableRef() {
         return targetNode;
     }
 

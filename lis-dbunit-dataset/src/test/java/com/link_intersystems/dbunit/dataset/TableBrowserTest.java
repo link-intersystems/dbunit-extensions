@@ -1,7 +1,7 @@
 package com.link_intersystems.dbunit.dataset;
 
 import com.link_intersystems.dbunit.dataset.browser.TableBrowser;
-import com.link_intersystems.dbunit.dsl.TableBrowseRef;
+import com.link_intersystems.dbunit.dsl.BrowseTable;
 import com.link_intersystems.dbunit.table.TableUtil;
 import com.link_intersystems.test.ComponentTest;
 import com.link_intersystems.test.db.sakila.SakilaTestDBExtension;
@@ -33,10 +33,11 @@ public class TableBrowserTest {
 
     @Test
     void browse() throws DatabaseUnitException {
-        TableBrowseRef filmActor = new TableBrowseRef("film_actor");
+        BrowseTable filmActor = new BrowseTable("film_actor");
         filmActor.with("film_id").eq(200);
-        filmActor.browse("actor").natural();
-        TableBrowseRef film = filmActor.browseNatural("film");
+        BrowseTable actor = filmActor.browseNatural("actor");
+        actor.with("first_name").like("W%");
+        BrowseTable film = filmActor.browseNatural("film");
         film.browse("language").on("language_id").references("language_id");
 
         IDataSet dataSet = TableBrowser.browse(databaseConnection, filmActor);
@@ -53,11 +54,9 @@ public class TableBrowserTest {
         assertNotNull(filmActorUtil.getRowById(139, 200));
 
         ITable actorTable = dataSet.getTable("actor");
-        assertEquals(3, actorTable.getRowCount(), "actor entity count");
+        assertEquals(1, actorTable.getRowCount(), "actor entity count");
         TableUtil actorUtil = new TableUtil(actorTable);
-        assertNotNull(actorUtil.getRowById(9));
         assertNotNull(actorUtil.getRowById(102));
-        assertNotNull(actorUtil.getRowById(139));
 
         ITable filmTable = dataSet.getTable("film");
         assertEquals(1, filmTable.getRowCount(), "film entity count");

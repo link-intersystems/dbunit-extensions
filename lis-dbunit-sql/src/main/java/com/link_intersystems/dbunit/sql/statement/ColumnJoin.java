@@ -1,7 +1,6 @@
 package com.link_intersystems.dbunit.sql.statement;
 
-import com.link_intersystems.dbunit.meta.Dependency;
-import org.dbunit.dataset.Column;
+import com.link_intersystems.dbunit.meta.TableReferenceEdge;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,31 +11,26 @@ import java.util.ListIterator;
  */
 public class ColumnJoin {
 
-    public static List<ColumnJoin> of(Dependency.Edge sourceEdge, String sourceAlias, Dependency.Edge targetEdge, String targetAlias) {
+    public static List<ColumnJoin> of(TableReferenceEdge sourceEdge, String sourceAlias, TableReferenceEdge targetEdge, String targetAlias) {
         List<ColumnJoin> joinColumns = new ArrayList<>();
 
-        List<Column> sourceColumns = sourceEdge.getColumns();
-        ListIterator<Column> sourceColumnIterator = sourceColumns.listIterator();
+        List<String> sourceColumns = sourceEdge.getColumns();
+        ListIterator<String> sourceColumnIterator = sourceColumns.listIterator();
 
-        List<Column> targetColumns = targetEdge.getColumns();
-        ListIterator<Column> targetColumnIterator = targetColumns.listIterator();
+        List<String> targetColumns = targetEdge.getColumns();
+        ListIterator<String> targetColumnIterator = targetColumns.listIterator();
 
         while (sourceColumnIterator.hasNext() && targetColumnIterator.hasNext()) {
-            Column sourceColumn = sourceColumnIterator.next();
-            Column targetColumn = targetColumnIterator.next();
+            String sourceColumn = sourceColumnIterator.next();
+            String targetColumn = targetColumnIterator.next();
 
-            QualifiedColumn qualifiedSourceColumn = toQualifiedColumn(sourceAlias, sourceColumn);
-            QualifiedColumn qualifiedTargetColumn = toQualifiedColumn(targetAlias, targetColumn);
+            QualifiedColumn qualifiedSourceColumn = new QualifiedColumn(sourceAlias, sourceColumn);
+            QualifiedColumn qualifiedTargetColumn = new QualifiedColumn(targetAlias, targetColumn);
 
             joinColumns.add(new ColumnJoin(qualifiedSourceColumn, qualifiedTargetColumn));
         }
 
         return joinColumns;
-    }
-
-    private static QualifiedColumn toQualifiedColumn(String tableName, Column column) {
-        String columnName = column.getColumnName();
-        return new QualifiedColumn(tableName, columnName);
     }
 
     private final QualifiedColumn sourceColumn;

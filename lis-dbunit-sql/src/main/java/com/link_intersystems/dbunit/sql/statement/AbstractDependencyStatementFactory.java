@@ -1,9 +1,6 @@
 package com.link_intersystems.dbunit.sql.statement;
 
-import com.link_intersystems.dbunit.meta.Dependency;
-import org.dbunit.database.DatabaseConfig;
-import org.dbunit.dataset.Column;
-import org.dbunit.dataset.DataSetException;
+import com.link_intersystems.dbunit.meta.TableReferenceEdge;
 import org.dbunit.dataset.ITable;
 
 import java.util.ArrayList;
@@ -15,11 +12,11 @@ import java.util.stream.Collectors;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public abstract class AbstractDependencyStatementFactory implements DependencyStatementFactory{
+public abstract class AbstractDependencyStatementFactory implements DependencyStatementFactory {
 
     @Override
-    public SqlStatement create(DatabaseConfig config, ITable sourceTable, Dependency.Edge sourceEdge, Dependency.Edge targetEdge) throws DataSetException {
-        List<Column> sourceColumns = sourceEdge.getColumns();
+    public SqlStatement create(ITable sourceTable, TableReferenceEdge sourceEdge, TableReferenceEdge targetEdge) throws Exception {
+        List<String> sourceColumns = sourceEdge.getColumns();
 
         Set<List<Object>> statementArgs = new LinkedHashSet<>();
 
@@ -29,8 +26,8 @@ public abstract class AbstractDependencyStatementFactory implements DependencySt
             List<Object> ids = new ArrayList<>();
 
             for (int columnIndex = 0; columnIndex < sourceColumns.size(); columnIndex++) {
-                Column column = sourceColumns.get(columnIndex);
-                Object columnValue = sourceTable.getValue(i, column.getColumnName());
+                String column = sourceColumns.get(columnIndex);
+                Object columnValue = sourceTable.getValue(i, column);
                 ids.add(columnValue);
             }
 
@@ -44,5 +41,5 @@ public abstract class AbstractDependencyStatementFactory implements DependencySt
         return new SqlStatement(sql, expandedArgs);
     }
 
-    protected abstract String createSql(Dependency.Edge sourceEdge, Dependency.Edge targetEdge, List<List<Object>> joinIds);
+    protected abstract String createSql(TableReferenceEdge sourceEdge, TableReferenceEdge targetEdge, List<List<Object>> joinIds);
 }

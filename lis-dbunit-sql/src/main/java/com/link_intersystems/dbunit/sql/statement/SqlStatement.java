@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class SqlStatement {
 
+
     @FunctionalInterface
     public static interface PreparedStatementConsumer {
         public void accept(PreparedStatement ps) throws Exception;
@@ -31,6 +32,14 @@ public class SqlStatement {
     public SqlStatement(CharSequence sql, List<Object> arguments) {
         this.sql = sql;
         this.arguments.addAll(arguments);
+    }
+
+    public List<Object> getArguments() {
+        return arguments;
+    }
+
+    public CharSequence getSql() {
+        return sql;
     }
 
     public void executeQuery(Connection connection, PreparedStatementConsumer preparedStatementConsumer) throws Exception {
