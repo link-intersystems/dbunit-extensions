@@ -14,6 +14,7 @@ import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.stream.DataSetProducerAdapter;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -29,6 +30,7 @@ import java.sql.Types;
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 @ExtendWith(SakilaTestDBExtension.class)
+@Disabled("manual")
 class InsertSqlScriptWriterTest {
 
     private H2Database sakilaDatabase;
