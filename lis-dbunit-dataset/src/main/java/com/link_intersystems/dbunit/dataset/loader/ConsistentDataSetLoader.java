@@ -1,15 +1,17 @@
-package com.link_intersystems.dbunit.dataset;
+package com.link_intersystems.dbunit.dataset.loader;
 
-import com.link_intersystems.dbunit.meta.TableDependencyRepository;
+import com.link_intersystems.dbunit.dataset.MergedTablesDataSet;
 import com.link_intersystems.dbunit.meta.TableMetaDataRepository;
-import com.link_intersystems.dbunit.sql.statement.JoinDependencyStatementFactory;
 import com.link_intersystems.dbunit.table.ListSnapshot;
 import com.link_intersystems.dbunit.table.TableContext;
 import com.link_intersystems.dbunit.table.TableDependencyLoader;
 import org.dbunit.database.CachedResultSetTable;
 import org.dbunit.database.ForwardOnlyResultSetTable;
 import org.dbunit.database.IDatabaseConnection;
-import org.dbunit.dataset.*;
+import org.dbunit.dataset.DataSetException;
+import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.ITable;
+import org.dbunit.dataset.ITableMetaData;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -21,21 +23,18 @@ import java.util.List;
 public class ConsistentDataSetLoader {
 
     private final IDatabaseConnection databaseConnection;
-    private final TableDependencyRepository tableDependencyRepository;
     private final TableMetaDataRepository tableMetaDataRepository;
 
     public ConsistentDataSetLoader(IDatabaseConnection databaseConnection) throws DataSetException {
         this.databaseConnection = databaseConnection;
         tableMetaDataRepository = new TableMetaDataRepository(databaseConnection);
-        tableDependencyRepository = new TableDependencyRepository(databaseConnection, tableMetaDataRepository);
-
     }
 
     public IDataSet load(String sqlQuery, Object... args) throws DataSetException {
         try {
             Connection connection = databaseConnection.getConnection();
             List<ITable> tables = load(connection, sqlQuery, args);
-            return new DefaultDataSet(tables.toArray(new ITable[0]));
+            return new MergedTablesDataSet(tables);
         } catch (SQLException e) {
             throw new DataSetException(e);
         }

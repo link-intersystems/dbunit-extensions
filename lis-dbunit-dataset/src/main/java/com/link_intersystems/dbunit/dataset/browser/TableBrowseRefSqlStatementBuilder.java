@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.dataset;
+package com.link_intersystems.dbunit.dataset.browser;
 
 import com.link_intersystems.dbunit.dsl.TableBrowseRef;
 import com.link_intersystems.dbunit.sql.statement.SqlStatement;

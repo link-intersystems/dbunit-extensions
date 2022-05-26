@@ -1,13 +1,11 @@
 package com.link_intersystems.dbunit.dataset;
 
+import com.link_intersystems.dbunit.dataset.loader.ConsistentDataSetLoader;
 import com.link_intersystems.dbunit.table.TableUtil;
 import com.link_intersystems.test.ComponentTest;
-import com.link_intersystems.test.db.sakila.SakilaSlimTestDBExtension;
 import com.link_intersystems.test.db.sakila.SakilaTestDBExtension;
-import com.link_intersystems.test.jdbc.H2Database;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
-import org.dbunit.database.DatabaseDataSet;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.xml.FlatXmlWriter;
@@ -20,7 +18,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 

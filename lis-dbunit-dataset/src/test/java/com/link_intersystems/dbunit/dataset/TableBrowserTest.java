@@ -1,5 +1,6 @@
 package com.link_intersystems.dbunit.dataset;
 
+import com.link_intersystems.dbunit.dataset.browser.TableBrowser;
 import com.link_intersystems.dbunit.dsl.TableBrowseRef;
 import com.link_intersystems.dbunit.table.TableUtil;
 import com.link_intersystems.test.ComponentTest;
@@ -21,26 +22,24 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @ExtendWith(SakilaTestDBExtension.class)
 @ComponentTest
-public class TableBrowseRefLoaderTest {
+public class TableBrowserTest {
 
-    private TableBrowseRefLoader dataSetLoader;
     private DatabaseConnection databaseConnection;
 
     @BeforeEach
     void setUp(Connection sakilaConnection) throws DatabaseUnitException {
         databaseConnection = new DatabaseConnection(sakilaConnection);
-        dataSetLoader = new TableBrowseRefLoader(databaseConnection);
     }
 
     @Test
-    void browseTableRef() throws DatabaseUnitException {
+    void browse() throws DatabaseUnitException {
         TableBrowseRef filmActor = new TableBrowseRef("film_actor");
         filmActor.with("film_id").eq(200);
         filmActor.browse("actor").natural();
-        TableBrowseRef film = filmActor.browse("film").natural();
+        TableBrowseRef film = filmActor.browseNatural("film");
         film.browse("language").on("language_id").references("language_id");
 
-        IDataSet dataSet = dataSetLoader.browse(filmActor);
+        IDataSet dataSet = TableBrowser.browse(databaseConnection, filmActor);
 
         String[] tableNames = dataSet.getTableNames();
         assertArrayEquals(new String[]{"film_actor", "actor", "film", "language"}, tableNames);

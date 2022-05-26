@@ -1,7 +1,6 @@
 package com.link_intersystems.dbunit.table;
 
-import com.link_intersystems.dbunit.meta.Dependency;
-import org.dbunit.dataset.DataSetException;
+import com.link_intersystems.dbunit.meta.TableReference;
 import org.dbunit.dataset.ITable;
 
 import java.util.*;
@@ -12,7 +11,7 @@ import java.util.*;
 public class TableContext extends AbstractList<ITable> {
 
     private List<ITable> tables = new ArrayList<>();
-    private Set<Dependency> traversedDependencies = new HashSet<>();
+    private Set<TableReference> traversedDependencies = new HashSet<>();
 
     public Map<String, ITable> toMap() {
         LinkedHashMap<String, ITable> map = new LinkedHashMap<>();
@@ -34,50 +33,12 @@ public class TableContext extends AbstractList<ITable> {
 
     @Override
     public void add(int index, ITable element) {
-        ITable effectiveTable = getEffectiveTable(element);
-        if (effectiveTable != element) {
-            String tableName = element.getTableMetaData().getTableName();
-            ITable existingTable = getByName(tableName);
-            int replaceTableIndex = indexOf(existingTable);
-            tables.add(index, effectiveTable);
-            int removeIndex = replaceTableIndex < index ? replaceTableIndex : replaceTableIndex + 1;
-            remove(removeIndex);
-        } else {
-            tables.add(index, effectiveTable);
-        }
-    }
-
-    private ITable getEffectiveTable(ITable element) {
-        if (element == null) {
-            return null;
-        }
-
-        String tableName = element.getTableMetaData().getTableName();
-        ITable existingTable = getByName(tableName);
-        if (existingTable != null) {
-            try {
-                element = new DistinctCompositeTable(existingTable, element);
-            } catch (DataSetException e) {
-                throw new IllegalArgumentException(e);
-            }
-        }
-        return element;
+        tables.add(index, element);
     }
 
     @Override
     public ITable set(int index, ITable element) {
-        ITable effectiveTable = getEffectiveTable(element);
-        if (effectiveTable != element) {
-            String tableName = element.getTableMetaData().getTableName();
-            ITable existingTable = getByName(tableName);
-            int replaceTableIndex = indexOf(existingTable);
-            ITable previous = tables.set(index, effectiveTable);
-            int removeIndex = replaceTableIndex < index ? replaceTableIndex : replaceTableIndex + 1;
-            tables.set(removeIndex, null);
-            return previous;
-        } else {
-            return tables.set(index, effectiveTable);
-        }
+        return tables.set(index, element);
     }
 
     @Override
@@ -99,11 +60,8 @@ public class TableContext extends AbstractList<ITable> {
         return new ListSnapshot(this);
     }
 
-    public boolean follow(Dependency dependency) {
+    public boolean follow(TableReference dependency) {
         return traversedDependencies.add(dependency);
     }
 
-    public List<ITable> getUniqueTables() {
-        return this;
-    }
 }

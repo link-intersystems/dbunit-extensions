@@ -20,6 +20,10 @@ public class TableBrowseRef {
         return new TableBrowse(this, joinTableName);
     }
 
+    public TableBrowseRef browseNatural(String joinTableName) {
+        return browse(joinTableName).natural();
+    }
+
     void addBrowse(TableBrowseNode join) {
         browseNodes.add(join);
     }
