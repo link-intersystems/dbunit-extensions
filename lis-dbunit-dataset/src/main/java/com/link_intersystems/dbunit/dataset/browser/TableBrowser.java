@@ -1,17 +1,14 @@
 package com.link_intersystems.dbunit.dataset.browser;
 
-import com.link_intersystems.dbunit.dataset.MergedDataSet;
 import com.link_intersystems.dbunit.meta.TableMetaDataRepository;
 import com.link_intersystems.dbunit.sql.statement.SqlStatement;
-import com.link_intersystems.dbunit.table.TableContext;
+import com.link_intersystems.dbunit.table.TableList;
 import com.link_intersystems.jdbc.ConnectionMetaData;
+import org.dbunit.database.AmbiguousTableNameException;
 import org.dbunit.database.CachedResultSetTable;
 import org.dbunit.database.ForwardOnlyResultSetTable;
 import org.dbunit.database.IDatabaseConnection;
-import org.dbunit.dataset.DataSetException;
-import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.ITable;
-import org.dbunit.dataset.ITableMetaData;
+import org.dbunit.dataset.*;
 
 import java.sql.Connection;
 import java.sql.ResultSetMetaData;
@@ -30,7 +27,7 @@ public class TableBrowser {
         return tableBrowser.getDataSet();
     }
 
-    private TableContext tableContext = new TableContext();
+    private TableList tableList = new TableList();
 
     private final IDatabaseConnection databaseConnection;
     private final TableMetaDataRepository tableMetaDataRepository;
@@ -78,7 +75,7 @@ public class TableBrowser {
                 return new CachedResultSetTable(forwardOnlyResultSetTable);
             });
 
-            tableContext.add(targetTable);
+            tableList.add(targetTable);
 
             List<BrowseTableReference> browseReferences = targetTableRef.getReferences();
 
@@ -107,7 +104,12 @@ public class TableBrowser {
     }
 
     public IDataSet getDataSet() {
-        return new MergedDataSet(tableContext);
+        try {
+            tableList.pack();
+            return new DefaultDataSet(tableList.toArray(new ITable[0]));
+        } catch (AmbiguousTableNameException e) {
+            throw new RuntimeException("Please report a bug. This should not happen.", e);
+        }
     }
 
 }

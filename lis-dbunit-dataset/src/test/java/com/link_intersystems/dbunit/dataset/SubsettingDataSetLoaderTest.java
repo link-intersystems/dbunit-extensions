@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.dataset;
 
-import com.link_intersystems.dbunit.dataset.loader.ConsistentDataSetLoader;
+import com.link_intersystems.dbunit.dataset.loader.SubsettingDataSetLoader;
 import com.link_intersystems.dbunit.table.TableUtil;
 import com.link_intersystems.test.ComponentTest;
 import com.link_intersystems.test.db.sakila.SakilaTestDBExtension;
@@ -26,15 +26,15 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @ExtendWith(SakilaTestDBExtension.class)
 @ComponentTest
-public class ConsistentDataSetLoaderTest {
+public class SubsettingDataSetLoaderTest {
 
-    private ConsistentDataSetLoader dataSetLoader;
+    private SubsettingDataSetLoader dataSetLoader;
     private DatabaseConnection databaseConnection;
 
     @BeforeEach
     void setUp(Connection sakilaConnection) throws DatabaseUnitException {
         databaseConnection = new DatabaseConnection(sakilaConnection);
-        dataSetLoader = new ConsistentDataSetLoader(databaseConnection);
+        dataSetLoader = new SubsettingDataSetLoader(databaseConnection);
     }
 
     @Test

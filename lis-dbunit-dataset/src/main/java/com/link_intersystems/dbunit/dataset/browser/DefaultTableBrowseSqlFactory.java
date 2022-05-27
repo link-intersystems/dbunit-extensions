@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.dataset.browser;
 
-import com.link_intersystems.dbunit.sql.statement.JoinDependencyStatementFactory;
+import com.link_intersystems.dbunit.sql.statement.JoinTableReferenceSqlFactory;
 import com.link_intersystems.dbunit.sql.statement.SqlStatement;
 import com.link_intersystems.jdbc.ConnectionMetaData;
 import com.link_intersystems.jdbc.TableReference;
@@ -80,7 +80,7 @@ public class DefaultTableBrowseSqlFactory implements TableBrowseSqlFactory {
         TableReference.Edge sourceEdge = tableReference.getSourceEdge();
         TableReference.Edge targetEdge = tableReference.getTargetEdge();
 
-        JoinDependencyStatementFactory statementFactory = new JoinDependencyStatementFactory();
+        JoinTableReferenceSqlFactory statementFactory = new JoinTableReferenceSqlFactory();
 
         SqlStatement sqlStatement = statementFactory.create(sourceTable, sourceEdge, targetEdge);
 

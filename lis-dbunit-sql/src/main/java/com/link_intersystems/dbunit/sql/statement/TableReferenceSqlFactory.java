@@ -6,7 +6,7 @@ import org.dbunit.dataset.ITable;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public interface DependencyStatementFactory {
+public interface TableReferenceSqlFactory {
 
     public SqlStatement create(ITable sourceTable, TableReference.Edge sourceEdge, TableReference.Edge targetEdge) throws Exception;
 }

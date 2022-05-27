@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public abstract class AbstractDependencyStatementFactory implements DependencyStatementFactory {
+public abstract class AbstractTableReferenceSqlFactory implements TableReferenceSqlFactory {
 
     @Override
     public SqlStatement create(ITable sourceTable, TableReference.Edge sourceEdge, TableReference.Edge targetEdge) throws Exception {

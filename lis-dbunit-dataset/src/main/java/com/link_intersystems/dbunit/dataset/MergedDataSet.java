@@ -1,10 +1,9 @@
 package com.link_intersystems.dbunit.dataset;
 
-import com.link_intersystems.dbunit.table.DistinctCompositeTable;
+import com.link_intersystems.dbunit.table.TableList;
 import org.dbunit.database.AmbiguousTableNameException;
 import org.dbunit.dataset.*;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -15,37 +14,20 @@ import java.util.List;
  */
 public class MergedDataSet extends AbstractDataSet {
 
-    private List<ITable> tableList;
+    private TableList tableList;
 
     private IDataSet mergedDataSet;
 
     public MergedDataSet(List<ITable> tableList) {
-        this.tableList = tableList;
+        this.tableList = new TableList(tableList);
     }
 
     public IDataSet getMergedDataSet() {
         if (mergedDataSet == null) {
-            LinkedHashMap<ITableMetaData, ITable> uniqueTables = new LinkedHashMap<>();
-
-            for (ITable table : tableList) {
-                ITableMetaData tableMetaData = table.getTableMetaData();
-                ITable effectiveTable = uniqueTables.get(tableMetaData);
-
-                if (effectiveTable == null) {
-                    effectiveTable = table;
-                } else {
-                    try {
-                        effectiveTable = new DistinctCompositeTable(effectiveTable, table);
-                    } catch (DataSetException e) {
-                        throw new IllegalArgumentException(e);
-                    }
-                }
-
-                uniqueTables.put(tableMetaData, effectiveTable);
-            }
+            tableList.pack();
 
             try {
-                mergedDataSet = new DefaultDataSet(uniqueTables.values().toArray(new ITable[0]));
+                mergedDataSet = new DefaultDataSet(tableList.toArray(new ITable[0]));
             } catch (AmbiguousTableNameException e) {
                 throw new RuntimeException(e);
             }

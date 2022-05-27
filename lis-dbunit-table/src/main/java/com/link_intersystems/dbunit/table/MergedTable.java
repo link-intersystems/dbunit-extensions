@@ -6,19 +6,19 @@ import java.util.*;
 
 import static java.text.MessageFormat.format;
 
-public class DistinctCompositeTable extends AbstractTable {
+public class MergedTable extends AbstractTable {
     private final ITableMetaData _metaData;
     private final ITable effectiveTable;
 
-    public DistinctCompositeTable(ITable table1, ITable table2) throws DataSetException {
+    public MergedTable(ITable table1, ITable table2) throws DataSetException {
         this(table1.getTableMetaData(), table1, table2);
     }
 
-    public DistinctCompositeTable(String newName, ITable table) throws DataSetException {
+    public MergedTable(String newName, ITable table) throws DataSetException {
         this(new DefaultTableMetaData(newName, table.getTableMetaData().getColumns(), table.getTableMetaData().getPrimaryKeys()), table);
     }
 
-    public DistinctCompositeTable(ITable table, ITable... moreTables) throws DataSetException {
+    public MergedTable(ITable table, ITable... moreTables) throws DataSetException {
         this(table.getTableMetaData(), add(moreTables, table));
     }
 
@@ -29,7 +29,7 @@ public class DistinctCompositeTable extends AbstractTable {
         return result;
     }
 
-    public DistinctCompositeTable(ITableMetaData metaData, ITable... tables) throws DataSetException {
+    public MergedTable(ITableMetaData metaData, ITable... tables) throws DataSetException {
         this._metaData = metaData;
         for (ITable table : tables) {
             if (!tableMetaDataEquals(metaData, table.getTableMetaData())) {
@@ -60,7 +60,7 @@ public class DistinctCompositeTable extends AbstractTable {
 
         for (ITable table : tables) {
             for (int i = 0; i < table.getRowCount(); i++) {
-                Object pkValue = getPkValue(table, i);
+                List<Object> pkValue = getPkValue(table, i);
 
                 if (distinctIds.add(pkValue)) {
                     List<Object> values = getValues(table, i, tableMetaData.getColumns());
@@ -72,12 +72,10 @@ public class DistinctCompositeTable extends AbstractTable {
         return defaultTable;
     }
 
-    private Object getPkValue(ITable table, int row) throws DataSetException {
+    private List<Object> getPkValue(ITable table, int row) throws DataSetException {
         ITableMetaData tableMetaData = table.getTableMetaData();
         Column[] primaryKeys = tableMetaData.getPrimaryKeys();
-        List<Object> pkValues = getValues(table, row, primaryKeys);
-
-        return pkValues;
+        return getValues(table, row, primaryKeys);
     }
 
     private List<Object> getValues(ITable table, int row, Column[] columns) throws DataSetException {

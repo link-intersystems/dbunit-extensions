@@ -98,7 +98,21 @@ public class TableBrowserTest {
         DataSetAssertions assertions = new DataSetAssertions(dataSet);
 
         String[] tableNames = dataSet.getTableNames();
-        assertArrayEquals(new String[]{"actor", "film_actor", "film", "language", "inventory", "store", "staff", "address", "city", "country", "rental", "payment", "customer"}, tableNames);
+        assertArrayEquals(new String[]{
+                "actor",
+                "film_actor",
+                "film",
+                "language",
+                "inventory",
+                "store",
+                "staff",
+                "address",
+                "city",
+                "country",
+                "rental",
+                "payment",
+                "customer",
+        }, tableNames);
 
 
         ITable actorTable = dataSet.getTable("actor");

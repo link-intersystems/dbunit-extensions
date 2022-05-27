@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class ExistsSubqueryDependencyStatementFactory extends AbstractDependencyStatementFactory {
+public class ExistsSubqueryDependencyStatementFactory extends AbstractTableReferenceSqlFactory {
 
     public static final ExistsSubqueryDependencyStatementFactory INSTANCE = new ExistsSubqueryDependencyStatementFactory();
 

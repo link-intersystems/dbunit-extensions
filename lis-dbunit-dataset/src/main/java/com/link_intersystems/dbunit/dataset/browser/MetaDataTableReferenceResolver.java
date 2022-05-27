@@ -47,8 +47,7 @@ class MetaDataTableReferenceResolver implements TableReferenceResolver {
                     throw new TableReferenceException(msg);
                 }
 
-                targetTableReference = new TableReference("reveresed_" + targetTableReference.getName(), targetTableReference.getTargetEdge(), targetTableReference.getSourceEdge());
-
+                targetTableReference = targetTableReference.reverse();
             }
 
             return targetTableReference;

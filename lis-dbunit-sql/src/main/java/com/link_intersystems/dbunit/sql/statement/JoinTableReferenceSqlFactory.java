@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class JoinDependencyStatementFactory extends AbstractDependencyStatementFactory {
+public class JoinTableReferenceSqlFactory extends AbstractTableReferenceSqlFactory {
 
-    public static final DependencyStatementFactory INSTANCE = new JoinDependencyStatementFactory();
+    public static final TableReferenceSqlFactory INSTANCE = new JoinTableReferenceSqlFactory();
 
     @Override
     protected String createSql(TableReference.Edge sourceEdge, TableReference.Edge targetEdge, List<List<Object>> joinIds) {
