@@ -33,7 +33,7 @@ public class TableBrowser {
 
     public TableBrowser(IDatabaseConnection databaseConnection) throws DataSetException {
         this.databaseConnection = databaseConnection;
-        tableMetaDataRepository = new TableMetaDataRepository(databaseConnection);
+        this.tableMetaDataRepository = new TableMetaDataRepository(databaseConnection);
         try {
             connectionMetaData = new ConnectionMetaData(databaseConnection.getConnection());
         } catch (SQLException e) {
@@ -41,7 +41,7 @@ public class TableBrowser {
         }
     }
 
-    protected BrowseTableSqlFactory getTableBrowseSqlFactory() {
+    protected BrowseTableSqlFactory getBrowseTableSqlFactory() {
         if (tableBrowseSqlFactory == null) {
             tableBrowseSqlFactory = new DefaultBrowseTableSqlFactory(connectionMetaData);
         }
@@ -60,8 +60,8 @@ public class TableBrowser {
     }
 
     protected SqlStatement createSqlStatement(BrowseTable browseTable) {
-        BrowseTableSqlFactory tableBrowseSqlFactory = getTableBrowseSqlFactory();
-        return tableBrowseSqlFactory.createSqlStatement(browseTable);
+        BrowseTableSqlFactory tableBrowseSqlFactory = getBrowseTableSqlFactory();
+        return tableBrowseSqlFactory.selectSingleTable(browseTable);
     }
 
     private TableList browse(BrowseTable browseTable, SqlStatement sqlStatement) throws DataSetException {
@@ -97,9 +97,9 @@ public class TableBrowser {
         BrowseTable targetTableRef = targetBrowseReference.getTargetBrowseTable();
 
         try {
-            BrowseTableSqlFactory tableBrowseSqlFactory = getTableBrowseSqlFactory();
+            BrowseTableSqlFactory tableBrowseSqlFactory = getBrowseTableSqlFactory();
 
-            SqlStatement sqlStatement = tableBrowseSqlFactory.createSqlStatement(sourceTable, targetBrowseReference);
+            SqlStatement sqlStatement = tableBrowseSqlFactory.selectReferencedTable(sourceTable, targetBrowseReference);
 
             return browse(targetTableRef, sqlStatement);
         } catch (Exception e) {

@@ -10,7 +10,7 @@ import org.dbunit.dataset.ITable;
  */
 public interface BrowseTableSqlFactory {
 
-    public SqlStatement createSqlStatement(BrowseTable tableBrowseRef);
+    public SqlStatement selectSingleTable(BrowseTable browseTable);
 
-    public SqlStatement createSqlStatement(ITable sourceTable, BrowseTableReference targetTableReference) throws Exception;
+    public SqlStatement selectReferencedTable(ITable sourceTable, BrowseTableReference targetTableReference) throws Exception;
 }

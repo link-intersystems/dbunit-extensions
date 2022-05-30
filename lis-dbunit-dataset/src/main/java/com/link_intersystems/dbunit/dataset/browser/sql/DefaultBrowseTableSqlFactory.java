@@ -38,7 +38,7 @@ public class DefaultBrowseTableSqlFactory implements BrowseTableSqlFactory {
     }
 
     @Override
-    public SqlStatement createSqlStatement(BrowseTable browseTable) {
+    public SqlStatement selectSingleTable(BrowseTable browseTable) {
         StringBuilder sb = new StringBuilder();
         List<Object> arguments = new ArrayList<>();
         sb.append("select * from ");
@@ -79,7 +79,7 @@ public class DefaultBrowseTableSqlFactory implements BrowseTableSqlFactory {
     }
 
     @Override
-    public SqlStatement createSqlStatement(ITable sourceTable, BrowseTableReference targetTableReference) throws Exception {
+    public SqlStatement selectReferencedTable(ITable sourceTable, BrowseTableReference targetTableReference) throws Exception {
         String sourceTableName = sourceTable.getTableMetaData().getTableName();
         TableReference tableReference = tableReferenceResolver.getTableReference(sourceTableName, targetTableReference);
 
