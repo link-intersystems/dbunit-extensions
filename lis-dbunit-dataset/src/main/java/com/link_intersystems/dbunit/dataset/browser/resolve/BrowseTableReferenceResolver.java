@@ -10,6 +10,7 @@ import java.util.Arrays;
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 class BrowseTableReferenceResolver implements TableReferenceResolver {
+
     @Override
     public TableReference getTableReference(String sourceTableName, BrowseTableReference browseTableReference) {
         BrowseTable targetBrowseTable = browseTableReference.getTargetBrowseTable();
