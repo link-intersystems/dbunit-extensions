@@ -25,14 +25,6 @@ import java.util.List;
  */
 public class TableBrowser {
 
-    public static IDataSet browse(IDatabaseConnection databaseConnection, BrowseTable browseTable) throws DataSetException {
-        TableBrowser tableBrowser = new TableBrowser(databaseConnection);
-        tableBrowser.browse(browseTable);
-        return tableBrowser.getDataSet();
-    }
-
-    private TableList tableList = new TableList();
-
     private final IDatabaseConnection databaseConnection;
     private final TableMetaDataRepository tableMetaDataRepository;
     private final ConnectionMetaData connectionMetaData;
@@ -56,9 +48,15 @@ public class TableBrowser {
         return tableBrowseSqlFactory;
     }
 
-    public void browse(BrowseTable browseTable) throws DataSetException {
+    public IDataSet browse(BrowseTable browseTable) throws DataSetException {
         SqlStatement sqlStatement = createSqlStatement(browseTable);
-        browse(browseTable, sqlStatement);
+        TableList tableList = browse(browseTable, sqlStatement);
+        try {
+            tableList.pack();
+            return new DefaultDataSet(tableList.toArray(new ITable[0]));
+        } catch (AmbiguousTableNameException e) {
+            throw new RuntimeException("Please report a bug. This should not happen.", e);
+        }
     }
 
     protected SqlStatement createSqlStatement(BrowseTable browseTable) {
@@ -66,7 +64,8 @@ public class TableBrowser {
         return tableBrowseSqlFactory.createSqlStatement(browseTable);
     }
 
-    private void browse(BrowseTable browseTable, SqlStatement sqlStatement) throws DataSetException {
+    private TableList browse(BrowseTable browseTable, SqlStatement sqlStatement) throws DataSetException {
+        TableList tableList = new TableList();
         try {
             Connection connection = databaseConnection.getConnection();
             ITable targetTable = sqlStatement.processResultSet(connection, rs -> {
@@ -83,15 +82,18 @@ public class TableBrowser {
             List<BrowseTableReference> browseReferences = browseTable.getReferences();
 
             for (BrowseTableReference browseReference : browseReferences) {
-                browseReference(targetTable, browseReference);
+                TableList browsedReferencesTables = browseReference(targetTable, browseReference);
+                tableList.addAll(browsedReferencesTables);
             }
 
         } catch (SQLException e) {
             throw new DataSetException(e);
         }
+
+        return tableList;
     }
 
-    private void browseReference(ITable sourceTable, BrowseTableReference targetBrowseReference) throws SQLException {
+    private TableList browseReference(ITable sourceTable, BrowseTableReference targetBrowseReference) throws SQLException {
         BrowseTable targetTableRef = targetBrowseReference.getTargetBrowseTable();
 
         try {
@@ -99,20 +101,12 @@ public class TableBrowser {
 
             SqlStatement sqlStatement = tableBrowseSqlFactory.createSqlStatement(sourceTable, targetBrowseReference);
 
-            browse(targetTableRef, sqlStatement);
+            return browse(targetTableRef, sqlStatement);
         } catch (Exception e) {
             String msg = MessageFormat.format("Can not browse from source table ''{0}'' to target table ''{1}''", sourceTable.getTableMetaData().getTableName(), targetTableRef.getTableName());
             throw new TableBrowseException(msg, e);
         }
-    }
 
-    public IDataSet getDataSet() {
-        try {
-            tableList.pack();
-            return new DefaultDataSet(tableList.toArray(new ITable[0]));
-        } catch (AmbiguousTableNameException e) {
-            throw new RuntimeException("Please report a bug. This should not happen.", e);
-        }
     }
 
 }

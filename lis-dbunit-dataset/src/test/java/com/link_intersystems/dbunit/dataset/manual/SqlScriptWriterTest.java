@@ -63,9 +63,7 @@ class SqlScriptWriterTest {
         city.browse("country").natural();
 
         TableBrowser tableBrowser = new TableBrowser(databaseConnection);
-        tableBrowser.browse(actor);
-
-        return tableBrowser.getDataSet();
+        return tableBrowser.browse(actor);
     }
 
     void writeSqlScript(IDataSet dataSet) throws DataSetException, IOException {

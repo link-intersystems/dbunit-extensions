@@ -43,7 +43,7 @@ public class TableBrowserTest {
         BrowseTable film = filmActor.browse("film").natural();
         film.browse("language").on("language_id").references("language_id");
 
-        IDataSet dataSet = TableBrowser.browse(databaseConnection, filmActor);
+        IDataSet dataSet = tableBrowser.browse(filmActor);
 
         String[] tableNames = dataSet.getTableNames();
         assertArrayEquals(new String[]{"film_actor", "actor", "film", "language"}, tableNames);
@@ -97,7 +97,7 @@ public class TableBrowserTest {
         city.browse("country").natural();
 
 
-        IDataSet dataSet = TableBrowser.browse(databaseConnection, actor);
+        IDataSet dataSet = tableBrowser.browse(actor);
         DataSetAssertions assertions = new DataSetAssertions(dataSet);
 
         String[] tableNames = dataSet.getTableNames();
