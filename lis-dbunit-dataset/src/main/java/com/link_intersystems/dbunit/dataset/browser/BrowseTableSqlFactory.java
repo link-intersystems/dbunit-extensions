@@ -6,9 +6,9 @@ import org.dbunit.dataset.ITable;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public interface TableBrowseSqlFactory {
+public interface BrowseTableSqlFactory {
 
     public SqlStatement createSqlStatement(BrowseTable tableBrowseRef);
 
-    public SqlStatement createSqlStatement(BrowseTableReference targetTableBrowseRefeference, ITable sourceTable) throws Exception;
+    public SqlStatement createSqlStatement(ITable sourceTable, BrowseTableReference targetTableReference) throws Exception;
 }

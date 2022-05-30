@@ -16,8 +16,8 @@ public class BrowseTable {
         this.tableName = tableName;
     }
 
-    public OngoingTableBrowse browse(String joinTableName) {
-        return new OngoingTableBrowse(this, joinTableName);
+    public OngoingBrowseTable browse(String tableName) {
+        return new OngoingBrowseTable(this, tableName);
     }
 
     public BrowseTable browseNatural(String joinTableName) {

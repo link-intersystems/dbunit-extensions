@@ -33,7 +33,7 @@ public class TableBrowser {
     private final TableMetaDataRepository tableMetaDataRepository;
     private final ConnectionMetaData connectionMetaData;
 
-    private DefaultTableBrowseSqlFactory tableBrowseSqlFactory;
+    private DefaultBrowseTableSqlFactory tableBrowseSqlFactory;
 
     public TableBrowser(IDatabaseConnection databaseConnection) throws DataSetException {
         this.databaseConnection = databaseConnection;
@@ -45,9 +45,9 @@ public class TableBrowser {
         }
     }
 
-    protected TableBrowseSqlFactory getTableBrowseSqlFactory() {
+    protected BrowseTableSqlFactory getTableBrowseSqlFactory() {
         if (tableBrowseSqlFactory == null) {
-            tableBrowseSqlFactory = new DefaultTableBrowseSqlFactory(connectionMetaData);
+            tableBrowseSqlFactory = new DefaultBrowseTableSqlFactory(connectionMetaData);
         }
         return tableBrowseSqlFactory;
     }
@@ -59,7 +59,7 @@ public class TableBrowser {
     }
 
     protected SqlStatement createSqlStatement(BrowseTable tableBrowseRef) {
-        TableBrowseSqlFactory tableBrowseSqlFactory = getTableBrowseSqlFactory();
+        BrowseTableSqlFactory tableBrowseSqlFactory = getTableBrowseSqlFactory();
         return tableBrowseSqlFactory.createSqlStatement(tableBrowseRef);
     }
 
@@ -89,12 +89,12 @@ public class TableBrowser {
     }
 
     private void browseRef(ITable sourceTable, BrowseTableReference targetBrowseReference) throws SQLException {
-        BrowseTable targetTableRef = targetBrowseReference.getTargetTableRef();
+        BrowseTable targetTableRef = targetBrowseReference.getTargetBrowseTable();
 
         try {
-            TableBrowseSqlFactory tableBrowseSqlFactory = getTableBrowseSqlFactory();
+            BrowseTableSqlFactory tableBrowseSqlFactory = getTableBrowseSqlFactory();
 
-            SqlStatement sqlStatement = tableBrowseSqlFactory.createSqlStatement(targetBrowseReference, sourceTable);
+            SqlStatement sqlStatement = tableBrowseSqlFactory.createSqlStatement(sourceTable, targetBrowseReference);
 
             browse(targetTableRef, sqlStatement);
         } catch (Exception e) {

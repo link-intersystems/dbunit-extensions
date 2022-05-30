@@ -11,15 +11,13 @@ import java.util.*;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class DefaultTableBrowseSqlFactory implements TableBrowseSqlFactory {
+public class DefaultBrowseTableSqlFactory implements BrowseTableSqlFactory {
 
-    private final List<TableReferenceResolver> resolverChain = new ArrayList<>();
     private Map<String, SqlOperatorFormat> operatorToSqlMap = new HashMap<>();
+    private TableReferenceResolver tableReferenceResolver;
 
-    public DefaultTableBrowseSqlFactory(ConnectionMetaData connectionMetaData) {
-        resolverChain.add(new TargetBrowseNodeReferenceResolver());
-        resolverChain.add(new MetaDataTableReferenceResolver(connectionMetaData));
-
+    public DefaultBrowseTableSqlFactory(ConnectionMetaData connectionMetaData) {
+        tableReferenceResolver = new DefaultTableReferenceResolverChain(connectionMetaData);
         registerOperators(operatorToSqlMap);
     }
 
@@ -34,12 +32,13 @@ public class DefaultTableBrowseSqlFactory implements TableBrowseSqlFactory {
     }
 
     @Override
-    public SqlStatement createSqlStatement(BrowseTable tableBrowseRef) {
+    public SqlStatement createSqlStatement(BrowseTable browseTable) {
         StringBuilder sb = new StringBuilder();
         List<Object> arguments = new ArrayList<>();
-        sb.append("select * from " + tableBrowseRef.getTableName());
+        sb.append("select * from ");
+        sb.append(browseTable.getTableName());
 
-        TableCriteria criteria = tableBrowseRef.getCriteria();
+        TableCriteria criteria = browseTable.getCriteria();
         if (criteria != null) {
             sb.append(" where ");
 
@@ -74,8 +73,9 @@ public class DefaultTableBrowseSqlFactory implements TableBrowseSqlFactory {
     }
 
     @Override
-    public SqlStatement createSqlStatement(BrowseTableReference targetTableBrowseRefeference, ITable sourceTable) throws Exception {
-        TableReference tableReference = resolveTableReference(sourceTable.getTableMetaData().getTableName(), targetTableBrowseRefeference);
+    public SqlStatement createSqlStatement(ITable sourceTable, BrowseTableReference targetTableReference) throws Exception {
+        String sourceTableName = sourceTable.getTableMetaData().getTableName();
+        TableReference tableReference = tableReferenceResolver.getTableReference(sourceTableName, targetTableReference);
 
         TableReference.Edge sourceEdge = tableReference.getSourceEdge();
         TableReference.Edge targetEdge = tableReference.getTargetEdge();
@@ -87,7 +87,7 @@ public class DefaultTableBrowseSqlFactory implements TableBrowseSqlFactory {
         StringBuilder sb = new StringBuilder(sqlStatement.getSql());
         List<Object> arguments = new ArrayList<>(sqlStatement.getArguments());
 
-        BrowseTable targetTableRef = targetTableBrowseRefeference.getTargetTableRef();
+        BrowseTable targetTableRef = targetTableReference.getTargetBrowseTable();
         TableCriteria criteria = targetTableRef.getCriteria();
         if (criteria != null) {
             sb.append(" and ");
@@ -97,15 +97,5 @@ public class DefaultTableBrowseSqlFactory implements TableBrowseSqlFactory {
         return new SqlStatement(sb.toString(), arguments);
     }
 
-    private TableReference resolveTableReference(String sourceTableName, BrowseTableReference targetBrowseNode) {
-        TableReference tableReference = null;
 
-        Iterator<TableReferenceResolver> iterator = resolverChain.iterator();
-        while (tableReference == null && iterator.hasNext()) {
-            TableReferenceResolver referenceResolver = iterator.next();
-            tableReference = referenceResolver.getTableReference(sourceTableName, targetBrowseNode);
-        }
-
-        return tableReference;
-    }
 }

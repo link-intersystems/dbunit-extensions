@@ -21,7 +21,7 @@ public class BrowseTableReference {
         this.targetColumns = targetColumns;
     }
 
-    public BrowseTable getTargetTableRef() {
+    public BrowseTable getTargetBrowseTable() {
         return targetNode;
     }
 

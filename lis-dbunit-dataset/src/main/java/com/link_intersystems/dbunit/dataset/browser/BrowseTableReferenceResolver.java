@@ -7,10 +7,10 @@ import java.util.Arrays;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-class TargetBrowseNodeReferenceResolver implements TableReferenceResolver {
+class BrowseTableReferenceResolver implements TableReferenceResolver {
     @Override
     public TableReference getTableReference(String sourceTableName, BrowseTableReference targetBrowseNode) {
-        BrowseTable targetTableRef = targetBrowseNode.getTargetTableRef();
+        BrowseTable targetTableRef = targetBrowseNode.getTargetBrowseTable();
         String targetTableName = targetTableRef.getTableName();
 
         String[] sourceColumns = targetBrowseNode.getSourceColumns();

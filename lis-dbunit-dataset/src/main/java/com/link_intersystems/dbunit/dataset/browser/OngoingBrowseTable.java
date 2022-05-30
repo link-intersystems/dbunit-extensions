@@ -3,12 +3,12 @@ package com.link_intersystems.dbunit.dataset.browser;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class OngoingTableBrowse {
+public class OngoingBrowseTable {
 
     private final BrowseTable tableBrowseNode;
     private final String targetTableName;
 
-    public OngoingTableBrowse(BrowseTable tableBrowseNode, String targetTableName) {
+    public OngoingBrowseTable(BrowseTable tableBrowseNode, String targetTableName) {
         this.tableBrowseNode = tableBrowseNode;
         this.targetTableName = targetTableName;
     }
