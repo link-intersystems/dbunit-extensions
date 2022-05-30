@@ -16,7 +16,7 @@ class BrowseTableReferenceResolver implements TableReferenceResolver {
         String[] sourceColumns = targetBrowseNode.getSourceColumns();
         String[] targetColumns = targetBrowseNode.getTargetColumns();
 
-        if (sourceColumns != null && targetColumns != null) {
+        if (sourceColumns.length > 0 && targetColumns.length > 0) {
             TableReference.Edge sourceEdge = new TableReference.Edge(sourceTableName, Arrays.asList(sourceColumns));
             TableReference.Edge targetEdge = new TableReference.Edge(targetTableName, Arrays.asList(targetColumns));
             String name = "user_defined(" + sourceTableName + "->" + targetTableName + ")";

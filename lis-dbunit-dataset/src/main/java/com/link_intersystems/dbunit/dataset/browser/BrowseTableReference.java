@@ -1,24 +1,26 @@
 package com.link_intersystems.dbunit.dataset.browser;
 
+import java.util.Objects;
+
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 public class BrowseTableReference {
 
     private BrowseTable targetNode;
-    private String[] sourceColumns;
-    private String[] targetColumns;
+    private String[] sourceColumns = new String[0];
+    private String[] targetColumns = new String[0];
 
     BrowseTableReference(BrowseTable targetNode) {
         this.targetNode = targetNode;
     }
 
     void setSourceColumns(String[] sourceColumns) {
-        this.sourceColumns = sourceColumns;
+        this.sourceColumns = Objects.requireNonNull(sourceColumns);
     }
 
     void setTargetColumns(String[] targetColumns) {
-        this.targetColumns = targetColumns;
+        this.targetColumns = Objects.requireNonNull(targetColumns);
     }
 
     public BrowseTable getTargetBrowseTable() {

@@ -1,5 +1,7 @@
 package com.link_intersystems.dbunit.dataset.browser;
 
+import java.util.List;
+
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
@@ -20,7 +22,11 @@ public class OngoingBrowseTable {
         return targetNode;
     }
 
-    public OngoingReferenceBrowse on(String ...sourceColumnNames) {
+    public OngoingReferenceBrowse on(String... sourceColumnNames) {
         return new OngoingReferenceBrowse(tableBrowseNode, targetTableName, sourceColumnNames);
+    }
+
+    public OngoingReferenceBrowse on(List<String> sourceColumnNames) {
+        return on(sourceColumnNames.toArray(new String[0]));
     }
 }

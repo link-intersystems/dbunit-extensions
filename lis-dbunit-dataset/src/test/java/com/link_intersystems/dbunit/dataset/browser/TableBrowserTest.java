@@ -1,7 +1,6 @@
-package com.link_intersystems.dbunit.dataset;
+package com.link_intersystems.dbunit.dataset.browser;
 
-import com.link_intersystems.dbunit.dataset.browser.BrowseTable;
-import com.link_intersystems.dbunit.dataset.browser.TableBrowser;
+import com.link_intersystems.dbunit.dataset.DataSetAssertions;
 import com.link_intersystems.dbunit.table.TableUtil;
 import com.link_intersystems.test.ComponentTest;
 import com.link_intersystems.test.db.sakila.SakilaTestDBExtension;
@@ -14,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.sql.Connection;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -25,10 +25,12 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TableBrowserTest {
 
     private DatabaseConnection databaseConnection;
+    private TableBrowser tableBrowser;
 
     @BeforeEach
     void setUp(Connection sakilaConnection) throws DatabaseUnitException {
         databaseConnection = new DatabaseConnection(sakilaConnection);
+        tableBrowser = new TableBrowser(databaseConnection);
     }
 
     @Test
@@ -139,7 +141,6 @@ public class TableBrowserTest {
         assertions.assertRowCount("city", 486);
         assertions.assertRowCount("country", 106);
     }
-
 
 }
 

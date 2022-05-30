@@ -4,6 +4,8 @@ import com.link_intersystems.dbunit.meta.TableMetaDataRepository;
 import com.link_intersystems.dbunit.sql.statement.SqlStatement;
 import com.link_intersystems.dbunit.table.TableList;
 import com.link_intersystems.jdbc.ConnectionMetaData;
+import com.link_intersystems.jdbc.TableReference;
+import com.link_intersystems.jdbc.TableReferenceList;
 import org.dbunit.database.AmbiguousTableNameException;
 import org.dbunit.database.CachedResultSetTable;
 import org.dbunit.database.ForwardOnlyResultSetTable;
@@ -14,16 +16,18 @@ import java.sql.Connection;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 public class TableBrowser {
 
-    public static IDataSet browse(IDatabaseConnection databaseConnection, BrowseTable tableBrowseRef) throws DataSetException {
+    public static IDataSet browse(IDatabaseConnection databaseConnection, BrowseTable browseTable) throws DataSetException {
         TableBrowser tableBrowser = new TableBrowser(databaseConnection);
-        tableBrowser.browse(tableBrowseRef);
+        tableBrowser.browse(browseTable);
         return tableBrowser.getDataSet();
     }
 
@@ -52,18 +56,17 @@ public class TableBrowser {
         return tableBrowseSqlFactory;
     }
 
-
-    public void browse(BrowseTable tableBrowseRef) throws DataSetException {
-        SqlStatement sqlStatement = createSqlStatement(tableBrowseRef);
-        browse(tableBrowseRef, sqlStatement);
+    public void browse(BrowseTable browseTable) throws DataSetException {
+        SqlStatement sqlStatement = createSqlStatement(browseTable);
+        browse(browseTable, sqlStatement);
     }
 
-    protected SqlStatement createSqlStatement(BrowseTable tableBrowseRef) {
+    protected SqlStatement createSqlStatement(BrowseTable browseTable) {
         BrowseTableSqlFactory tableBrowseSqlFactory = getTableBrowseSqlFactory();
-        return tableBrowseSqlFactory.createSqlStatement(tableBrowseRef);
+        return tableBrowseSqlFactory.createSqlStatement(browseTable);
     }
 
-    private void browse(BrowseTable targetTableRef, SqlStatement sqlStatement) throws DataSetException {
+    private void browse(BrowseTable browseTable, SqlStatement sqlStatement) throws DataSetException {
         try {
             Connection connection = databaseConnection.getConnection();
             ITable targetTable = sqlStatement.processResultSet(connection, rs -> {
@@ -77,7 +80,7 @@ public class TableBrowser {
 
             tableList.add(targetTable);
 
-            List<BrowseTableReference> browseReferences = targetTableRef.getReferences();
+            List<BrowseTableReference> browseReferences = browseTable.getReferences();
 
             for (BrowseTableReference browseReference : browseReferences) {
                 browseRef(targetTable, browseReference);

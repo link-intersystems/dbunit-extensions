@@ -39,6 +39,8 @@ import java.util.List;
  * </ul>
  *
  * @author René Link {@literal <rene.link@link-intersystems.com>}
+ * @see com.link_intersystems.dbunit.dataset.browser.TableBrowser
+ *
  */
 public class SubsettingDataSetLoader {
 
