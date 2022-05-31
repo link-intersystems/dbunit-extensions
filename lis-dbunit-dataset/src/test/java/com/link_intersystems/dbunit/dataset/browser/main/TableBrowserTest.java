@@ -1,8 +1,7 @@
-package com.link_intersystems.dbunit.dataset.browser.executor;
+package com.link_intersystems.dbunit.dataset.browser.main;
 
 import com.link_intersystems.dbunit.dataset.DataSetAssertions;
 import com.link_intersystems.dbunit.dataset.browser.model.BrowseTable;
-import com.link_intersystems.dbunit.dataset.browser.executor.TableBrowser;
 import com.link_intersystems.dbunit.table.TableUtil;
 import com.link_intersystems.test.ComponentTest;
 import com.link_intersystems.test.db.sakila.SakilaTestDBExtension;

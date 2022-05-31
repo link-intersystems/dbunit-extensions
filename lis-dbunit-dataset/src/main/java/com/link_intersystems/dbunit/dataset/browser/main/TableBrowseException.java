@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.dataset.browser.executor;
+package com.link_intersystems.dbunit.dataset.browser.main;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}

@@ -1,7 +1,7 @@
 package com.link_intersystems.dbunit.dataset.loader;
 
 import com.link_intersystems.dbunit.dataset.MergedDataSet;
-import com.link_intersystems.dbunit.dataset.browser.executor.TableBrowser;
+import com.link_intersystems.dbunit.dataset.browser.main.TableBrowser;
 import com.link_intersystems.dbunit.meta.TableMetaDataRepository;
 import com.link_intersystems.dbunit.table.TableReferenceLoader;
 import com.link_intersystems.dbunit.table.TableList;

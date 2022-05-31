@@ -2,7 +2,7 @@ package com.link_intersystems.dbunit.dataset.manual;
 
 import com.link_intersystems.dbunit.dataset.BuildProperties;
 import com.link_intersystems.dbunit.dataset.browser.model.BrowseTable;
-import com.link_intersystems.dbunit.dataset.browser.executor.TableBrowser;
+import com.link_intersystems.dbunit.dataset.browser.main.TableBrowser;
 import com.link_intersystems.dbunit.sql.consumer.SqlScriptWriter;
 import com.link_intersystems.sql.dialect.DefaultSqlDialect;
 import com.link_intersystems.sql.format.DefaultLiteralFormatRegistry;

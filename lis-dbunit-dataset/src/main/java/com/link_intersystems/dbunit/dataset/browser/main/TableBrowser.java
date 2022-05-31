@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.dataset.browser.executor;
+package com.link_intersystems.dbunit.dataset.browser.main;
 
 import com.link_intersystems.dbunit.dataset.browser.model.BrowseTable;
 import com.link_intersystems.dbunit.dataset.browser.model.BrowseTableReference;
