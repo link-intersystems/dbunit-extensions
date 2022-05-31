@@ -74,7 +74,7 @@ Provides support for generating sql insert scripts from a IDataSet.
     // Either from 
     // - com.link-intersystems.commons:lis-commons-sql 
     // or 
-    // - com.link-intersystems.commons:lis-commons-sql-hibernate)
+    // - com.link-intersystems.commons:lis-commons-sql-hibernate
     SqlDialect sqlDialect = new DefaultSqlDialect();
 
     // Create a SqlStatementWriter that generates the sql script.
