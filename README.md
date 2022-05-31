@@ -25,14 +25,21 @@ but not all features will properly work.
 
 Provides extensions for dealing with dbunit tables. 
 
-    ITable table = ...;
-    TableUtil tableUtil = new TableUtil(table);
+- **MergedTable**: Merged two or more tables by the primary key definition so that the result table's rows are distinct.
+- **TableList**: A list of tables that can be packed to make the tables unique using MergedTables.
+- **CellRowFilter**: Filters rows based on a column predicate.
+- **ColumnList**: Provides filter and query methods for a list of columns.
+- **ColumnPredicates**: Convenience class that provides reusable predicates that can be applied to columns.
+- **TableUtil**: Convenience methods for table related queries.
 
-    Row row = tableUtil.getRowById(321);
+        ITable table = ...;
+        TableUtil tableUtil = new TableUtil(table);
+
+        Row row = tableUtil.getRowById(321);
     
-    for (Object cellValua : row) {
-        System.out.println(cellValue)
-    }
+        for (Object cellValua : row) {
+            System.out.println(cellValue)
+        }
 
 ## [lis-dbunit-dataset](lis-dbunit-dataset/README.md)
 

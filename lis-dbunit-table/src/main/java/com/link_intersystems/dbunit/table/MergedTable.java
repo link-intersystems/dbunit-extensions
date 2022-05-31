@@ -6,6 +6,10 @@ import java.util.*;
 
 import static java.text.MessageFormat.format;
 
+/**
+ * Merged two or more tables by the primary key definition so that the result table's rows are distinct.
+ * @author - René Link {@literal <rene.link@link-intersystems.com>}
+ */
 public class MergedTable extends AbstractTable {
     private final ITableMetaData _metaData;
     private final ITable effectiveTable;

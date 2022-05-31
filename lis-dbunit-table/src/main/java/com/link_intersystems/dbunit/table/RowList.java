@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * A
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 public class RowList extends AbstractList<Row> {

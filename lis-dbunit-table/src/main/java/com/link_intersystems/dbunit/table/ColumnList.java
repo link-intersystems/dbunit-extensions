@@ -12,7 +12,7 @@ import static com.link_intersystems.dbunit.table.ColumnPredicates.byName;
 import static com.link_intersystems.dbunit.table.ColumnPredicates.byNameIgnoreCase;
 
 /**
- * A {@link ColumnList} provides methods that apply to a list of {@link Column}s.
+ * A {@link ColumnList} provides filter and query methods for a list of {@link Column}s.
  *
  * @author - René Link {@literal <rene.link@link-intersystems.com>}
  */

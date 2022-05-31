@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * Convenience methods for table related queries.
+ *
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 public class TableUtil {

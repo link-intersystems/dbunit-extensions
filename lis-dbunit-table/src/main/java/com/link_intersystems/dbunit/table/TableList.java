@@ -7,9 +7,7 @@ import org.dbunit.dataset.ITableMetaData;
 import java.util.*;
 
 /**
- * A list of unique tables based on their {@link ITableMetaData}.
- * If a table is added to this list that already exists (same metadata as an already contained table)
- * the added table is merged with the existing table using a {@link MergedTable}.
+ * A list of tables that can be packed to make the tables unique using {@link MergedTable}s.
  *
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
