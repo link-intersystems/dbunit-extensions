@@ -64,7 +64,7 @@ class SqlScriptWriterTest {
         dataSetProducerAdapter.produce();
 
 
-        sakilaDatabase.reset();
+        sakilaDatabase.clear();
         SakilaSlimDB sakilaSlimDB = new SakilaSlimDB();
         sakilaSlimDB.getSchemaScript().execute(connection);
         sakilaSlimDB.getDdlScript().execute(connection);
