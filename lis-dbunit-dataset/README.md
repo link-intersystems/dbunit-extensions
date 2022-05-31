@@ -22,18 +22,20 @@ lis-dbunit-dataset provides different options to achieve this.
 The `TableBrowser` can be used to extract a dataset based on a kind of extract description.
 This description can be build using a domain-specific language. E.g.
 
-    BrowseTable actor = new BrowseTable("actor");
-    actor.with("actor_id").in(1, 2, 3);
+    BrowseTable filmActor = new BrowseTable("film_actor");
+    filmActor.with("film_id").eq(200);
+        
+    BrowseTable actor = filmActor.browse("actor").natural();
+    actor.with("first_name").like("W%");
 
     // browse natural means that you want the TableBrowser to select
     // a proper reference based on the foreign key meta data.
     // Outgoing references are preferred over incoming references.
-    BrowseTable filmActor = actor.browse("film_actor").natural();
     BrowseTable film = filmActor.browse("film").natural();
 
     // You can also tell the TableBrowser how it should browse
     // to another table by defining the join columns.
-    film.browse("language").on("original_language_id").references("language_id")
+    film.browse("language").on("original_language_id").references("language_id");
 
     film.browse("inventory").natural();
     
