@@ -19,10 +19,6 @@
         <module>lis-dbunit-table</module>
         <module>lis-dbunit-meta</module>
         <module>lis-dbunit-sql</module>
-
-        <!-- Must be the last module build in order to access the other modules test-jars -->
-        <!-- See "Reactor Sorting" - https://maven.apache.org/guides/mini/guide-multiple-modules.html -->
-        <module>lis-dbunit-compatibility</module>
     </modules>
 
     <properties>
@@ -190,6 +186,9 @@
     <profiles>
         <profile>
             <id>compatibility</id>
+            <modules>
+                <module>compatibility-tests</module>
+            </modules>
             <build>
                 <plugins>
                     <plugin>

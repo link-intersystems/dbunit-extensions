@@ -10,7 +10,9 @@
         <version>1.0.2-SNAPSHOT</version>
     </parent>
 
-    <artifactId>lis-dbunit-compatibility</artifactId>
+    <artifactId>compatibility-tests</artifactId>
+    <packaging>pom</packaging>
+    <name>compatibility tests</name>
 
     <build>
         <pluginManagement>
