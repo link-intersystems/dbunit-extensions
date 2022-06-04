@@ -17,7 +17,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <lis-dbunit.version>1.0.0-SNAPSHOT</lis-dbunit.version>
+        <lis-dbunit.version>1.0.2-SNAPSHOT</lis-dbunit.version>
     </properties>
 
     <dependencyManagement>
