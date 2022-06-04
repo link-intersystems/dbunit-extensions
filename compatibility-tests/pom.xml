@@ -40,7 +40,6 @@
                         <configuration>
                             <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
                             <settingsFile>src/it/settings.xml</settingsFile>
-                            <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
                             <projectsDirectory>${basedir}/src/it/compatibility</projectsDirectory>
                             <mergeUserSettings>true</mergeUserSettings>
                             <streamLogs>false</streamLogs>
