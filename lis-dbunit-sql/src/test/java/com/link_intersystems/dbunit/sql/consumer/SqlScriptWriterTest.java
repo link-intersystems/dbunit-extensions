@@ -3,11 +3,11 @@ package com.link_intersystems.dbunit.sql.consumer;
 import com.link_intersystems.sql.dialect.DefaultSqlDialect;
 import com.link_intersystems.sql.dialect.SqlDialect;
 import com.link_intersystems.sql.format.SqlFormatSettings;
-import com.link_intersystems.test.db.DBSetup;
+import com.link_intersystems.sql.io.SqlScript;
 import com.link_intersystems.test.db.sakila.SakilaSlimDB;
 import com.link_intersystems.test.db.sakila.SakilaSlimTestDBExtension;
+import com.link_intersystems.test.db.setup.DBSetup;
 import com.link_intersystems.test.jdbc.H2Database;
-import com.link_intersystems.test.jdbc.SqlScript;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.DatabaseDataSet;
@@ -39,12 +39,14 @@ class SqlScriptWriterTest {
     private IDataSet dataSet;
 
     @BeforeEach
-    void setUp(H2Database sakilaDatabase, DBSetup dbSetup) throws DatabaseUnitException, SQLException {
+    void setUp(H2Database sakilaDatabase) throws DatabaseUnitException, SQLException {
         this.sakilaDatabase = sakilaDatabase;
         Connection connection = sakilaDatabase.getConnection();
         DatabaseConnection databaseConnection = new DatabaseConnection(connection);
         DatabaseDataSet databaseDataSet = new DatabaseDataSet(databaseConnection, false, H2Database.SYSTEM_TABLE_PREDICATE.negate()::test);
-        dataSet = new FilteredDataSet(new DatabaseSequenceFilter(databaseConnection, dbSetup.getTableNames().toArray(new String[0])), databaseDataSet);
+        String[] sakilaSlimDBTables = {"actor", "film_actor", "film", "language", "film_category", "category"};
+        DatabaseSequenceFilter sequenceFilter = new DatabaseSequenceFilter(databaseConnection, sakilaSlimDBTables);
+        dataSet = new FilteredDataSet(sequenceFilter, databaseDataSet);
     }
 
     @Test
@@ -64,7 +66,9 @@ class SqlScriptWriterTest {
         dataSetProducerAdapter.produce();
 
 
-        sakilaDatabase.clear();
+        try (Statement statement = connection.createStatement()){
+            statement.execute("DROP ALL OBJECTS");
+        }
         SakilaSlimDB sakilaSlimDB = new SakilaSlimDB();
         sakilaSlimDB.getSchemaScript().execute(connection);
         sakilaSlimDB.getDdlScript().execute(connection);

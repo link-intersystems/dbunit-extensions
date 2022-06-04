@@ -4,6 +4,7 @@ import com.link_intersystems.dbunit.dataset.BuildProperties;
 import com.link_intersystems.dbunit.table.TableUtil;
 import com.link_intersystems.test.ComponentTest;
 import com.link_intersystems.test.db.sakila.SakilaTestDBExtension;
+import com.link_intersystems.test.db.sakila.SakilaTinyTestDBExtension;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.dataset.IDataSet;
@@ -24,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-@ExtendWith(SakilaTestDBExtension.class)
+@ExtendWith(SakilaTinyTestDBExtension.class)
 @ComponentTest
 public class ConsistentDataSetLoaderTest {
 
@@ -39,30 +40,26 @@ public class ConsistentDataSetLoaderTest {
 
     @Test
     void consistentLoad() throws DatabaseUnitException {
-        IDataSet dataSet = dataSetLoader.load("SELECT * from film_actor where film_actor.film_id = ?", Integer.valueOf(200));
+        IDataSet dataSet = dataSetLoader.load("SELECT * from film_actor where film_actor.film_id = ?", Integer.valueOf(1));
 
         String[] tableNames = dataSet.getTableNames();
         assertArrayEquals(new String[]{"film_actor", "film", "actor", "language"}, tableNames);
 
         ITable filmActorTable = dataSet.getTable("film_actor");
-        assertEquals(3, filmActorTable.getRowCount(), "film_actor entity count");
+        assertEquals(1, filmActorTable.getRowCount(), "film_actor entity count");
         TableUtil filmActorUtil = new TableUtil(filmActorTable);
 
-        assertNotNull(filmActorUtil.getRowById(9, 200));
-        assertNotNull(filmActorUtil.getRowById(102, 200));
-        assertNotNull(filmActorUtil.getRowById(139, 200));
+        assertNotNull(filmActorUtil.getRowById(1, 1));
 
         ITable actorTable = dataSet.getTable("actor");
-        assertEquals(3, actorTable.getRowCount(), "actor entity count");
+        assertEquals(1, actorTable.getRowCount(), "actor entity count");
         TableUtil actorUtil = new TableUtil(actorTable);
-        assertNotNull(actorUtil.getRowById(9));
-        assertNotNull(actorUtil.getRowById(102));
-        assertNotNull(actorUtil.getRowById(139));
+        assertNotNull(actorUtil.getRowById(1));
 
         ITable filmTable = dataSet.getTable("film");
         assertEquals(1, filmTable.getRowCount(), "film entity count");
         TableUtil filmUtil = new TableUtil(filmTable);
-        assertNotNull(filmUtil.getRowById(200));
+        assertNotNull(filmUtil.getRowById(1));
 
         ITable languageTable = dataSet.getTable("language");
         assertEquals(1, languageTable.getRowCount(), "language entity count");

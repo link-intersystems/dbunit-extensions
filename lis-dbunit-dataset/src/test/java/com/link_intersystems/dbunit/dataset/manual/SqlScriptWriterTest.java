@@ -8,6 +8,7 @@ import com.link_intersystems.sql.dialect.DefaultSqlDialect;
 import com.link_intersystems.sql.format.DefaultLiteralFormatRegistry;
 import com.link_intersystems.test.db.H2DatabaseFactory;
 import com.link_intersystems.test.db.sakila.SakilaEmptyDB;
+import com.link_intersystems.test.db.setup.DBSetupH2DatabaseFactory;
 import com.link_intersystems.test.jdbc.H2Database;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
@@ -27,7 +28,7 @@ class SqlScriptWriterTest {
 
     public static void main(String[] args) throws SQLException, DatabaseUnitException, IOException {
         SakilaEmptyDB sakilaEmptyDB = new SakilaEmptyDB();
-        H2DatabaseFactory h2DatabaseFactory = new H2DatabaseFactory(sakilaEmptyDB);
+        H2DatabaseFactory h2DatabaseFactory = new DBSetupH2DatabaseFactory(sakilaEmptyDB);
         H2Database sakilaDatabase = h2DatabaseFactory.create();
 
         SqlScriptWriterTest insertSqlScriptWriterTest = new SqlScriptWriterTest();
