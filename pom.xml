@@ -212,34 +212,6 @@
 
                         </executions>
                     </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-invoker-plugin</artifactId>
-                        <version>3.2.2</version>
-                        <configuration>
-                            <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-                            <settingsFile>src/it/settings.xml</settingsFile>
-                            <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
-                            <projectsDirectory>${basedir}/src/it/compatibility</projectsDirectory>
-                            <mergeUserSettings>true</mergeUserSettings>
-                            <streamLogs>false</streamLogs>
-                            <streamLogsOnFailures>true</streamLogsOnFailures>
-                            <debug>false</debug>
-                            <goals>
-                                <goal>surefire:test</goal>
-                            </goals>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>integration-test</id>
-                                <phase>integration-test</phase>
-                                <goals>
-                                    <goal>install</goal>
-                                    <goal>run</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
                 </plugins>
             </build>
         </profile>
