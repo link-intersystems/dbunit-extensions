@@ -58,6 +58,7 @@ class SqlScriptWriterTest {
         StringWriter writer = new StringWriter();
         SqlDialect sqlDialect = new DefaultSqlDialect();
         SqlScriptWriter sqlStatementWriter = new SqlScriptWriter(sqlDialect, writer);
+        sqlStatementWriter.setSchema("sakila2");
         SqlFormatSettings sqlFormatSettings = new SqlFormatSettings();
         sqlStatementWriter.setSqlFormatSettings(sqlFormatSettings);
 
@@ -67,10 +68,12 @@ class SqlScriptWriterTest {
 
 
         try (Statement statement = connection.createStatement()){
-            statement.execute("DROP ALL OBJECTS");
+            statement.execute("CREATE SCHEMA sakila2");
         }
+
+        sakilaDatabase.setSchema("sakila2");
+
         SakilaSlimDB sakilaSlimDB = new SakilaSlimDB();
-        sakilaSlimDB.getSchemaScript().execute(connection);
         sakilaSlimDB.getDdlScript().execute(connection);
 
         Map<String, Object> actorAfterReset = getRow(connection, SELECT_ACTOR, 1);

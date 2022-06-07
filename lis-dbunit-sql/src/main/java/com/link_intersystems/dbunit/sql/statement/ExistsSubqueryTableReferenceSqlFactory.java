@@ -9,41 +9,41 @@ import java.util.stream.Collectors;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class ExistsSubqueryDependencyStatementFactory extends AbstractTableReferenceSqlFactory {
+public class ExistsSubqueryTableReferenceSqlFactory extends AbstractTableReferenceSqlFactory {
 
-    public static final ExistsSubqueryDependencyStatementFactory INSTANCE = new ExistsSubqueryDependencyStatementFactory();
+    public static final ExistsSubqueryTableReferenceSqlFactory INSTANCE = new ExistsSubqueryTableReferenceSqlFactory();
 
     @Override
     protected String createSql(TableReference.Edge sourceEdge, TableReference.Edge targetEdge, List<List<Object>> joinIds) {
-        StringBuilder stmtBuilder = new StringBuilder("SELECT ");
+        StringBuilder stmtBuilder = new StringBuilder("select ");
 
         stmtBuilder.append("*");
 
-        stmtBuilder.append(" FROM ");
+        stmtBuilder.append(" from ");
         String targetTableName = targetEdge.getTableName();
         stmtBuilder.append(targetTableName);
-        stmtBuilder.append(" t ");
+        stmtBuilder.append(" t");
 
-        stmtBuilder.append(" WHERE EXISTS(");
+        stmtBuilder.append(" where exists(");
 
-        stmtBuilder.append("SELECT * FROM ");
+        stmtBuilder.append("select * from ");
         String sourceTableName = sourceEdge.getTableName();
         stmtBuilder.append(sourceTableName);
-        stmtBuilder.append(" s WHERE ");
+        stmtBuilder.append(" s where ");
 
         CharSequence joinColumns = getJoin(sourceEdge, "s", targetEdge, "t");
         stmtBuilder.append(joinColumns);
 
-        stmtBuilder.append(" AND (");
+        stmtBuilder.append(" and (");
 
 
         List<String> sourceColumns = sourceEdge.getColumns();
         List<String> columnCriteria = sourceColumns.stream()
                 .map(c -> new ColumnCriteria("s", c).toString()).collect(Collectors.toList());
-        String singleColumnCriteriaString = String.join(" AND ", columnCriteria);
+        String singleColumnCriteriaString = String.join(" and ", columnCriteria);
 
 
-        String columnCriteriaString = String.join(" OR ", Collections.nCopies(sourceColumns.size() * joinIds.size(), "(" + singleColumnCriteriaString + ")"));
+        String columnCriteriaString = String.join(" or ", Collections.nCopies(sourceColumns.size(), "(" + singleColumnCriteriaString + ")"));
         stmtBuilder.append(columnCriteriaString);
 
         stmtBuilder.append(")");
@@ -61,7 +61,7 @@ public class ExistsSubqueryDependencyStatementFactory extends AbstractTableRefer
 
         List<String> columnJoins = joinColumns.stream().map(ColumnJoin::toString).collect(Collectors.toList());
 
-        joinBuilder.append(String.join(" AND ", columnJoins));
+        joinBuilder.append(String.join(" and ", columnJoins));
 
         return joinBuilder;
     }

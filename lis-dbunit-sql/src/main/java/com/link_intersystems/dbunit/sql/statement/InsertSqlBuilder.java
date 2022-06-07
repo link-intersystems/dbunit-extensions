@@ -45,8 +45,6 @@ public class InsertSqlBuilder {
                 LiteralFormat literalFormat = sqlDialect.getLiteralFormat(sqlType);
                 String literalValue = literalFormat.format(values[colIndex]);
                 insertSql.addColumn(columnName, literalValue);
-            } catch (RuntimeException e) {
-                throw e;
             } catch (Exception e) {
                 String columnName = column.getColumnName();
                 String msg = MessageFormat.format("Unable to write column {0}.{1}", tableName, columnName);

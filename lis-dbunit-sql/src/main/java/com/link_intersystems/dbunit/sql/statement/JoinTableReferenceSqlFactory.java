@@ -15,20 +15,20 @@ public class JoinTableReferenceSqlFactory extends AbstractTableReferenceSqlFacto
 
     @Override
     protected String createSql(TableReference.Edge sourceEdge, TableReference.Edge targetEdge, List<List<Object>> joinIds) {
-        StringBuilder stmtBuilder = new StringBuilder("SELECT distinct ");
+        StringBuilder stmtBuilder = new StringBuilder("select distinct ");
 
         String targetTableName = targetEdge.getTableName();
         stmtBuilder.append(targetTableName);
         stmtBuilder.append(".*");
 
-        stmtBuilder.append(" FROM ");
+        stmtBuilder.append(" from ");
         stmtBuilder.append(targetTableName);
 
 
         CharSequence join = getJoin(sourceEdge, targetEdge);
 
         stmtBuilder.append(join);
-        stmtBuilder.append(" WHERE (");
+        stmtBuilder.append(" where (");
 
         String sourceTableName = sourceEdge.getTableName();
         List<String> sourceColumns = sourceEdge.getColumns();
@@ -38,12 +38,12 @@ public class JoinTableReferenceSqlFactory extends AbstractTableReferenceSqlFacto
 
         stmtBuilder.append(String.join(", ", whereColumns));
 
-        stmtBuilder.append(") IN (");
+        stmtBuilder.append(") in (");
 
 
         String whereSourceColumnsPart = String.join(", ", Collections.nCopies(sourceColumns.size(), "?"));
 
-        String whereParameters = String.join(", ", Collections.nCopies(joinIds.size() * sourceColumns.size(), "(" + whereSourceColumnsPart + ")"));
+        String whereParameters = String.join(", ", Collections.nCopies(joinIds.size(), "(" + whereSourceColumnsPart + ")"));
         stmtBuilder.append(whereParameters);
 
         stmtBuilder.append(")");
@@ -63,10 +63,10 @@ public class JoinTableReferenceSqlFactory extends AbstractTableReferenceSqlFacto
 
         List<String> columnJoins = joinColumns.stream().map(ColumnJoin::toString).collect(Collectors.toList());
 
-        joinBuilder.append(" JOIN ");
+        joinBuilder.append(" join ");
         joinBuilder.append(sourceTableName);
-        joinBuilder.append(" ON ");
-        joinBuilder.append(String.join(" AND ", columnJoins));
+        joinBuilder.append(" on ");
+        joinBuilder.append(String.join(" and ", columnJoins));
 
         return joinBuilder;
     }
