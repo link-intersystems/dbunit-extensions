@@ -7,7 +7,7 @@
 
     <parent>
         <groupId>com.link-intersystems.dbunit.integration-tests</groupId>
-        <artifactId>lis-dbunit-compatibility-pom</artifactId>
+        <artifactId>compatibility-pom</artifactId>
         <version>1</version>
     </parent>
 
