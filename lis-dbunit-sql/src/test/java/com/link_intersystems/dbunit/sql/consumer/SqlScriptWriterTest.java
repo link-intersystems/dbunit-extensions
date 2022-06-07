@@ -6,7 +6,6 @@ import com.link_intersystems.sql.format.SqlFormatSettings;
 import com.link_intersystems.sql.io.SqlScript;
 import com.link_intersystems.test.db.sakila.SakilaSlimDB;
 import com.link_intersystems.test.db.sakila.SakilaSlimTestDBExtension;
-import com.link_intersystems.test.db.setup.DBSetup;
 import com.link_intersystems.test.jdbc.H2Database;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
@@ -67,7 +66,7 @@ class SqlScriptWriterTest {
         dataSetProducerAdapter.produce();
 
 
-        try (Statement statement = connection.createStatement()){
+        try (Statement statement = connection.createStatement()) {
             statement.execute("CREATE SCHEMA sakila2");
         }
 

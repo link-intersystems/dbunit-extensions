@@ -41,10 +41,11 @@
                             <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
                             <settingsFile>src/it/settings.xml</settingsFile>
                             <projectsDirectory>${basedir}/src/it/compatibility</projectsDirectory>
+                            <localRepositoryPath>${project.build.directory}/it-repo</localRepositoryPath>
                             <mergeUserSettings>true</mergeUserSettings>
                             <streamLogs>false</streamLogs>
                             <streamLogsOnFailures>true</streamLogsOnFailures>
-                            <debug>false</debug>
+                            <debug>true</debug>
                             <goals>
                                 <goal>surefire:test</goal>
                             </goals>
