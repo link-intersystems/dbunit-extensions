@@ -19,7 +19,8 @@ Limitations and exceptions are listed below.
 
 ## lis-dbunit-beans
 
-Provides Java Beans support for IDataSets which allows you to define a data set from a collection of beans.
+Provides Java Beans support for IDataSets which allows you to define a data set from a collection of beans. Since
+Java Beans are based on Java classes you can use refactoring tools to reflect database schema changes. 
 
     List<BeanList<?>> beanLists = new ArrayList<>();
 
