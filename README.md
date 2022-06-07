@@ -12,14 +12,29 @@ The dbunit compatibility tests, test this library against dbunit versions 2.4.6 
 All modules in this project are at least compatible with the dbunit versions within the tested range. 
 Limitations and exceptions are listed below.
 
+- lis-dbunit-beans
+  - Support for BigInteger bean property types does not work.
+  - TypeConversionException.getCause will always be null. You must use TypeConversionException.getException.
+  - slf4j api version 1.4.3 must be added.
+
 ## lis-dbunit-beans
 
-lis-dbunit-beans needs at least dbunit version 2.2, 
-but not all features will properly work.
+Provides Java Beans support for IDataSets which allows you to define a data set from a collection of beans.
 
-- Support for BigInteger bean property types does not work.
-- TypeConversionException.getCause will always be null. You must use TypeConversionException.getException.
-- slf4j api version 1.4.3 must be added.
+    List<BeanList<?>> beanLists = new ArrayList<>();
+
+    BeanList<EmployeeBean> employeeBeans = new BeanList<>(EmployeeBean.class, asList(EmployeeBean.king(), EmployeeBean.blake()));
+    beanLists.add(employeeBeans);
+
+    BeanList<DepartmentBean> departmentBeans = new BeanList<>(DepartmentBean.class, asList(DepartmentBean.accounting(), DepartmentBean.sales(), DepartmentBean.research()));
+    beanLists.add(departmentBeans);
+
+    beanDataSet = new BeanDataSet(beanLists);
+
+The `ITableMetaData` for bean based data sets is determined using a `BeanTableMetaDataProvider`. The `DefaultBeanTableMetaDataProvider`
+can be customized by setting a `PropertyConversion`. The `PropertyConversion` is responsible for converting bean properties to
+database types and vice versa. The `DefaultPropertyConversion` uses the `DefaultDataTypeRegistry` and the `DefaultPropertyTypeRegistry`
+to convert property values.
 
 ## lis-dbunit-table
 
