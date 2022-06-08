@@ -1,5 +1,6 @@
 package com.link_intersystems.dbunit.sql.consumer;
 
+import com.link_intersystems.jdbc.MapRowMapper;
 import com.link_intersystems.sql.dialect.DefaultSqlDialect;
 import com.link_intersystems.sql.dialect.SqlDialect;
 import com.link_intersystems.sql.format.SqlFormatSettings;
@@ -86,30 +87,22 @@ class SqlScriptWriterTest {
     }
 
     private Map<String, Object> getRow(Connection connection, String sql, Object... args) throws SQLException {
-        LinkedHashMap row = null;
-
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             for (int i = 0; i < args.length; i++) {
                 ps.setObject(i + 1, args[i]);
             }
 
+
             if (ps.execute()) {
                 ResultSet resultSet = ps.getResultSet();
 
                 if (resultSet.next()) {
-                    row = new LinkedHashMap();
-
-                    ResultSetMetaData metaData = resultSet.getMetaData();
-                    for (int i = 0; i < metaData.getColumnCount(); i++) {
-                        int columnIndex = i + 1;
-                        String columnName = metaData.getColumnName(columnIndex);
-                        Object columnValue = resultSet.getObject(columnIndex);
-                        row.put(columnName, columnValue);
-                    }
+                    MapRowMapper mapRowMapper = new MapRowMapper();
+                    return mapRowMapper.map(resultSet);
                 }
             }
         }
 
-        return row;
+        return null;
     }
 }

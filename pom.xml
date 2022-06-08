@@ -105,29 +105,6 @@
             </dependency>
             <dependency>
                 <groupId>com.link-intersystems.commons</groupId>
-                <artifactId>lis-commons-test</artifactId>
-                <version>${lis-commons.version}</version>
-                <type>test-jar</type>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>com.link-intersystems.commons</groupId>
-                <artifactId>lis-commons-beans</artifactId>
-                <version>${lis-commons.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.link-intersystems.commons</groupId>
-                <artifactId>lis-commons-lang</artifactId>
-                <version>${lis-commons.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.link-intersystems.commons</groupId>
-                <artifactId>lis-commons-util</artifactId>
-                <version>${lis-commons.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.link-intersystems.commons</groupId>
                 <artifactId>lis-commons-jdbc</artifactId>
                 <version>${lis-commons.version}</version>
             </dependency>
