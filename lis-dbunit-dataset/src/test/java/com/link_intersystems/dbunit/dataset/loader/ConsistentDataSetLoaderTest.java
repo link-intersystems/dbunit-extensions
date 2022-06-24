@@ -3,8 +3,8 @@ package com.link_intersystems.dbunit.dataset.loader;
 import com.link_intersystems.dbunit.dataset.BuildProperties;
 import com.link_intersystems.dbunit.table.TableUtil;
 import com.link_intersystems.test.ComponentTest;
-import com.link_intersystems.test.db.sakila.SakilaTestDBExtension;
-import com.link_intersystems.test.db.sakila.SakilaTinyTestDBExtension;
+import com.link_intersystems.jdbc.test.db.sakila.SakilaTestDBExtension;
+import com.link_intersystems.jdbc.test.db.sakila.SakilaTinyTestDBExtension;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.dataset.IDataSet;
@@ -40,7 +40,7 @@ public class ConsistentDataSetLoaderTest {
 
     @Test
     void consistentLoad() throws DatabaseUnitException {
-        IDataSet dataSet = dataSetLoader.load("SELECT * from film_actor where film_actor.film_id = ?", Integer.valueOf(1));
+        IDataSet dataSet = dataSetLoader.load("SELECT * from film_actor where film_actor.film_id = ?", 1);
 
         String[] tableNames = dataSet.getTableNames();
         assertArrayEquals(new String[]{"film_actor", "film", "actor", "language"}, tableNames);
@@ -68,7 +68,7 @@ public class ConsistentDataSetLoaderTest {
     }
 
     @Test
-    void sakilaExport() throws SQLException, DatabaseUnitException, IOException {
+    void sakilaExport() throws DatabaseUnitException, IOException {
         IDataSet dataSet = dataSetLoader.load("SELECT * from actor where actor_id in (1)");
 
         BuildProperties buildProperties = new BuildProperties();

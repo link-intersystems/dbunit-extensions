@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.Arrays.asList;
 
@@ -132,5 +133,18 @@ public class BrowseTable {
         }
 
         return targetEdge.getColumns().equals(targetColumns);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BrowseTable that = (BrowseTable) o;
+        return Objects.equals(tableName, that.tableName) && Objects.equals(references, that.references) && Objects.equals(tableCriteria, that.tableCriteria);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tableName, references, tableCriteria);
     }
 }

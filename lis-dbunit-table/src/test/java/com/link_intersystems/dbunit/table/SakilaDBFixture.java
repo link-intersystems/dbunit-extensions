@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.table;
 
-import com.link_intersystems.test.jdbc.H2Database;
+import com.link_intersystems.jdbc.test.H2Database;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.DatabaseDataSet;

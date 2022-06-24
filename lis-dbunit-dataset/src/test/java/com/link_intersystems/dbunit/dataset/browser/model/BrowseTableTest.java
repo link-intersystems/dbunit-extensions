@@ -1,7 +1,7 @@
 package com.link_intersystems.dbunit.dataset.browser.model;
 
 import com.link_intersystems.jdbc.ConnectionMetaData;
-import com.link_intersystems.test.db.sakila.SakilaEmptyTestDBExtension;
+import com.link_intersystems.jdbc.test.db.sakila.SakilaEmptyTestDBExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

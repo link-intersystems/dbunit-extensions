@@ -1,5 +1,6 @@
 package com.link_intersystems.dbunit.dataset.browser.model;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -33,5 +34,21 @@ public class BrowseTableReference {
 
     public String[] getTargetColumns() {
         return targetColumns;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BrowseTableReference that = (BrowseTableReference) o;
+        return Objects.equals(targetNode, that.targetNode) && Arrays.equals(sourceColumns, that.sourceColumns) && Arrays.equals(targetColumns, that.targetColumns);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(targetNode);
+        result = 31 * result + Arrays.hashCode(sourceColumns);
+        result = 31 * result + Arrays.hashCode(targetColumns);
+        return result;
     }
 }

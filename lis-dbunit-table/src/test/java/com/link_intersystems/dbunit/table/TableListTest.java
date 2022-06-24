@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.table;
 
-import com.link_intersystems.test.db.sakila.SakilaSlimTestDBExtension;
+import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimTestDBExtension;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITable;
@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -42,9 +43,7 @@ class TableListTest {
     @Test
     void pack() throws DataSetException {
         ITable[] actors = sakilaDBFixture.getSplittedTables("actor", 40);
-        for (ITable actor : actors) {
-            tableList.add(actor);
-        }
+        Collections.addAll(tableList, actors);
 
         assertEquals(5, tableList.size());
         tableList.pack();

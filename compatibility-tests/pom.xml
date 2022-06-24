@@ -22,7 +22,7 @@
 
         <dependency>
             <groupId>com.link-intersystems.commons</groupId>
-            <artifactId>lis-commons-test-db</artifactId>
+            <artifactId>lis-commons-jdbc-test</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

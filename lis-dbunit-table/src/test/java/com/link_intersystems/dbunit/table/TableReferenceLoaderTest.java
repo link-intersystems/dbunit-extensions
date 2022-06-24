@@ -1,7 +1,7 @@
 package com.link_intersystems.dbunit.table;
 
 import com.link_intersystems.dbunit.sql.statement.JoinTableReferenceSqlFactory;
-import com.link_intersystems.test.db.sakila.SakilaSlimTestDBExtension;
+import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimTestDBExtension;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.dataset.DataSetException;

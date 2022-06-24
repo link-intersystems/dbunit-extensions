@@ -1,13 +1,13 @@
 package com.link_intersystems.dbunit.sql.consumer;
 
 import com.link_intersystems.jdbc.MapRowMapper;
+import com.link_intersystems.jdbc.test.H2Database;
+import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimDB;
+import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimTestDBExtension;
 import com.link_intersystems.sql.dialect.DefaultSqlDialect;
 import com.link_intersystems.sql.dialect.SqlDialect;
 import com.link_intersystems.sql.format.SqlFormatSettings;
 import com.link_intersystems.sql.io.SqlScript;
-import com.link_intersystems.test.db.sakila.SakilaSlimDB;
-import com.link_intersystems.test.db.sakila.SakilaSlimTestDBExtension;
-import com.link_intersystems.test.jdbc.H2Database;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.DatabaseDataSet;
