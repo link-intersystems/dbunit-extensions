@@ -125,6 +125,11 @@
                 <version>${lis-commons.version}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>com.link-intersystems.commons</groupId>
+                <artifactId>lis-commons-swing</artifactId>
+                <version>${lis-commons.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.dbunit</groupId>

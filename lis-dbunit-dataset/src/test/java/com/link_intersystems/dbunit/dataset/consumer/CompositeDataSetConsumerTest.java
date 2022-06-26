@@ -1,5 +1,6 @@
-package com.link_intersystems.dbunit.dataset;
+package com.link_intersystems.dbunit.dataset.consumer;
 
+import com.link_intersystems.dbunit.dataset.consumer.CompositeDataSetConsumer;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITableMetaData;
 import org.dbunit.dataset.stream.IDataSetConsumer;
