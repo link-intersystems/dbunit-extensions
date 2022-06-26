@@ -21,6 +21,10 @@ public class CompositeDataSetConsumer implements IDataSetConsumer {
         dataSetConsumers.remove(dataSetConsumer);
     }
 
+    public boolean isEmpty() {
+        return dataSetConsumers.isEmpty();
+    }
+
     @Override
     public void startDataSet() throws DataSetException {
         for (IDataSetConsumer dataSetConsumer : dataSetConsumers) {
@@ -55,4 +59,5 @@ public class CompositeDataSetConsumer implements IDataSetConsumer {
             dataSetConsumer.row(objects);
         }
     }
+
 }
