@@ -20,11 +20,12 @@ public class TableList extends AbstractList<ITable> {
      * @return a list of unique {@link ITable} that have been merged using a {@link MergedTable}.
      */
     public static List<ITable> merge(List<ITable> tables) {
-        LinkedHashMap<ITableMetaData, ITable> mergedTables = new LinkedHashMap<>();
+        LinkedHashMap<String, ITable> mergedTables = new LinkedHashMap<>();
 
         for (ITable table : tables) {
             ITableMetaData tableMetaData = table.getTableMetaData();
-            ITable effectiveTable = mergedTables.get(tableMetaData);
+            String tableName = tableMetaData.getTableName();
+            ITable effectiveTable = mergedTables.get(tableName);
 
             if (effectiveTable == null) {
                 effectiveTable = table;
@@ -36,7 +37,7 @@ public class TableList extends AbstractList<ITable> {
                 }
             }
 
-            mergedTables.put(tableMetaData, effectiveTable);
+            mergedTables.put(tableName, effectiveTable);
         }
 
         return new ArrayList<>(mergedTables.values());
