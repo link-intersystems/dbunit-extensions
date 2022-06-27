@@ -20,10 +20,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  */
 @ComponentTest
 @ExtendWith(SakilaSlimTestDBExtension.class)
-class TableReferenceLoaderTest {
+class DatabaseTableReferenceLoaderTest {
 
     private DatabaseConnection databaseConnection;
-    private TableReferenceLoader tableDependencyLoader;
+    private DatabaseTableReferenceLoader tableDependencyLoader;
     private SakilaDBFixture sakilaDBFixture;
 
     @BeforeEach
@@ -34,7 +34,7 @@ class TableReferenceLoaderTest {
 
     @Test
     void loadOutgoingTables() throws DataSetException {
-        tableDependencyLoader = new TableReferenceLoader(databaseConnection, JoinTableReferenceSqlFactory.INSTANCE);
+        tableDependencyLoader = new DatabaseTableReferenceLoader(databaseConnection, JoinTableReferenceSqlFactory.INSTANCE);
 
         ITable filmActorTable = sakilaDBFixture.getTable("film_actor");
 

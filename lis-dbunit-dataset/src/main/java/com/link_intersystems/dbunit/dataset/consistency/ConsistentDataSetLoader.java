@@ -2,7 +2,11 @@ package com.link_intersystems.dbunit.dataset.consistency;
 
 import com.link_intersystems.dbunit.dataset.browser.main.TableBrowser;
 import com.link_intersystems.dbunit.meta.TableMetaDataRepository;
+import com.link_intersystems.dbunit.table.DatabaseTableReferenceLoader;
+import com.link_intersystems.dbunit.table.TableReferenceLoader;
+import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.CachedResultSetTable;
+import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.ForwardOnlyResultSetTable;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.DataSetException;
@@ -70,9 +74,10 @@ public class ConsistentDataSetLoader {
                 ITableMetaData tableMetaData = tableMetaDataRepository.getTableMetaData(tableName);
                 ForwardOnlyResultSetTable forwardOnlyResultSetTable = new ForwardOnlyResultSetTable(tableMetaData, resultSet);
                 CachedResultSetTable mainTable = new CachedResultSetTable(forwardOnlyResultSetTable);
-                return new ConsistentDataSet(databaseConnection, mainTable);
+                TableReferenceLoader tableReferenceLoader = new DatabaseTableReferenceLoader(new DatabaseConnection(connection));
+                return new ConsistentDataSet(tableReferenceLoader, mainTable);
             }
-        } catch (SQLException e) {
+        } catch (SQLException | DatabaseUnitException e) {
             throw new DataSetException(e);
         }
 

@@ -3,7 +3,6 @@ package com.link_intersystems.dbunit.dataset.consistency;
 import com.link_intersystems.dbunit.dataset.MergedDataSet;
 import com.link_intersystems.dbunit.table.TableList;
 import com.link_intersystems.dbunit.table.TableReferenceLoader;
-import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.*;
 
 import java.util.*;
@@ -19,15 +18,15 @@ public class ConsistentDataSet extends AbstractDataSet {
 
     private IDataSet consistentDataSet;
     private IDataSet sourceDataSet;
-    private TableReferenceLoader entityDependencyLoader;
+    private TableReferenceLoader tableReferenceLoader;
 
-    public ConsistentDataSet(IDatabaseConnection databaseConnection, ITable... tables) throws DataSetException {
-        this(new DefaultDataSet(requireNonNull(tables)), databaseConnection);
+    public ConsistentDataSet(TableReferenceLoader tableReferenceLoader, ITable... tables) throws DataSetException {
+        this(new DefaultDataSet(requireNonNull(tables)), tableReferenceLoader);
     }
 
-    public ConsistentDataSet(IDataSet sourceDataSet, IDatabaseConnection databaseConnection) throws DataSetException {
+    public ConsistentDataSet(IDataSet sourceDataSet, TableReferenceLoader tableReferenceLoader) {
         this.sourceDataSet = requireNonNull(sourceDataSet);
-        entityDependencyLoader = new TableReferenceLoader(databaseConnection);
+        this.tableReferenceLoader = tableReferenceLoader;
     }
 
     private IDataSet getConsistentDataSet() throws DataSetException {
@@ -58,7 +57,7 @@ public class ConsistentDataSet extends AbstractDataSet {
     }
 
     private List<ITable> loadOutgoingReferences(Set<ITable> uniqueTables, ITable table) throws DataSetException {
-        TableList loadedTables = entityDependencyLoader.loadOutgoingReferences(table);
+        TableList loadedTables = tableReferenceLoader.loadOutgoingReferences(table);
         return loadedTables.stream().filter(uniqueTables::add).collect(toList());
     }
 
