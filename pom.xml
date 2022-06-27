@@ -19,6 +19,7 @@
         <module>lis-dbunit-table</module>
         <module>lis-dbunit-meta</module>
         <module>lis-dbunit-sql</module>
+        <module>lis-dbunit-commands</module>
     </modules>
 
     <properties>
