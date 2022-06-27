@@ -1,9 +1,9 @@
 package com.link_intersystems.dbunit.dataset.loader;
 
 import com.link_intersystems.dbunit.dataset.BuildProperties;
+import com.link_intersystems.dbunit.dataset.consistency.ConsistentDataSetLoader;
 import com.link_intersystems.dbunit.table.TableUtil;
 import com.link_intersystems.test.ComponentTest;
-import com.link_intersystems.jdbc.test.db.sakila.SakilaTestDBExtension;
 import com.link_intersystems.jdbc.test.db.sakila.SakilaTinyTestDBExtension;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
@@ -18,7 +18,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
