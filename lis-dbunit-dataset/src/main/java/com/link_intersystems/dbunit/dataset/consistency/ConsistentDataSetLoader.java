@@ -70,7 +70,7 @@ public class ConsistentDataSetLoader {
                 ITableMetaData tableMetaData = tableMetaDataRepository.getTableMetaData(tableName);
                 ForwardOnlyResultSetTable forwardOnlyResultSetTable = new ForwardOnlyResultSetTable(tableMetaData, resultSet);
                 CachedResultSetTable mainTable = new CachedResultSetTable(forwardOnlyResultSetTable);
-                return new ConsistentDataSet(mainTable, databaseConnection);
+                return new ConsistentDataSet(databaseConnection, mainTable);
             }
         } catch (SQLException e) {
             throw new DataSetException(e);

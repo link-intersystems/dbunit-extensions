@@ -1,9 +1,9 @@
 package com.link_intersystems.dbunit.table;
 
 import com.link_intersystems.dbunit.meta.TableMetaDataRepository;
-import com.link_intersystems.dbunit.sql.statement.TableReferenceSqlFactory;
 import com.link_intersystems.dbunit.sql.statement.JoinTableReferenceSqlFactory;
 import com.link_intersystems.dbunit.sql.statement.SqlStatement;
+import com.link_intersystems.dbunit.sql.statement.TableReferenceSqlFactory;
 import com.link_intersystems.jdbc.ConnectionMetaData;
 import com.link_intersystems.jdbc.TableReference;
 import com.link_intersystems.jdbc.TableReferenceList;
@@ -39,7 +39,7 @@ public class TableReferenceLoader {
     }
 
     public TableReferenceLoader(IDatabaseConnection databaseConnection, TableReferenceSqlFactory tableReferenceSqlFactory) throws DataSetException {
-        this.databaseConnection = databaseConnection;
+        this.databaseConnection = Objects.requireNonNull(databaseConnection);
 
         tableMetaDataRepository = new TableMetaDataRepository(databaseConnection);
         try {

@@ -1,10 +1,13 @@
 package com.link_intersystems.dbunit.dataset;
 
 import com.link_intersystems.dbunit.table.TableList;
-import org.dbunit.database.AmbiguousTableNameException;
 import org.dbunit.dataset.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import static java.util.Arrays.asList;
 
 /**
  * A {@link IDataSet} that merges multiple tables of the same name into one eliminates row duplicates according to the
@@ -14,31 +17,27 @@ import java.util.List;
  */
 public class MergedDataSet extends AbstractDataSet {
 
-    private TableList tableList;
+    private TableList tables;
 
-    private IDataSet mergedDataSet;
-
-    public MergedDataSet(List<ITable> tableList) {
-        this.tableList = new TableList(tableList);
+    public MergedDataSet(ITable... tables) {
+        this(asList(tables));
     }
 
-    public IDataSet getMergedDataSet() {
-        if (mergedDataSet == null) {
-            tableList.pack();
-
-            try {
-                mergedDataSet = new DefaultDataSet(tableList.toArray(new ITable[0]));
-            } catch (AmbiguousTableNameException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        return mergedDataSet;
+    public MergedDataSet(List<ITable> tables) {
+        this.tables = new TableList(tables);
+        this.tables.pack();
     }
 
     @Override
-    protected ITableIterator createIterator(boolean b) throws DataSetException {
-        IDataSet mergedDataSet = getMergedDataSet();
-        return b ? mergedDataSet.reverseIterator() : mergedDataSet.iterator();
+    protected ITableIterator createIterator(boolean reversed) {
+        List<ITable> iterateTables = tables;
+
+        if (reversed) {
+            iterateTables = new ArrayList<>(tables);
+            Collections.reverse(iterateTables);
+        }
+
+        return new DefaultTableIterator(iterateTables.toArray(new ITable[0]));
     }
+
 }

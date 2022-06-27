@@ -6,59 +6,78 @@ import com.link_intersystems.dbunit.table.TableReferenceLoader;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.*;
 
-import java.util.List;
+import java.util.*;
+
+import static java.util.Collections.newSetFromMap;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 public class ConsistentDataSet extends AbstractDataSet {
 
-    private final MergedDataSet mergedDataSet;
+    private IDataSet consistentDataSet;
+    private IDataSet sourceDataSet;
+    private TableReferenceLoader entityDependencyLoader;
 
-    public ConsistentDataSet(ITable rootTable, IDatabaseConnection databaseConnection) throws DataSetException {
-        this(new DefaultDataSet(rootTable), databaseConnection);
+    public ConsistentDataSet(IDatabaseConnection databaseConnection, ITable... tables) throws DataSetException {
+        this(new DefaultDataSet(requireNonNull(tables)), databaseConnection);
     }
 
-    public ConsistentDataSet(IDataSet dataSet, IDatabaseConnection databaseConnection) throws DataSetException {
+    public ConsistentDataSet(IDataSet sourceDataSet, IDatabaseConnection databaseConnection) throws DataSetException {
+        this.sourceDataSet = requireNonNull(sourceDataSet);
+        entityDependencyLoader = new TableReferenceLoader(databaseConnection);
+    }
+
+    private IDataSet getConsistentDataSet() throws DataSetException {
+        if (consistentDataSet == null) {
+            Queue<ITable> tables = queueTables(sourceDataSet);
+
+            TableList resultDataSet = loadTables(tables);
+
+            consistentDataSet = new MergedDataSet(resultDataSet);
+        }
+        return consistentDataSet;
+    }
+
+    private TableList loadTables(Queue<ITable> tables) throws DataSetException {
+        TableList resultDataSet = new TableList();
+
+        Set<ITable> uniqueTables = newSetFromMap(new IdentityHashMap<>());
+
+        while (!tables.isEmpty()) {
+            ITable table = tables.poll();
+            resultDataSet.add(table);
+
+            List<ITable> outgoingReferencedTables = loadOutgoingReferences(uniqueTables, table);
+            outgoingReferencedTables.forEach(tables::offer);
+        }
+
+        return resultDataSet;
+    }
+
+    private List<ITable> loadOutgoingReferences(Set<ITable> uniqueTables, ITable table) throws DataSetException {
+        TableList loadedTables = entityDependencyLoader.loadOutgoingReferences(table);
+        return loadedTables.stream().filter(uniqueTables::add).collect(toList());
+    }
+
+    private Queue<ITable> queueTables(IDataSet dataSet) throws DataSetException {
+        Queue<ITable> tablesToLoad = new LinkedList<>();
+
         ITableIterator iterator = dataSet.iterator();
-
-
-        TableReferenceLoader entityDependencyLoader = new TableReferenceLoader(databaseConnection);
-
-        TableList tableList = new TableList();
-
         while (iterator.next()) {
             ITable table = iterator.getTable();
-            tableList.addAll(loadOutgoingTables(entityDependencyLoader, table));
-            tableList.pack();
+            tablesToLoad.offer(table);
         }
 
-        mergedDataSet = new MergedDataSet(tableList);
-    }
-
-    private TableList loadOutgoingTables(TableReferenceLoader entityDependencyLoader, ITable table) throws DataSetException {
-        TableList tableList = loadTables(entityDependencyLoader, table);
-        tableList.add(0, table);
-        return tableList;
-    }
-
-    private TableList loadTables(TableReferenceLoader entityDependencyLoader, ITable table) throws DataSetException {
-        TableList loadedTables = entityDependencyLoader.loadOutgoingReferences(table);
-
-
-        int size = loadedTables.size();
-        for (int i = 0; i < size; i++) {
-            ITable outgoingTable = loadedTables.get(i);
-            List<ITable> subsequentTables = loadTables(entityDependencyLoader, outgoingTable);
-            loadedTables.addAll(subsequentTables);
-        }
-
-        return loadedTables;
+        return tablesToLoad;
     }
 
     @Override
     protected ITableIterator createIterator(boolean b) throws DataSetException {
-        return b ? mergedDataSet.reverseIterator() : mergedDataSet.iterator();
+        IDataSet consistentDataSet = getConsistentDataSet();
+        return b ? consistentDataSet.reverseIterator() : consistentDataSet.iterator();
     }
 }
 
