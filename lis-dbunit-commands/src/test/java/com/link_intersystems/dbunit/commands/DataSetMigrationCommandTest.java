@@ -1,6 +1,7 @@
 package com.link_intersystems.dbunit.commands;
 
 import com.link_intersystems.dbunit.dataset.consistency.ConsistentDatabaseDataSet;
+import com.link_intersystems.dbunit.test.DBUnitAssertions;
 import com.link_intersystems.jdbc.test.H2Database;
 import com.link_intersystems.jdbc.test.db.sakila.SakilaH2DatabaseFactory;
 import com.link_intersystems.jdbc.test.db.sakila.SakilaTinyTestDBExtension;
@@ -27,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 @ExtendWith(SakilaTinyTestDBExtension.class)
 class DataSetMigrationCommandTest {
-
 
     @Test
     void migrateToAnotherDatabase(Connection connection) throws Exception {
@@ -61,42 +61,8 @@ class DataSetMigrationCommandTest {
 
         XmlDataSet xmlDataSet = new XmlDataSet(new ByteArrayInputStream(bout.toByteArray()));
 
-        assertDataSetsEquals(flatXmlDataSet, xmlDataSet);
+        DBUnitAssertions.assertDataSetEquals(flatXmlDataSet, xmlDataSet);
     }
 
-    private void assertDataSetsEquals(IDataSet expected, IDataSet actual) throws DataSetException {
-        assertArrayEquals(expected.getTableNames(), actual.getTableNames());
 
-        String[] tableNames = expected.getTableNames();
-
-        for (String tableName : tableNames) {
-            ITable expectedTable = expected.getTable(tableName);
-            ITable actualTable = actual.getTable(tableName);
-
-            assertTableEquals(expectedTable, actualTable);
-        }
-
-    }
-
-    private void assertTableEquals(ITable expectedTable, ITable actualTable) throws DataSetException {
-        ITableMetaData expectedMetaData = expectedTable.getTableMetaData();
-        ITableMetaData actualMetaData = actualTable.getTableMetaData();
-
-        assertEquals(expectedMetaData.getTableName(), actualMetaData.getTableName());
-        assertArrayEquals(expectedMetaData.getColumns(), actualMetaData.getColumns());
-        assertArrayEquals(expectedMetaData.getPrimaryKeys(), actualMetaData.getPrimaryKeys());
-
-        assertEquals(expectedTable.getRowCount(), actualTable.getRowCount());
-
-        Column[] columns = expectedMetaData.getColumns();
-        int rowCount = expectedTable.getRowCount();
-
-        for (int row = 0; row < rowCount; row++) {
-            for (Column column : columns) {
-                String columnName = column.getColumnName();
-                assertEquals(expectedTable.getValue(row, columnName), actualTable.getValue(row, columnName), "Value at row" + row + " and column '" + columnName + "'");
-            }
-        }
-
-    }
 }

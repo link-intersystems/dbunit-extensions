@@ -2,7 +2,6 @@ package com.link_intersystems.dbunit.dataset.consumer;
 
 import com.link_intersystems.dbunit.dataset.MergedDataSet;
 import com.link_intersystems.dbunit.table.TableList;
-import org.dbunit.DatabaseUnitException;
 import org.dbunit.dataset.*;
 import org.dbunit.dataset.stream.DefaultConsumer;
 

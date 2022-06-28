@@ -44,6 +44,7 @@ public class DataSetMigrationCommand implements DataSetConsumerSupport {
 
     public void exec() throws DataSetException {
         IDataSet effectiveDataSet = sourceDataSet;
+
         effectiveDataSet = filterTables(effectiveDataSet);
         effectiveDataSet = filterTablesContent(effectiveDataSet);
         effectiveDataSet = decorateResult(effectiveDataSet);

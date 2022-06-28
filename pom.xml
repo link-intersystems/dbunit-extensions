@@ -89,6 +89,12 @@
                 <artifactId>lis-dbunit-table</artifactId>
                 <version>1.0.2-SNAPSHOT</version>
             </dependency>
+            <dependency>
+                <groupId>com.link-intersystems.dbunit</groupId>
+                <artifactId>lis-dbunit-test</artifactId>
+                <version>1.0.2-SNAPSHOT</version>
+                <scope>test</scope>
+            </dependency>
 
             <dependency>
                 <groupId>com.link-intersystems.commons</groupId>

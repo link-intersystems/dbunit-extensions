@@ -28,6 +28,10 @@
             <version>5.2.2</version>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>com.link-intersystems.dbunit</groupId>
+            <artifactId>lis-dbunit-test</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

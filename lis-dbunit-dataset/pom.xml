@@ -34,11 +34,9 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.4.0</version>
+            <groupId>com.link-intersystems.dbunit</groupId>
+            <artifactId>lis-dbunit-test</artifactId>
         </dependency>
-
     </dependencies>
 
 
