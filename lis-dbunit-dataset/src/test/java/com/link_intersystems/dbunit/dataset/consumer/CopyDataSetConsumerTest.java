@@ -12,7 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import static com.link_intersystems.dbunit.test.DBUnitAssertions.assertDataSetEquals;
+import static com.link_intersystems.dbunit.test.DBUnitAssertions.STRICT;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -30,7 +30,7 @@ class CopyDataSetConsumerTest {
         dataSetProducerAdapter.setConsumer(copyDataSetConsumer);
         dataSetProducerAdapter.produce();
 
-        assertDataSetEquals(filteredDataSet, copyDataSetConsumer.getDataSet());
+        STRICT.assertDataSetEquals(filteredDataSet, copyDataSetConsumer.getDataSet());
     }
 
 

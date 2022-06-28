@@ -23,18 +23,22 @@ public class CopyDataSetConsumer extends DefaultConsumer {
     }
 
     @Override
-    public void startDataSet() {
+    public void startDataSet() throws DataSetException {
         tableList = new TableList();
     }
 
     @Override
     public void startTable(ITableMetaData metaData) throws DataSetException {
+        ITableMetaData copyMetaData = copyMetaData(metaData);
+
+        copyTable = new DefaultTable(copyMetaData);
+    }
+
+    protected DefaultTableMetaData copyMetaData(ITableMetaData metaData) throws DataSetException {
         String tableName = metaData.getTableName();
         Column[] columns = copyColumns(metaData.getColumns());
         Column[] primaryKeys = getPrimaryKeys(columns, metaData.getPrimaryKeys());
-        DefaultTableMetaData copyMetaData = new DefaultTableMetaData(tableName, columns, primaryKeys);
-
-        copyTable = new DefaultTable(copyMetaData);
+        return new DefaultTableMetaData(tableName, columns, primaryKeys);
     }
 
     private Column[] getPrimaryKeys(Column[] columns, Column[] primaryKeys) {

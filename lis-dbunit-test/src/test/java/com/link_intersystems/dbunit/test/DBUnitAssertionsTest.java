@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
+import static com.link_intersystems.dbunit.test.DBUnitAssertions.STRICT;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
@@ -57,16 +58,16 @@ class DBUnitAssertionsTest {
         defaultDataSet2.addTable(defaultTable1);
         defaultDataSet2.addTable(defaultTable2);
 
-        DBUnitAssertions.assertDataSetEquals(defaultDataSet1, defaultDataSet2);
+        STRICT.assertDataSetEquals(defaultDataSet1, defaultDataSet2);
     }
 
     @Test
     void assertTablesEquals() throws DataSetException {
-        DBUnitAssertions.assertTablesEquals(defaultTable1, defaultTable2);
+        STRICT.assertTablesEquals(defaultTable1, defaultTable2);
 
         defaultTable2.addRow(new Object[]{3, "C"});
 
-        assertThrows(AssertionFailedError.class, () -> DBUnitAssertions.assertTablesEquals(defaultTable1, defaultTable2));
+        assertThrows(AssertionFailedError.class, () -> STRICT.assertTablesEquals(defaultTable1, defaultTable2));
     }
 
     @Test
@@ -79,17 +80,17 @@ class DBUnitAssertionsTest {
         defaultTable2.addRow(new Object[]{1, "A"});
         defaultTable2.addRow(new Object[]{2, "B"});
 
-        DBUnitAssertions.assertTableContentEquals(defaultTable1, defaultTable2);
+        STRICT.assertTableContentEquals(defaultTable1, defaultTable2);
 
         defaultTable2.addRow(new Object[]{3, "C"});
 
-        assertThrows(AssertionFailedError.class, () -> DBUnitAssertions.assertTableContentEquals(defaultTable1, defaultTable2));
+        assertThrows(AssertionFailedError.class, () -> STRICT.assertTableContentEquals(defaultTable1, defaultTable2));
     }
 
     @Test
     void assertMetaDataEquals() throws DataSetException {
-        DBUnitAssertions.assertMetaDataEquals(defaultTableMetaData1, defaultTableMetaData1);
+        STRICT.assertMetaDataEquals(defaultTableMetaData1, defaultTableMetaData1);
 
-        assertThrows(AssertionFailedError.class, () -> DBUnitAssertions.assertMetaDataEquals(defaultTableMetaData1, defaultTableMetaData3));
+        assertThrows(AssertionFailedError.class, () -> STRICT.assertMetaDataEquals(defaultTableMetaData1, defaultTableMetaData3));
     }
 }

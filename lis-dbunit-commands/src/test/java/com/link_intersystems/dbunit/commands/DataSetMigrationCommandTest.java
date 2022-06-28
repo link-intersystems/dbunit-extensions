@@ -2,22 +2,19 @@ package com.link_intersystems.dbunit.commands;
 
 import com.link_intersystems.dbunit.dataset.consistency.ConsistentDatabaseDataSet;
 import com.link_intersystems.dbunit.test.DBUnitAssertions;
+import com.link_intersystems.dbunit.test.TestDataSets;
 import com.link_intersystems.jdbc.test.H2Database;
 import com.link_intersystems.jdbc.test.db.sakila.SakilaH2DatabaseFactory;
 import com.link_intersystems.jdbc.test.db.sakila.SakilaTinyTestDBExtension;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.DatabaseDataSet;
 import org.dbunit.dataset.*;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.dataset.xml.XmlDataSet;
-import org.dbunit.operation.DatabaseOperation;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.sql.Connection;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -44,15 +41,15 @@ class DataSetMigrationCommandTest {
         Connection targetConnection = h2Database.getConnection();
         DatabaseConnection targetDatabaseConnection = new DatabaseConnection(targetConnection);
 
-        migrationCommand.setDatabaseConsumer(targetDatabaseConnection, DatabaseOperation.UPDATE);
+//        migrationCommand.setDatabaseConsumer(targetDatabaseConnection, DatabaseOperation.UPDATE);
+        migrationCommand.setFlatXmlConsumer("target/flat.xml");
         migrationCommand.exec();
     }
 
     @Test
     void convertToAnotherFormat() throws Exception {
-        InputStream in = DataSetMigrationCommandTest.class.getResourceAsStream("flat.xml");
-        FlatXmlDataSet flatXmlDataSet = new FlatXmlDataSetBuilder().build(in);
-        DataSetMigrationCommand migrateCommand = new DataSetMigrationCommand(flatXmlDataSet);
+        IDataSet tinySakilaDataSet = TestDataSets.getTinySakilaDataSet();
+        DataSetMigrationCommand migrateCommand = new DataSetMigrationCommand(tinySakilaDataSet);
 
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         migrateCommand.setXmlConsumer(bout);
@@ -61,7 +58,7 @@ class DataSetMigrationCommandTest {
 
         XmlDataSet xmlDataSet = new XmlDataSet(new ByteArrayInputStream(bout.toByteArray()));
 
-        DBUnitAssertions.assertDataSetEquals(flatXmlDataSet, xmlDataSet);
+        DBUnitAssertions.STRICT.assertDataSetEquals(tinySakilaDataSet, xmlDataSet);
     }
 
 

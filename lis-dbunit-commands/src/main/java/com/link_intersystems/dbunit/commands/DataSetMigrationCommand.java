@@ -3,9 +3,7 @@ package com.link_intersystems.dbunit.commands;
 import com.link_intersystems.dbunit.dataset.consumer.DataSetConsumerSupport;
 import com.link_intersystems.dbunit.dataset.consumer.WriterDataSetConsumer;
 import org.dbunit.database.AmbiguousTableNameException;
-import org.dbunit.dataset.DataSetException;
-import org.dbunit.dataset.FilteredDataSet;
-import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.*;
 import org.dbunit.dataset.filter.SequenceTableFilter;
 import org.dbunit.dataset.stream.DataSetProducerAdapter;
 import org.dbunit.dataset.stream.IDataSetConsumer;
@@ -17,7 +15,27 @@ import static java.util.Objects.requireNonNull;
  */
 public class DataSetMigrationCommand implements DataSetConsumerSupport {
 
+    public static final String DEFAULT_NULL_REPLACEMENT = "[null]";
+
     private IDataSetConsumer dataSetConsumer;
+    private String nullReplacement = DEFAULT_NULL_REPLACEMENT;
+    private boolean includeNulls = true;
+
+    public void setNullReplacement(String nullReplacement) {
+        this.nullReplacement = requireNonNull(nullReplacement);
+    }
+
+    public String getNullReplacement() {
+        return nullReplacement;
+    }
+
+    public void setIncludeNulls(boolean includeNulls) {
+        this.includeNulls = includeNulls;
+    }
+
+    public boolean isIncludeNulls() {
+        return includeNulls;
+    }
 
     public interface ResultDataSetDecorator {
 
@@ -48,11 +66,23 @@ public class DataSetMigrationCommand implements DataSetConsumerSupport {
         effectiveDataSet = filterTables(effectiveDataSet);
         effectiveDataSet = filterTablesContent(effectiveDataSet);
         effectiveDataSet = decorateResult(effectiveDataSet);
+        effectiveDataSet = applyNullReplacement(effectiveDataSet);
         effectiveDataSet = orderByDependencies(effectiveDataSet);
 
         DataSetProducerAdapter producerAdapter = new DataSetProducerAdapter(effectiveDataSet);
         producerAdapter.setConsumer(getDataSetConsumer());
         producerAdapter.produce();
+    }
+
+    private IDataSet applyNullReplacement(IDataSet dataSet) {
+        if (includeNulls) {
+            return dataSet;
+        }
+        ReplacementDataSet replacementDataSet = new ReplacementDataSet(dataSet);
+        replacementDataSet.addReplacementObject(null, nullReplacement);
+        replacementDataSet.addReplacementObject(nullReplacement, ITable.NO_VALUE);
+        replacementDataSet.setStrictReplacement(true);
+        return replacementDataSet;
     }
 
     private IDataSet decorateResult(IDataSet dataSet) throws DataSetException {
