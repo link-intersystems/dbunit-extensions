@@ -17,6 +17,40 @@ Limitations and exceptions are listed below.
   - TypeConversionException.getCause will always be null. You must use TypeConversionException.getException.
   - slf4j api version 1.4.3 must be added.
 
+## [lis-dbunit-commands](lis-dbunit-commands/README.md)
+
+A high level api for common dbunit tasks.
+
+    Connection sourceConnection = ...; // java.sql.Connection
+    DatabaseConnection databaseConnection = new DatabaseConnection(sourceConnection);
+    DatabaseDataSet databaseDataSet = new DatabaseDataSet(databaseConnection, false);
+    
+    DataSetExportCommand dbUnitExportCommand = new DataSetExportCommand(databaseDataSet);
+
+    dbUnitExportCommand.setTables("actor", "film_actor", "film");
+    dbUnitExportCommand.setTableOrder(new DatabaseTableOrder(databaseConnection));
+    dbUnitExportCommand.setResultDecorator(ds -> new ConsistentDatabaseDataSet(databaseConnection, ds));
+    
+
+    Connection targetConnection = ...; // java.sql.Connection
+    DatabaseConnection targetDatabaseConnection = new DatabaseConnection(targetConnection);
+    
+### Export to another database
+
+    dbUnitExportCommand.setDatabaseConsumer(targetDatabaseConnection, DatabaseOperation.UPDATE);
+    dbUnitExportCommand.exec();
+
+### Export as CSV
+
+    dbUnitExportCommand.setCsvConsumer("target/export/csv");
+    dbUnitExportCommand.exec();
+
+### Export as flat XML
+
+    dbUnitExportCommand.setFlatXmlConsumer("target/export/flat.xml");
+    dbUnitExportCommand.exec();
+
+
 ## [lis-dbunit-dataset](lis-dbunit-dataset/README.md)
 
 For details take a look at [lis-dbunit-dataset](lis-dbunit-dataset/README.md)
