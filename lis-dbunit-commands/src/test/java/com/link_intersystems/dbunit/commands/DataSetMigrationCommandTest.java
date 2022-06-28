@@ -1,6 +1,7 @@
 package com.link_intersystems.dbunit.commands;
 
 import com.link_intersystems.dbunit.dataset.consistency.ConsistentDatabaseDataSet;
+import com.link_intersystems.dbunit.table.DatabaseTableOrder;
 import com.link_intersystems.dbunit.test.DBUnitAssertions;
 import com.link_intersystems.dbunit.test.TestDataSets;
 import com.link_intersystems.jdbc.test.H2Database;

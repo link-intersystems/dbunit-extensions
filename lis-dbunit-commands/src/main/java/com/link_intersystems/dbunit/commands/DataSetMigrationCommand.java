@@ -2,6 +2,7 @@ package com.link_intersystems.dbunit.commands;
 
 import com.link_intersystems.dbunit.dataset.consumer.DataSetConsumerSupport;
 import com.link_intersystems.dbunit.dataset.consumer.WriterDataSetConsumer;
+import com.link_intersystems.dbunit.table.TableOrder;
 import org.dbunit.database.AmbiguousTableNameException;
 import org.dbunit.dataset.*;
 import org.dbunit.dataset.filter.SequenceTableFilter;
