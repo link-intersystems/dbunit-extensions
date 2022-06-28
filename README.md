@@ -31,23 +31,7 @@ A high level api for common dbunit tasks.
     dbUnitExportCommand.setTableOrder(new DatabaseTableOrder(databaseConnection));
     dbUnitExportCommand.setResultDecorator(ds -> new ConsistentDatabaseDataSet(databaseConnection, ds));
     
-
-    Connection targetConnection = ...; // java.sql.Connection
-    DatabaseConnection targetDatabaseConnection = new DatabaseConnection(targetConnection);
-    
-### Export to another database
-
-    dbUnitExportCommand.setDatabaseConsumer(targetDatabaseConnection, DatabaseOperation.UPDATE);
-    dbUnitExportCommand.exec();
-
-### Export as CSV
-
     dbUnitExportCommand.setCsvConsumer("target/export/csv");
-    dbUnitExportCommand.exec();
-
-### Export as flat XML
-
-    dbUnitExportCommand.setFlatXmlConsumer("target/export/flat.xml");
     dbUnitExportCommand.exec();
 
 

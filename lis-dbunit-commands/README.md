@@ -25,11 +25,6 @@ A high level api for common dbunit tasks.
 
 ## Export to another database
 
-    Connection targetConnection = ...; // java.sql.Connection
-    DatabaseConnection targetDatabaseConnection = new DatabaseConnection(targetConnection);
-
-## Export to another database
-
     dbUnitExportCommand.setDatabaseConsumer(targetDatabaseConnection, DatabaseOperation.UPDATE);
     dbUnitExportCommand.exec();
 
