@@ -13,6 +13,7 @@ import com.link_intersystems.sql.dialect.DefaultSqlDialect;
 import com.link_intersystems.sql.dialect.SqlDialect;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.DatabaseDataSet;
+import org.dbunit.operation.DatabaseOperation;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -35,11 +36,12 @@ class DataSetExportCommandTest {
         dbUnitExportCommand.setTableOrder(new DatabaseTableOrder(databaseConnection));
         dbUnitExportCommand.setResultDecorator(ds -> new ConsistentDatabaseDataSet(databaseConnection, ds));
 
-        SakilaH2DatabaseFactory sakilaH2DatabaseFactory = new SakilaH2DatabaseFactory("empty");
+        SakilaH2DatabaseFactory sakilaH2DatabaseFactory = new SakilaH2DatabaseFactory();
         H2Database h2Database = sakilaH2DatabaseFactory.create();
         Connection targetConnection = h2Database.getConnection();
+        DatabaseConnection targetDatabaseConnection = new DatabaseConnection(targetConnection);
 
-        dbUnitExportCommand.setDataSetConsumer(new DatabaseDataSetConsumer(targetConnection));
+        dbUnitExportCommand.setDatabaseConsumer(targetDatabaseConnection, DatabaseOperation.UPDATE);
         dbUnitExportCommand.exec();
     }
 }

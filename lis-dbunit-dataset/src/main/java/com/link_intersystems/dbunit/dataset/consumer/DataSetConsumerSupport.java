@@ -1,18 +1,15 @@
 package com.link_intersystems.dbunit.dataset.consumer;
 
-import com.link_intersystems.sql.dialect.DefaultSqlDialect;
-import com.link_intersystems.sql.dialect.SqlDialect;
+import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.csv.CsvDataSetWriter;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 import org.dbunit.dataset.xml.FlatXmlWriter;
 import org.dbunit.dataset.xml.XmlDataSetWriter;
+import org.dbunit.operation.DatabaseOperation;
 
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -20,34 +17,22 @@ import java.sql.SQLException;
 public interface DataSetConsumerSupport {
 
     // DatabaseConsumer
-    default public void setDatabaseConsumer(String jdbcUrl, String username, String password) throws IOException {
-        setDatabaseConsumer(jdbcUrl, username, password, new DefaultSqlDialect());
+    default public void setDatabaseConsumer(IDatabaseConnection connection) {
+        setDatabaseConsumer(connection, DatabaseOperation.INSERT);
     }
 
-    default public void setDatabaseConsumer(String jdbcUrl, String username, String password, SqlDialect sqlDialect) throws IOException {
-        try {
-            setDatabaseConsumer(DriverManager.getConnection(jdbcUrl, username, password), sqlDialect);
-        } catch (SQLException e) {
-            throw new IOException(e);
-        }
-    }
-
-    default public void setDatabaseConsumer(Connection connection) throws IOException {
-        setDatabaseConsumer(connection, new DefaultSqlDialect());
-    }
-
-    default public void setDatabaseConsumer(Connection connection, SqlDialect sqlDialect) throws IOException {
-        setDataSetConsumer(new DatabaseDataSetConsumer(connection, sqlDialect));
+    default public void setDatabaseConsumer(IDatabaseConnection connection, DatabaseOperation databaseOperation) {
+        setDataSetConsumer(new DatabaseDataSetConsumer(connection, databaseOperation));
     }
 
 
     // CsvConsumer
 
-    default public void setCsvConsumer(String outputDirectory) throws IOException {
+    default public void setCsvConsumer(String outputDirectory) {
         setCsvConsumer(new File(outputDirectory));
     }
 
-    default public void setCsvConsumer(File outputDirectory) throws IOException {
+    default public void setCsvConsumer(File outputDirectory) {
         setDataSetConsumer(new CsvDataSetWriter(outputDirectory));
     }
 
