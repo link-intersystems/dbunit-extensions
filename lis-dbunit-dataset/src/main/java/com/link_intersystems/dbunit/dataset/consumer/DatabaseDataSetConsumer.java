@@ -53,11 +53,6 @@ public class DatabaseDataSetConsumer extends CopyDataSetConsumer {
     }
 
     @Override
-    public void startTable(ITableMetaData metaData) throws DataSetException {
-        super.startTable(metaData);
-    }
-
-    @Override
     protected DefaultTableMetaData copyMetaData(ITableMetaData metaData) throws DataSetException {
         String tableName = metaData.getTableName();
 
