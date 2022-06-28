@@ -55,7 +55,7 @@ public class WriterDataSetConsumer implements IDataSetConsumer {
     public void startTable(ITableMetaData tableMetaData) throws DataSetException {
         Column[] columns = tableMetaData.getColumns();
 
-        tableModel = new DefaultTableModel(Arrays.stream(columns).map(Column::getColumnName).toArray(String[]::new), 1);
+        tableModel = new DefaultTableModel(Arrays.stream(columns).map(Column::getColumnName).toArray(String[]::new), 0);
         textTable = createTextTable(tableMetaData, tableModel);
     }
 

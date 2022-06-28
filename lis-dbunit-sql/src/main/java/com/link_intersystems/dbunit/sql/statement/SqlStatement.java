@@ -1,5 +1,8 @@
 package com.link_intersystems.dbunit.sql.statement;
 
+import com.link_intersystems.sql.dialect.SqlDialect;
+import com.link_intersystems.sql.statement.InsertSql;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

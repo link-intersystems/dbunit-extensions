@@ -2,7 +2,7 @@ package com.link_intersystems.dbunit.dataset.consistency;
 
 import com.link_intersystems.dbunit.dataset.MergedDataSet;
 import com.link_intersystems.dbunit.table.TableList;
-import com.link_intersystems.dbunit.table.TableReferenceLoader;
+import com.link_intersystems.dbunit.table.TableReferenceTraversal;
 import org.dbunit.dataset.*;
 
 import java.util.*;
@@ -18,15 +18,15 @@ public class ConsistentDataSet extends AbstractDataSet {
 
     private IDataSet consistentDataSet;
     private IDataSet sourceDataSet;
-    private TableReferenceLoader tableReferenceLoader;
+    private TableReferenceTraversal tableReferenceTraversal;
 
-    public ConsistentDataSet(TableReferenceLoader tableReferenceLoader, ITable... tables) throws DataSetException {
-        this(new DefaultDataSet(requireNonNull(tables)), tableReferenceLoader);
+    public ConsistentDataSet(TableReferenceTraversal tableReferenceTraversal, ITable... tables) throws DataSetException {
+        this(new DefaultDataSet(requireNonNull(tables)), tableReferenceTraversal);
     }
 
-    public ConsistentDataSet(IDataSet sourceDataSet, TableReferenceLoader tableReferenceLoader) {
+    public ConsistentDataSet(IDataSet sourceDataSet, TableReferenceTraversal tableReferenceTraversal) {
         this.sourceDataSet = requireNonNull(sourceDataSet);
-        this.tableReferenceLoader = tableReferenceLoader;
+        this.tableReferenceTraversal = tableReferenceTraversal;
     }
 
     private IDataSet getConsistentDataSet() throws DataSetException {
@@ -49,16 +49,12 @@ public class ConsistentDataSet extends AbstractDataSet {
             ITable table = tables.poll();
             resultDataSet.add(table);
 
-            List<ITable> outgoingReferencedTables = loadOutgoingReferences(uniqueTables, table);
-            outgoingReferencedTables.forEach(tables::offer);
+            TableList outgoingTables = tableReferenceTraversal.traverseOutgoingReferences(table);
+            List<ITable> filteredOutgoingTables = outgoingTables.stream().filter(uniqueTables::add).collect(toList());
+            filteredOutgoingTables.forEach(tables::offer);
         }
 
         return resultDataSet;
-    }
-
-    private List<ITable> loadOutgoingReferences(Set<ITable> uniqueTables, ITable table) throws DataSetException {
-        TableList loadedTables = tableReferenceLoader.loadOutgoingReferences(table);
-        return loadedTables.stream().filter(uniqueTables::add).collect(toList());
     }
 
     private Queue<ITable> queueTables(IDataSet dataSet) throws DataSetException {

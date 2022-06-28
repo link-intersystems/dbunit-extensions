@@ -4,6 +4,8 @@ import com.link_intersystems.dbunit.dataset.browser.main.TableBrowser;
 import com.link_intersystems.dbunit.meta.TableMetaDataRepository;
 import com.link_intersystems.dbunit.table.DatabaseTableReferenceLoader;
 import com.link_intersystems.dbunit.table.TableReferenceLoader;
+import com.link_intersystems.dbunit.table.TableReferenceTraversal;
+import com.link_intersystems.jdbc.ConnectionMetaData;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.CachedResultSetTable;
 import org.dbunit.database.DatabaseConnection;
@@ -74,8 +76,8 @@ public class ConsistentDataSetLoader {
                 ITableMetaData tableMetaData = tableMetaDataRepository.getTableMetaData(tableName);
                 ForwardOnlyResultSetTable forwardOnlyResultSetTable = new ForwardOnlyResultSetTable(tableMetaData, resultSet);
                 CachedResultSetTable mainTable = new CachedResultSetTable(forwardOnlyResultSetTable);
-                TableReferenceLoader tableReferenceLoader = new DatabaseTableReferenceLoader(new DatabaseConnection(connection));
-                return new ConsistentDataSet(tableReferenceLoader, mainTable);
+                DatabaseConnection databaseConnection = new DatabaseConnection(connection);
+                return new ConsistentDatabaseDataSet(databaseConnection, mainTable);
             }
         } catch (SQLException | DatabaseUnitException e) {
             throw new DataSetException(e);

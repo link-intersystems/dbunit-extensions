@@ -1,9 +1,8 @@
 package com.link_intersystems.dbunit.commands.exp;
 
-import com.link_intersystems.dbunit.dataset.consistency.ConsistentDataSet;
 import com.link_intersystems.dbunit.dataset.consumer.CompositeDataSetConsumer;
+import com.link_intersystems.dbunit.dataset.consumer.DataSetConsumerSupport;
 import com.link_intersystems.dbunit.dataset.consumer.WriterDataSetConsumer;
-import com.link_intersystems.dbunit.table.TableReferenceLoader;
 import org.dbunit.database.AmbiguousTableNameException;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.FilteredDataSet;
@@ -11,23 +10,27 @@ import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.filter.SequenceTableFilter;
 import org.dbunit.dataset.stream.DataSetProducerAdapter;
 import org.dbunit.dataset.stream.IDataSetConsumer;
-import org.dbunit.dataset.xml.FlatXmlWriter;
-
-import java.io.*;
 
 import static java.util.Objects.requireNonNull;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class DataSetExportCommand {
+public class DataSetExportCommand implements DataSetConsumerSupport {
+
+    private IDataSetConsumer dataSetConsumer;
+
+    public interface ResultDataSetDecorator {
+
+        public IDataSet decorate(IDataSet dataSet) throws DataSetException;
+    }
 
     private final IDataSet dataSet;
 
     private String[] tables;
     private CompositeDataSetConsumer compositeDataSetConsumer = new CompositeDataSetConsumer();
-    private TableReferenceLoader tableReferenceLoader;
     private TableOrder tableOrder;
+    private ResultDataSetDecorator resultDecorator;
 
     public void setTables(String... tables) {
         this.tables = tables;
@@ -37,28 +40,15 @@ public class DataSetExportCommand {
         this.dataSet = requireNonNull(dataSet);
     }
 
-    public DataSetExportCommand withFlatXmlConsumer(String file) throws IOException {
-        return withFlatXmlConsumer(new File(file));
-    }
-
-    public DataSetExportCommand withFlatXmlConsumer(File file) throws IOException {
-        return withFlatXmlConsumer(new FileOutputStream(file));
-    }
-
-    public DataSetExportCommand withFlatXmlConsumer(OutputStream outputStream) throws IOException {
-        return withDataSetConsumer(new FlatXmlWriter(new BufferedOutputStream(outputStream)));
-    }
-
-    public DataSetExportCommand withDataSetConsumer(IDataSetConsumer dataSetConsumer) {
-        this.compositeDataSetConsumer.add(dataSetConsumer);
-        return this;
+    public void setDataSetConsumer(IDataSetConsumer dataSetConsumer) {
+        this.dataSetConsumer = dataSetConsumer;
     }
 
     public void exec() throws DataSetException {
         IDataSet effectiveDataSet = dataSet;
         effectiveDataSet = filterTables(effectiveDataSet);
         effectiveDataSet = filterTablesContent(effectiveDataSet);
-        effectiveDataSet = consistentResult(effectiveDataSet);
+        effectiveDataSet = decorateResult(effectiveDataSet);
         effectiveDataSet = orderByDependencies(effectiveDataSet);
 
         DataSetProducerAdapter producerAdapter = new DataSetProducerAdapter(effectiveDataSet);
@@ -66,20 +56,18 @@ public class DataSetExportCommand {
         producerAdapter.produce();
     }
 
-    private IDataSet consistentResult(IDataSet dataSet) {
-        if (tableReferenceLoader != null) {
-            return new ConsistentDataSet(dataSet, tableReferenceLoader);
+    private IDataSet decorateResult(IDataSet dataSet) throws DataSetException {
+        if (resultDecorator != null) {
+            return resultDecorator.decorate(dataSet);
         }
         return dataSet;
     }
 
-
     protected IDataSetConsumer getDataSetConsumer() {
-        if (!compositeDataSetConsumer.isEmpty()) {
-            return compositeDataSetConsumer;
+        if (dataSetConsumer == null) {
+            return new WriterDataSetConsumer();
         }
-
-        return new WriterDataSetConsumer();
+        return dataSetConsumer;
     }
 
     private IDataSet filterTablesContent(IDataSet dataSet) {
@@ -103,12 +91,11 @@ public class DataSetExportCommand {
     }
 
 
-    public void setConsistentResult(TableReferenceLoader tableReferenceLoader) {
-        this.tableReferenceLoader = tableReferenceLoader;
-    }
-
-
     public void setTableOrder(TableOrder tableOrder) {
         this.tableOrder = tableOrder;
+    }
+
+    public void setResultDecorator(ResultDataSetDecorator resultDecorator) {
+        this.resultDecorator = resultDecorator;
     }
 }

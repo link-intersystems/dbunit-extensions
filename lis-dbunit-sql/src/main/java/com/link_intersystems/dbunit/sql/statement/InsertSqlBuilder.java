@@ -9,6 +9,7 @@ import org.dbunit.dataset.ITableMetaData;
 import org.dbunit.dataset.datatype.DataType;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
