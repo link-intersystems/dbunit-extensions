@@ -20,6 +20,7 @@
         <module>lis-dbunit-meta</module>
         <module>lis-dbunit-sql</module>
         <module>lis-dbunit-commands</module>
+        <module>lis-dbunit-test</module>
     </modules>
 
     <properties>
