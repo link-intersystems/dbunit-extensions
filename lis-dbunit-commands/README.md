@@ -1,44 +1,56 @@
 A high level api for common dbunit tasks.
 
-# Basic export command setup
+# Basic data set migration command setup
 
-1. Create a DataSetExportCommand based on a database connection:
+1. Create a DataSetMigrationCommand, e.g. based on a database connection:
 
        Connection sourceConnection = ...; // java.sql.Connection
        DatabaseConnection databaseConnection = new DatabaseConnection(sourceConnection);
        DatabaseDataSet databaseDataSet = new DatabaseDataSet(databaseConnection, false);
-    
-       DataSetExportCommand dbUnitExportCommand = new DataSetExportCommand(databaseDataSet);
+       
+       DataSetMigrationCommand migrateCommand = new DataSetMigrationCommand(databaseDataSet);
 
 2. Filter the tables to export
 
-       dbUnitExportCommand.setTables("actor", "film_actor", "film");
+       migrateCommand.setTables("actor", "film_actor", "film");
 
 3. Order the tables based on the foreign key constraints
 
-       dbUnitExportCommand.setTableOrder(new DatabaseTableOrder(databaseConnection));
+       migrateCommand.setTableOrder(new DatabaseTableOrder(databaseConnection));
 
 4. Decorate the result. E.g. make it consistent by following foreign keys:
 
-       dbUnitExportCommand.setResultDecorator(ds -> new ConsistentDatabaseDataSet(databaseConnection, ds));
+       migrateCommand.setResultDecorator(ds -> new ConsistentDatabaseDataSet(databaseConnection, ds));
 
 
-## Export to another database
+## Migrate to another database
 
-    dbUnitExportCommand.setDatabaseConsumer(targetDatabaseConnection, DatabaseOperation.UPDATE);
-    dbUnitExportCommand.exec();
+    migrateCommand.setDatabaseConsumer(targetDatabaseConnection, DatabaseOperation.UPDATE);
+    migrateCommand.exec();
 
-## Export as CSV
+## Migrate as CSV
 
-    dbUnitExportCommand.setCsvConsumer("target/export/csv");
-    dbUnitExportCommand.exec();
+    migrateCommand.setCsvConsumer("target/export/csv");
+    migrateCommand.exec();
 
-## Export as flat XML
+## Migrate as flat XML
 
-    dbUnitExportCommand.setFlatXmlConsumer("target/export/flat.xml");
-    dbUnitExportCommand.exec();
+    migrateCommand.setFlatXmlConsumer("target/export/flat.xml");
+    migrateCommand.exec();
 
-## Export as XML
+## Migrate as XML
 
-    dbUnitExportCommand.setXmlConsumer("target/export/flat.xml");
-    dbUnitExportCommand.exec();
+    migrateCommand.setXmlConsumer("target/export/flat.xml");
+    migrateCommand.exec();
+
+# Transform one data set format to another
+
+E.g. convert a flat xml format to csv.
+
+    InputStream in = ...;
+    FlatXmlDataSet flatXmlDataSet = new FlatXmlDataSetBuilder().build(in);
+
+    DataSetMigrationCommand migrateCommand = new DataSetMigrationCommand(flatXmlDataSet);     
+    migrateCommand.setCsvConsumer("target/csv");
+
+    migrateCommand.exec();

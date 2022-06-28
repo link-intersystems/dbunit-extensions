@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.commands.exp;
+package com.link_intersystems.dbunit.commands;
 
 import org.dbunit.database.CyclicTablesDependencyException;
 import org.dbunit.database.DatabaseSequenceFilter;

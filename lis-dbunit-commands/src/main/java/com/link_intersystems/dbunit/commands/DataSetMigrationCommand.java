@@ -1,6 +1,5 @@
-package com.link_intersystems.dbunit.commands.exp;
+package com.link_intersystems.dbunit.commands;
 
-import com.link_intersystems.dbunit.dataset.consumer.CompositeDataSetConsumer;
 import com.link_intersystems.dbunit.dataset.consumer.DataSetConsumerSupport;
 import com.link_intersystems.dbunit.dataset.consumer.WriterDataSetConsumer;
 import org.dbunit.database.AmbiguousTableNameException;
@@ -16,7 +15,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class DataSetExportCommand implements DataSetConsumerSupport {
+public class DataSetMigrationCommand implements DataSetConsumerSupport {
 
     private IDataSetConsumer dataSetConsumer;
 
@@ -25,10 +24,9 @@ public class DataSetExportCommand implements DataSetConsumerSupport {
         public IDataSet decorate(IDataSet dataSet) throws DataSetException;
     }
 
-    private final IDataSet dataSet;
+    private final IDataSet sourceDataSet;
 
     private String[] tables;
-    private CompositeDataSetConsumer compositeDataSetConsumer = new CompositeDataSetConsumer();
     private TableOrder tableOrder;
     private ResultDataSetDecorator resultDecorator;
 
@@ -36,8 +34,8 @@ public class DataSetExportCommand implements DataSetConsumerSupport {
         this.tables = tables;
     }
 
-    public DataSetExportCommand(IDataSet dataSet) {
-        this.dataSet = requireNonNull(dataSet);
+    public DataSetMigrationCommand(IDataSet sourceDataSet) {
+        this.sourceDataSet = requireNonNull(sourceDataSet);
     }
 
     public void setDataSetConsumer(IDataSetConsumer dataSetConsumer) {
@@ -45,7 +43,7 @@ public class DataSetExportCommand implements DataSetConsumerSupport {
     }
 
     public void exec() throws DataSetException {
-        IDataSet effectiveDataSet = dataSet;
+        IDataSet effectiveDataSet = sourceDataSet;
         effectiveDataSet = filterTables(effectiveDataSet);
         effectiveDataSet = filterTablesContent(effectiveDataSet);
         effectiveDataSet = decorateResult(effectiveDataSet);

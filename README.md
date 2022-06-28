@@ -25,14 +25,14 @@ A high level api for common dbunit tasks.
     DatabaseConnection databaseConnection = new DatabaseConnection(sourceConnection);
     DatabaseDataSet databaseDataSet = new DatabaseDataSet(databaseConnection, false);
     
-    DataSetExportCommand dbUnitExportCommand = new DataSetExportCommand(databaseDataSet);
-
-    dbUnitExportCommand.setTables("actor", "film_actor", "film");
-    dbUnitExportCommand.setTableOrder(new DatabaseTableOrder(databaseConnection));
-    dbUnitExportCommand.setResultDecorator(ds -> new ConsistentDatabaseDataSet(databaseConnection, ds));
+    DataSetMigrationCommand migrateCommand = new DataSetMigrationCommand(databaseDataSet);
+    migrateCommand.setTables("actor", "film_actor", "film");
+    migrateCommand.setTableOrder(new DatabaseTableOrder(databaseConnection));
+    migrateCommand.setResultDecorator(ds -> new ConsistentDatabaseDataSet(databaseConnection, ds));
     
-    dbUnitExportCommand.setCsvConsumer("target/export/csv");
-    dbUnitExportCommand.exec();
+    migrateCommand.setCsvConsumer("target/export/csv");
+
+    migrateCommand.exec();
 
 
 ## [lis-dbunit-dataset](lis-dbunit-dataset/README.md)
