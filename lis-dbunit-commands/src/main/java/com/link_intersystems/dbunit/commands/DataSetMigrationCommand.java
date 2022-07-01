@@ -20,7 +20,7 @@ public class DataSetMigrationCommand implements DataSetConsumerSupport {
 
     private IDataSetConsumer dataSetConsumer;
     private String nullReplacement = DEFAULT_NULL_REPLACEMENT;
-    private boolean includeNulls = true;
+    private boolean nullHandlingEnabled = true;
 
     public void setNullReplacement(String nullReplacement) {
         this.nullReplacement = requireNonNull(nullReplacement);
@@ -30,12 +30,12 @@ public class DataSetMigrationCommand implements DataSetConsumerSupport {
         return nullReplacement;
     }
 
-    public void setIncludeNulls(boolean includeNulls) {
-        this.includeNulls = includeNulls;
+    public void setNullHandlingEnabled(boolean nullHandlingEnabled) {
+        this.nullHandlingEnabled = nullHandlingEnabled;
     }
 
-    public boolean isIncludeNulls() {
-        return includeNulls;
+    public boolean isNullHandlingEnabled() {
+        return nullHandlingEnabled;
     }
 
     public interface ResultDataSetDecorator {
@@ -45,7 +45,7 @@ public class DataSetMigrationCommand implements DataSetConsumerSupport {
 
     private final IDataSet sourceDataSet;
 
-    private String[] tables;
+    private String[] tables = new String[0];
     private TableOrder tableOrder;
     private ResultDataSetDecorator resultDecorator;
 
@@ -76,27 +76,32 @@ public class DataSetMigrationCommand implements DataSetConsumerSupport {
     }
 
     private IDataSet applyNullReplacement(IDataSet dataSet) {
-        if (includeNulls) {
-            return dataSet;
+        if (nullHandlingEnabled) {
+            ReplacementDataSet replacementDataSet = new ReplacementDataSet(dataSet);
+            replacementDataSet.addReplacementObject(null, nullReplacement);
+            replacementDataSet.addReplacementObject(nullReplacement, ITable.NO_VALUE);
+            replacementDataSet.setStrictReplacement(true);
+
+            return replacementDataSet;
         }
-        ReplacementDataSet replacementDataSet = new ReplacementDataSet(dataSet);
-        replacementDataSet.addReplacementObject(null, nullReplacement);
-        replacementDataSet.addReplacementObject(nullReplacement, ITable.NO_VALUE);
-        replacementDataSet.setStrictReplacement(true);
-        return replacementDataSet;
+
+        return dataSet;
+
     }
 
     private IDataSet decorateResult(IDataSet dataSet) throws DataSetException {
-        if (resultDecorator != null) {
-            return resultDecorator.decorate(dataSet);
+        if (resultDecorator == null) {
+            return dataSet;
         }
-        return dataSet;
+
+        return resultDecorator.decorate(dataSet);
     }
 
     protected IDataSetConsumer getDataSetConsumer() {
         if (dataSetConsumer == null) {
             return new WriterDataSetConsumer();
         }
+
         return dataSetConsumer;
     }
 
@@ -114,10 +119,11 @@ public class DataSetMigrationCommand implements DataSetConsumerSupport {
     }
 
     private IDataSet filterTables(IDataSet dataSet) throws AmbiguousTableNameException {
-        if (tables != null && tables.length > 0) {
-            return new FilteredDataSet(tables, dataSet);
+        if (tables.length == 0) {
+            return dataSet;
         }
-        return dataSet;
+
+        return new FilteredDataSet(tables, dataSet);
     }
 
 

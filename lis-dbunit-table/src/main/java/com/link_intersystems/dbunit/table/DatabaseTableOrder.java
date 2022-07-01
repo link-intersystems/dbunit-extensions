@@ -27,7 +27,7 @@ public class DatabaseTableOrder implements TableOrder {
     }
 
     @Override
-    public String[] orderTables(String[] tableNames) throws DataSetException {
+    public String[] orderTables(String... tableNames) throws DataSetException {
         return sortTableNames(databaseConnection, tableNames);
     }
 
@@ -96,12 +96,11 @@ public class DatabaseTableOrder implements TableOrder {
             if (tmpTableNames.equals(sortedTableNames)) {
                 reprocess = false;
             } else {
-                tmpTableNames = null;
                 tmpTableNames = (List) ((LinkedList) sortedTableNames).clone();
             }
         }
 
-        return (String[]) ((String[]) sortedTableNames.toArray(new String[0]));
+        return (String[]) sortedTableNames.toArray(new String[0]);
     }
 
     private static DependencyInfo getDependencyInfo(IDatabaseConnection connection, String tableName) throws SearchException {

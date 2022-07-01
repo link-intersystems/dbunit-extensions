@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.table;
 
-import org.dbunit.dataset.Column;
+import static java.util.Objects.requireNonNull;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -11,7 +11,11 @@ public class ColumnValue {
     private Object value;
 
     public ColumnValue(String columnName, Object value) {
-        this.columnName = columnName;
+        this.columnName = requireNonNull(columnName);
+        if (columnName.trim().isEmpty()) {
+            throw new IllegalArgumentException("columnName must not be blank");
+        }
+
         this.value = value;
     }
 

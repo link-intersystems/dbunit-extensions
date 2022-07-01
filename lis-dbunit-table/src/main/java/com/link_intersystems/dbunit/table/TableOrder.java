@@ -19,5 +19,5 @@ public interface TableOrder {
         };
     }
 
-    String[] orderTables(String[] tableNames) throws DataSetException;
+    String[] orderTables(String... tableNames) throws DataSetException;
 }
