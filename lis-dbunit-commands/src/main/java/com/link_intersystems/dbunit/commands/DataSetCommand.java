@@ -1,7 +1,10 @@
 package com.link_intersystems.dbunit.commands;
 
+import com.link_intersystems.dbunit.dataset.DataSetDecorator;
+import com.link_intersystems.dbunit.dataset.RowFilteredDataSet;
 import com.link_intersystems.dbunit.dataset.consumer.DataSetConsumerSupport;
 import com.link_intersystems.dbunit.dataset.consumer.DataSetPrinterConsumer;
+import com.link_intersystems.dbunit.table.IRowFilterFactory;
 import com.link_intersystems.dbunit.table.TableOrder;
 import org.dbunit.database.AmbiguousTableNameException;
 import org.dbunit.dataset.*;
@@ -9,56 +12,46 @@ import org.dbunit.dataset.filter.SequenceTableFilter;
 import org.dbunit.dataset.stream.DataSetProducerAdapter;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 
+import java.util.Map;
+
 import static java.util.Objects.requireNonNull;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class DataSetMigrationCommand implements DataSetConsumerSupport {
+public class DataSetCommand implements DataSetConsumerSupport {
 
     public static final String DEFAULT_NULL_REPLACEMENT = "[null]";
 
     private IDataSetConsumer dataSetConsumer;
-    private String nullReplacement = DEFAULT_NULL_REPLACEMENT;
-    private boolean nullHandlingEnabled = true;
-
-    public void setNullReplacement(String nullReplacement) {
-        this.nullReplacement = requireNonNull(nullReplacement);
-    }
-
-    public String getNullReplacement() {
-        return nullReplacement;
-    }
-
-    public void setNullHandlingEnabled(boolean nullHandlingEnabled) {
-        this.nullHandlingEnabled = nullHandlingEnabled;
-    }
-
-    public boolean isNullHandlingEnabled() {
-        return nullHandlingEnabled;
-    }
-
-    public interface ResultDataSetDecorator {
-
-        public IDataSet decorate(IDataSet dataSet) throws DataSetException;
-    }
 
     private final IDataSet sourceDataSet;
 
     private String[] tables = new String[0];
     private TableOrder tableOrder;
-    private ResultDataSetDecorator resultDecorator;
+    private DataSetDecorator resultDecorator;
+    private IRowFilterFactory rowFilterFactory;
+
+    private Map<Object, Object> replacementObjects;
 
     public void setTables(String... tables) {
         this.tables = tables;
     }
 
-    public DataSetMigrationCommand(IDataSet sourceDataSet) {
+    public DataSetCommand(IDataSet sourceDataSet) {
         this.sourceDataSet = requireNonNull(sourceDataSet);
     }
 
     public void setDataSetConsumer(IDataSetConsumer dataSetConsumer) {
         this.dataSetConsumer = dataSetConsumer;
+    }
+
+    public void setTableContentFilter(IRowFilterFactory rowFilterFactory) {
+        this.rowFilterFactory = rowFilterFactory;
+    }
+
+    public void setReplacementObjects(Map<Object, Object> replacementObjects) {
+        this.replacementObjects = replacementObjects;
     }
 
     public void exec() throws DataSetException {
@@ -75,11 +68,13 @@ public class DataSetMigrationCommand implements DataSetConsumerSupport {
         producerAdapter.produce();
     }
 
-    private IDataSet applyNullReplacement(IDataSet dataSet) {
-        if (nullHandlingEnabled) {
+    protected IDataSet applyNullReplacement(IDataSet dataSet) {
+        if (replacementObjects != null) {
             ReplacementDataSet replacementDataSet = new ReplacementDataSet(dataSet);
-            replacementDataSet.addReplacementObject(null, nullReplacement);
-            replacementDataSet.addReplacementObject(nullReplacement, ITable.NO_VALUE);
+
+            for (Map.Entry<Object, Object> replacement : replacementObjects.entrySet()) {
+                replacementDataSet.addReplacementObject(replacement.getKey(), replacement.getValue());
+            }
             replacementDataSet.setStrictReplacement(true);
 
             return replacementDataSet;
@@ -89,7 +84,7 @@ public class DataSetMigrationCommand implements DataSetConsumerSupport {
 
     }
 
-    private IDataSet decorateResult(IDataSet dataSet) throws DataSetException {
+    protected IDataSet decorateResult(IDataSet dataSet) throws DataSetException {
         if (resultDecorator == null) {
             return dataSet;
         }
@@ -105,11 +100,15 @@ public class DataSetMigrationCommand implements DataSetConsumerSupport {
         return dataSetConsumer;
     }
 
-    private IDataSet filterTablesContent(IDataSet dataSet) {
-        return dataSet;
+    protected IDataSet filterTablesContent(IDataSet dataSet) {
+        if (rowFilterFactory == null) {
+            return dataSet;
+        }
+
+        return new RowFilteredDataSet(dataSet, rowFilterFactory);
     }
 
-    private IDataSet orderByDependencies(IDataSet dataSet) throws DataSetException {
+    protected IDataSet orderByDependencies(IDataSet dataSet) throws DataSetException {
         if (tableOrder != null) {
             String[] orderedTablesNames = tableOrder.orderTables(dataSet.getTableNames());
             SequenceTableFilter filter = new SequenceTableFilter(orderedTablesNames);
@@ -118,7 +117,7 @@ public class DataSetMigrationCommand implements DataSetConsumerSupport {
         return dataSet;
     }
 
-    private IDataSet filterTables(IDataSet dataSet) throws AmbiguousTableNameException {
+    protected IDataSet filterTables(IDataSet dataSet) throws AmbiguousTableNameException {
         if (tables.length == 0) {
             return dataSet;
         }
@@ -131,7 +130,7 @@ public class DataSetMigrationCommand implements DataSetConsumerSupport {
         this.tableOrder = tableOrder;
     }
 
-    public void setResultDecorator(ResultDataSetDecorator resultDecorator) {
+    public void setResultDecorator(DataSetDecorator resultDecorator) {
         this.resultDecorator = resultDecorator;
     }
 }

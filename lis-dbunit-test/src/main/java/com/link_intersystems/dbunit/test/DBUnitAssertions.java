@@ -54,7 +54,7 @@ public class DBUnitAssertions {
     }
 
     public void assertTableContentEquals(ITable expectedTable, ITable actualTable) throws DataSetException {
-        assertEquals(expectedTable.getRowCount(), actualTable.getRowCount(), "row count");
+        assertEquals(expectedTable.getRowCount(), actualTable.getRowCount(), expectedTable.getTableMetaData().getTableName() + " row count");
 
         ITableMetaData expectedMetaData = expectedTable.getTableMetaData();
         Column[] columns = expectedMetaData.getColumns();
