@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -17,12 +16,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class DBUnitAssertions {
 
-    public static final DBUnitAssertions STRICT =new DBUnitAssertions(true);
-    public static final DBUnitAssertions LENIENT =new DBUnitAssertions(false);
+    public static final DBUnitAssertions STRICT = new DBUnitAssertions(true);
+    public static final DBUnitAssertions LENIENT = new DBUnitAssertions(false);
 
     private boolean strictMode;
 
-    public DBUnitAssertions(boolean strictMode) {
+    private DBUnitAssertions(boolean strictMode) {
         this.strictMode = strictMode;
     }
 
@@ -41,12 +40,12 @@ public class DBUnitAssertions {
             ITable expectedTable = expected.getTable(tableName);
             ITable actualTable = actual.getTable(tableName);
 
-            assertTablesEquals(expectedTable, actualTable);
+            assertTableEquals(expectedTable, actualTable);
         }
 
     }
 
-    public void assertTablesEquals(ITable expectedTable, ITable actualTable) throws DataSetException {
+    public void assertTableEquals(ITable expectedTable, ITable actualTable) throws DataSetException {
         ITableMetaData expectedMetaData = expectedTable.getTableMetaData();
         ITableMetaData actualMetaData = actualTable.getTableMetaData();
 
@@ -55,7 +54,7 @@ public class DBUnitAssertions {
     }
 
     public void assertTableContentEquals(ITable expectedTable, ITable actualTable) throws DataSetException {
-        assertEquals(expectedTable.getRowCount(), actualTable.getRowCount());
+        assertEquals(expectedTable.getRowCount(), actualTable.getRowCount(), "row count");
 
         ITableMetaData expectedMetaData = expectedTable.getTableMetaData();
         Column[] columns = expectedMetaData.getColumns();
@@ -73,8 +72,8 @@ public class DBUnitAssertions {
                 Object expectedValue = expectedTable.getValue(row, columnName);
                 Object actualValue = actualTable.getValue(row, columnName);
 
-                if(!Objects.equals(column, actualColumn)){
-                    if(!isStrictMode()){
+                if (!Objects.equals(column, actualColumn)) {
+                    if (!isStrictMode()) {
                         DataType dataType = actualColumn.getDataType();
                         expectedValue = dataType.typeCast(expectedValue);
                         actualValue = dataType.typeCast(actualValue);
@@ -82,7 +81,7 @@ public class DBUnitAssertions {
                 }
 
                 String tableName = actualTable.getTableMetaData().getTableName();
-                assertEquals(expectedValue, actualValue, tableName +"[" + row + "][" + columnName + "]");
+                assertEquals(expectedValue, actualValue, tableName + "[" + row + "][" + columnName + "]");
             }
         }
     }
@@ -90,7 +89,7 @@ public class DBUnitAssertions {
     public void assertMetaDataEquals(ITableMetaData expectedMetaData, ITableMetaData actualMetaData) throws DataSetException {
         assertEquals(expectedMetaData.getTableName(), actualMetaData.getTableName());
         assertColumnsEquals(expectedMetaData.getColumns(), actualMetaData.getColumns());
-        if(isStrictMode()){
+        if (isStrictMode()) {
             assertColumnsEquals(expectedMetaData.getPrimaryKeys(), actualMetaData.getPrimaryKeys());
         }
     }
