@@ -21,13 +21,13 @@ public class MergedTable extends AbstractTable {
     }
 
     public MergedTable(ITable table, ITable... moreTables) throws DataSetException {
-        this(table.getTableMetaData(), add(moreTables, table));
+        this(table.getTableMetaData(), newArray(table, moreTables));
     }
 
-    private static ITable[] add(ITable[] sourceTables, ITable toAdd) {
-        ITable[] result = new ITable[sourceTables.length + 1];
-        System.arraycopy(sourceTables, 0, result, 0, sourceTables.length);
-        result[sourceTables.length] = toAdd;
+    private static ITable[] newArray(ITable firstTable, ITable[] moreTables) {
+        ITable[] result = new ITable[moreTables.length + 1];
+        System.arraycopy(moreTables, 0, result, 1, moreTables.length);
+        result[0] = firstTable;
         return result;
     }
 
