@@ -3,6 +3,7 @@ package com.link_intersystems.dbunit.dataset.consumer;
 import com.link_intersystems.swing.text.TextTable;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;
+import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.ITableMetaData;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 
@@ -18,10 +19,10 @@ import static java.util.Objects.requireNonNull;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class WriterDataSetConsumer implements IDataSetConsumer {
+public class DataSetPrinterConsumer implements IDataSetConsumer {
 
     private Writer writer;
-    private final String lineSeparator;
+    private String lineSeparator;
 
     private TextTable textTable;
     private DefaultTableModel tableModel;
@@ -29,13 +30,17 @@ public class WriterDataSetConsumer implements IDataSetConsumer {
     /**
      * Writers to {@link System#out}.
      */
-    public WriterDataSetConsumer() {
+    public DataSetPrinterConsumer() {
         this(new PrintWriter(System.out));
     }
 
-    public WriterDataSetConsumer(Writer writer) {
+    public DataSetPrinterConsumer(Writer writer) {
         this.writer = requireNonNull(writer);
         this.lineSeparator = System.lineSeparator();
+    }
+
+    public void setLineSeparator(String lineSeparator) {
+        this.lineSeparator = lineSeparator;
     }
 
     @Override
@@ -73,12 +78,14 @@ public class WriterDataSetConsumer implements IDataSetConsumer {
 
     @Override
     public void row(Object[] objects) {
-        tableModel.addRow(objects);
+        Object[] convertedRow = Arrays.stream(objects).map(o -> o == ITable.NO_VALUE ? null : o).toArray(Object[]::new);
+        tableModel.addRow(convertedRow);
     }
 
     protected TextTable createTextTable(ITableMetaData tableMetaData, TableModel tableModel) {
         String tableName = tableMetaData.getTableName();
         TextTable textTable = new TextTable(tableModel);
+        textTable.setLineSeparator(lineSeparator);
         textTable.setTitle(tableName);
         return textTable;
     }

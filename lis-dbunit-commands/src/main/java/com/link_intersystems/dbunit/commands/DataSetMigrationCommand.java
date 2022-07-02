@@ -1,7 +1,7 @@
 package com.link_intersystems.dbunit.commands;
 
 import com.link_intersystems.dbunit.dataset.consumer.DataSetConsumerSupport;
-import com.link_intersystems.dbunit.dataset.consumer.WriterDataSetConsumer;
+import com.link_intersystems.dbunit.dataset.consumer.DataSetPrinterConsumer;
 import com.link_intersystems.dbunit.table.TableOrder;
 import org.dbunit.database.AmbiguousTableNameException;
 import org.dbunit.dataset.*;
@@ -99,7 +99,7 @@ public class DataSetMigrationCommand implements DataSetConsumerSupport {
 
     protected IDataSetConsumer getDataSetConsumer() {
         if (dataSetConsumer == null) {
-            return new WriterDataSetConsumer();
+            return new DataSetPrinterConsumer();
         }
 
         return dataSetConsumer;
