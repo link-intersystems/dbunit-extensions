@@ -32,6 +32,7 @@ class FileBrowseModelRepositoryTest {
 
         repository = new FileBrowseModelRepository(tempDir, new BinaryBrowseTableSerdes(), "bin");
     }
+
     @Test
     void persistAndLoad() throws ModelPersistenceException {
 
@@ -42,5 +43,4 @@ class FileBrowseModelRepositoryTest {
         assertNotSame(filmActor, testmodel);
         assertEquals(filmActor, testmodel);
     }
-
 }
