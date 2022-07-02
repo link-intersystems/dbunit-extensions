@@ -18,6 +18,10 @@ public class FileBrowseModelRepository implements BrowserModelRepository {
     private FileExtension fileExtension;
     private BrowseTableSerdes serdes;
 
+    public FileBrowseModelRepository(File baseDir, BrowseTableSerdes serdes, String fileExtension) {
+        this(baseDir, serdes, new FileExtension(fileExtension));
+    }
+
     public FileBrowseModelRepository(File baseDir, BrowseTableSerdes serdes, FileExtension fileExtension) {
         this.baseDir = requireNonNull(baseDir);
         this.serdes = requireNonNull(serdes);
