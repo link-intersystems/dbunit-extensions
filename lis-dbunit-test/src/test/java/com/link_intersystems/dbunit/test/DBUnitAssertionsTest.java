@@ -63,11 +63,11 @@ class DBUnitAssertionsTest {
 
     @Test
     void assertTablesEquals() throws DataSetException {
-        STRICT.assertTablesEquals(defaultTable1, defaultTable2);
+        STRICT.assertTableEquals(defaultTable1, defaultTable2);
 
         defaultTable2.addRow(new Object[]{3, "C"});
 
-        assertThrows(AssertionFailedError.class, () -> STRICT.assertTablesEquals(defaultTable1, defaultTable2));
+        assertThrows(AssertionFailedError.class, () -> STRICT.assertTableEquals(defaultTable1, defaultTable2));
     }
 
     @Test
