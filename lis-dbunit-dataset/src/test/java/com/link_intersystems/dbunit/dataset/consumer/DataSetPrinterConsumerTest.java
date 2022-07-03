@@ -19,18 +19,42 @@ class DataSetPrinterConsumerTest {
 
     @Test
     void printDataSet() throws DataSetException, IOException {
+        String expected = getExpected();
+        String lineSeparator = determineLineSeparator(expected);
+
         IDataSet sakilaDataSet = TestDataSets.getTinySakilaDataSet();
 
         StringWriter sw = new StringWriter();
         DataSetPrinterConsumer dataSetPrinterConsumer = new DataSetPrinterConsumer(sw);
-        dataSetPrinterConsumer.setLineSeparator("\n");
+        dataSetPrinterConsumer.setLineSeparator(lineSeparator);
 
         DataSetProducerAdapter dataSetProducerAdapter = new DataSetProducerAdapter(sakilaDataSet);
         dataSetProducerAdapter.setConsumer(dataSetPrinterConsumer);
 
         dataSetProducerAdapter.produce();
 
-        assertEquals(getExpected(), sw.toString());
+        assertEquals(expected, sw.toString());
+    }
+
+    private String determineLineSeparator(String text) throws IOException {
+        try (Reader reader = new BufferedReader(new StringReader(text))) {
+            int c;
+
+            while ((c = reader.read()) != -1) {
+                if (c == '\r') {
+                    c = reader.read();
+                    if (c == '\n') {
+                        return "\r\n";
+                    } else {
+                        return "\r";
+                    }
+                } else if (c == '\n') {
+                    return "\n";
+                }
+            }
+        }
+
+        return System.lineSeparator();
     }
 
     private String getExpected() throws IOException {
