@@ -15,6 +15,11 @@ import java.util.stream.Collectors;
 import static java.text.MessageFormat.format;
 
 /**
+ * A {@link TableReferenceResolver} that first tries to resolve {@link TableReference}s
+ * by a {@link com.link_intersystems.dbunit.dataset.browser.model.BrowseTable}
+ * definition, then by the database table's outgoing references
+ * and last by the database table's incoming references.
+ *
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 public class DefaultTableReferenceResolverChain implements TableReferenceResolver {
@@ -64,18 +69,7 @@ public class DefaultTableReferenceResolverChain implements TableReferenceResolve
 
     protected void handleNoReferenceFound(String sourceTableName, String targetTableName) throws TableReferenceException {
         try {
-            TableReferenceList outgoingDependencies = connectionMetaData.getOutgoingReferences(sourceTableName);
-            TableReferenceList incomingDependencies = connectionMetaData.getIncomingReferences(sourceTableName);
-            String outgoingReferencesMsg = outgoingDependencies.stream().map(Object::toString).map(s -> "\n\t\t- " + s).collect(Collectors.joining());
-            String incomingReferencesMsg = incomingDependencies.stream().map(Object::toString).map(s -> "\n\t\t- " + s).collect(Collectors.joining());
-            String msg = format("No natural reference found from source table ''{0}'' to target table ''{1}''" +
-                            "\n\t- outgoing references: {2}" +
-                            "\n\t- incoming references: {3}",
-                    sourceTableName,
-                    targetTableName,
-                    outgoingReferencesMsg,
-                    incomingReferencesMsg);
-            throw new TableReferenceException(msg);
+            tryHandleNoReferenceFound(sourceTableName, targetTableName);
         } catch (SQLException e) {
             String msg = format("No natural reference found from source table ''{0}'' to target table ''{1}''",
                     sourceTableName,
@@ -84,5 +78,20 @@ public class DefaultTableReferenceResolverChain implements TableReferenceResolve
             tableReferenceException.initCause(e);
             throw tableReferenceException;
         }
+    }
+
+    protected void tryHandleNoReferenceFound(String sourceTableName, String targetTableName) throws SQLException {
+        TableReferenceList outgoingDependencies = connectionMetaData.getOutgoingReferences(sourceTableName);
+        TableReferenceList incomingDependencies = connectionMetaData.getIncomingReferences(sourceTableName);
+        String outgoingReferencesMsg = outgoingDependencies.stream().map(Object::toString).map(s -> "\n\t\t- " + s).collect(Collectors.joining());
+        String incomingReferencesMsg = incomingDependencies.stream().map(Object::toString).map(s -> "\n\t\t- " + s).collect(Collectors.joining());
+        String msg = format("No natural reference found from source table ''{0}'' to target table ''{1}''" +
+                        "\n\t- outgoing references: {2}" +
+                        "\n\t- incoming references: {3}",
+                sourceTableName,
+                targetTableName,
+                outgoingReferencesMsg,
+                incomingReferencesMsg);
+        throw new TableReferenceException(msg);
     }
 }
