@@ -148,6 +148,32 @@
 
         <dependency>
             <groupId>com.link-intersystems.dbunit</groupId>
+            <artifactId>lis-dbunit-commands</artifactId>
+            <version>${lis-dbunit.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.dbunit</groupId>
+                    <artifactId>dbunit</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.link-intersystems.dbunit</groupId>
+            <artifactId>lis-dbunit-commands</artifactId>
+            <version>${lis-dbunit.version}</version>
+            <scope>test</scope>
+            <type>test-jar</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.dbunit</groupId>
+                    <artifactId>dbunit</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.link-intersystems.dbunit</groupId>
             <artifactId>lis-dbunit-test</artifactId>
         </dependency>
     </dependencies>
