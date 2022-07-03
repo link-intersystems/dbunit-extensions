@@ -16,7 +16,6 @@ import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.xml.XmlDataSet;
 import org.dbunit.operation.DatabaseOperation;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -38,12 +37,10 @@ class DataSetCommandTest {
     private String[] slimDbTableNames = SakilaSlimDB.getTableNames().toArray(new String[0]);
 
     @Test
-    void defaultConsumer(Connection connection) throws Exception {
-        DatabaseConnection databaseConnection = new DatabaseConnection(connection);
-        DatabaseDataSet sourceDataSet = new DatabaseDataSet(databaseConnection, false);
-
-        DataSetCommand dataSetCommand = new DataSetCommand(sourceDataSet);
-        dataSetCommand.setTables(slimDbTableNames);
+    void defaultConsumer() throws Exception {
+        IDataSet tinySakilaDataSet = TestDataSets.getTinySakilaDataSet();
+        DataSetCommand dataSetCommand = new DataSetCommand(tinySakilaDataSet);
+        dataSetCommand.setTables("actor");
         dataSetCommand.exec();
     }
 
