@@ -11,7 +11,7 @@
     <groupId>com.link-intersystems.dbunit</groupId>
     <artifactId>lis-dbunit</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2</version>
 
     <modules>
         <module>lis-dbunit-beans</module>
@@ -66,37 +66,37 @@
             <dependency>
                 <groupId>com.link-intersystems.dbunit</groupId>
                 <artifactId>lis-dbunit-beans</artifactId>
-                <version>1.0.2-SNAPSHOT</version>
+                <version>1.0.2</version>
             </dependency>
             <dependency>
                 <groupId>com.link-intersystems.dbunit</groupId>
                 <artifactId>lis-dbunit-sql</artifactId>
-                <version>1.0.2-SNAPSHOT</version>
+                <version>1.0.2</version>
             </dependency>
             <dependency>
                 <groupId>com.link-intersystems.dbunit</groupId>
                 <artifactId>lis-dbunit-meta</artifactId>
-                <version>1.0.2-SNAPSHOT</version>
+                <version>1.0.2</version>
             </dependency>
             <dependency>
                 <groupId>com.link-intersystems.dbunit</groupId>
                 <artifactId>lis-dbunit-dataset</artifactId>
-                <version>1.0.2-SNAPSHOT</version>
+                <version>1.0.2</version>
             </dependency>
             <dependency>
                 <groupId>com.link-intersystems.dbunit</groupId>
                 <artifactId>lis-dbunit-table</artifactId>
-                <version>1.0.2-SNAPSHOT</version>
+                <version>1.0.2</version>
             </dependency>
             <dependency>
                 <groupId>com.link-intersystems.dbunit</groupId>
                 <artifactId>lis-dbunit-commands</artifactId>
-                <version>1.0.2-SNAPSHOT</version>
+                <version>1.0.2</version>
             </dependency>
             <dependency>
                 <groupId>com.link-intersystems.dbunit</groupId>
                 <artifactId>lis-dbunit-test</artifactId>
-                <version>1.0.2-SNAPSHOT</version>
+                <version>1.0.2</version>
                 <scope>test</scope>
             </dependency>
 
@@ -245,4 +245,8 @@
             </snapshots>
         </repository>
     </repositories>
+
+  <scm>
+    <tag>lis-dbunit-1.0.2</tag>
+  </scm>
 </project>
