@@ -1,22 +1,17 @@
-package com.link_intersystems.dbunit.dataset.loader;
+package com.link_intersystems.dbunit.dataset.consistency;
 
-import com.link_intersystems.dbunit.dataset.BuildProperties;
 import com.link_intersystems.dbunit.dataset.consistency.ConsistentDataSetLoader;
 import com.link_intersystems.dbunit.table.TableUtil;
-import com.link_intersystems.test.ComponentTest;
 import com.link_intersystems.jdbc.test.db.sakila.SakilaTinyTestDBExtension;
+import com.link_intersystems.test.ComponentTest;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
-import org.dbunit.dataset.xml.FlatXmlWriter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.sql.Connection;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -64,18 +59,6 @@ public class ConsistentDataSetLoaderTest {
         assertEquals(1, languageTable.getRowCount(), "language entity count");
         TableUtil languageUtil = new TableUtil(languageTable);
         assertNotNull(languageUtil.getRowById(1));
-    }
-
-    @Test
-    void sakilaExport() throws DatabaseUnitException, IOException {
-        IDataSet dataSet = dataSetLoader.load("SELECT * from actor where actor_id in (1)");
-
-        BuildProperties buildProperties = new BuildProperties();
-        File buildOutputDirectory = buildProperties.getBuildOutputDirectory();
-
-        File exportFile = new File(buildOutputDirectory, "sakila-2.xml");
-        FlatXmlWriter flatXmlWriter = new FlatXmlWriter(new FileOutputStream(exportFile));
-        flatXmlWriter.write(dataSet);
     }
 }
 
