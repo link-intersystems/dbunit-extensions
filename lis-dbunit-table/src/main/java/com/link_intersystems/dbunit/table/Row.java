@@ -49,4 +49,27 @@ public class Row extends AbstractList<Object> {
     public Column[] getColumns() {
         return columns;
     }
+
+    public Object getValueByColumnName(String columnName) {
+        int indexOf = indexOfColumn(columnName);
+
+        if (indexOf == -1) {
+            throw new IllegalArgumentException("column named " + columnName + " does not exist");
+        }
+
+        return get(indexOf);
+    }
+
+    public int indexOfColumn(String columnName) {
+        Column[] columns = getColumns();
+
+        for (int i = 0; i < columns.length; i++) {
+            Column column = columns[i];
+            if (column.getColumnName().equals(columnName)) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
 }
