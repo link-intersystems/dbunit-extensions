@@ -63,6 +63,9 @@ public class RowFilterTableIterator implements ITableIterator {
 
     private ITable createFilteredTable(ITable baseTable) throws DataSetException {
         IRowFilter rowFilter = rowFilterFactory.createRowFilter(baseTable);
+        if (rowFilter == null) {
+            return baseTable;
+        }
         return new RowFilterTable(baseTable, rowFilter);
     }
 }

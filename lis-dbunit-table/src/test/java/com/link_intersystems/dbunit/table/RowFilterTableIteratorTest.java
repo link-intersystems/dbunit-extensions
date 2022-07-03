@@ -18,6 +18,7 @@ class RowFilterTableIteratorTest {
 
     private IRowFilter rowFilter;
     private RowFilterTableIterator rowFilterTableIterator;
+    private IRowFilterFactory rowFilterFactory;
 
     @BeforeEach
     void setUp() throws DataSetException {
@@ -27,7 +28,9 @@ class RowFilterTableIteratorTest {
         employeeTable.addRow(new Object[]{});
         employeeTable.addRow(new Object[]{});
         rowFilter = Mockito.mock(IRowFilter.class);
-        rowFilterTableIterator = new RowFilterTableIterator(beanDataSet.iterator(), t -> rowFilter);
+        rowFilterFactory = Mockito.mock(IRowFilterFactory.class);
+        when(rowFilterFactory.createRowFilter(Mockito.any())).thenReturn(rowFilter);
+        rowFilterTableIterator = new RowFilterTableIterator(beanDataSet.iterator(), rowFilterFactory);
     }
 
     @Test
@@ -58,6 +61,19 @@ class RowFilterTableIteratorTest {
         assertEquals(2, table.getRowCount());
     }
 
+
+    @Test
+    void getTableNoFilterWithNullRowFilter() throws DataSetException {
+        when(rowFilterFactory.createRowFilter(any())).thenReturn(null);
+
+        assertTrue(rowFilterTableIterator.next());
+
+        ITable table = rowFilterTableIterator.getTable();
+        assertNotNull(table);
+
+        assertEquals(2, table.getRowCount());
+    }
+
     @Test
     void getTableWithFilter() throws DataSetException {
         assertTrue(rowFilterTableIterator.next());
@@ -68,5 +84,7 @@ class RowFilterTableIteratorTest {
 
         assertEquals(1, table.getRowCount());
     }
+
+
 
 }

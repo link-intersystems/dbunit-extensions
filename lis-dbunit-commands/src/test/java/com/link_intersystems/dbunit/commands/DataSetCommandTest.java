@@ -16,6 +16,7 @@ import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.xml.XmlDataSet;
 import org.dbunit.operation.DatabaseOperation;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -25,6 +26,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -76,8 +79,7 @@ class DataSetCommandTest {
         H2Database targetDatabase = new H2Database();
         Connection targetConnection = targetDatabase.getConnection();
         new SakilaTinyDB().setupDdl(targetConnection);
-        DatabaseConnection targetDatabaseConnection = new DatabaseConnection(targetConnection);
-        return targetDatabaseConnection;
+        return new DatabaseConnection(targetConnection);
     }
 
     @Test
@@ -93,6 +95,27 @@ class DataSetCommandTest {
         XmlDataSet xmlDataSet = new XmlDataSet(new ByteArrayInputStream(bout.toByteArray()));
 
         DBUnitAssertions.STRICT.assertDataSetEquals(tinySakilaDataSet, xmlDataSet);
+    }
+
+    @Test
+    void filterAllLanguages() throws Exception {
+        IDataSet tinySakilaDataSet = TestDataSets.getTinySakilaDataSet();
+        DataSetCommand migrateCommand = new DataSetCommand(tinySakilaDataSet);
+        migrateCommand.setTableContentFilter(t -> t.getTableMetaData().getTableName().equals("language") ? rvp -> false : null);
+
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        migrateCommand.setXmlConsumer(bout);
+
+        migrateCommand.exec();
+
+        XmlDataSet xmlDataSet = new XmlDataSet(new ByteArrayInputStream(bout.toByteArray()));
+
+        ITable inputTable = tinySakilaDataSet.getTable("language");
+        ITable outputTable = xmlDataSet.getTable("language");
+
+        assertEquals(1, inputTable.getRowCount());
+        assertEquals(0, outputTable.getRowCount());
+
     }
 
 
