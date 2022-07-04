@@ -25,7 +25,7 @@ A high level api for common dbunit tasks.
     DatabaseConnection databaseConnection = new DatabaseConnection(sourceConnection);
     DatabaseDataSet databaseDataSet = new DatabaseDataSet(databaseConnection, false);
     
-    DataSetMigrationCommand migrateCommand = new DataSetMigrationCommand(databaseDataSet);
+    DataSetCommand migrateCommand = new DataSetCommand(databaseDataSet);
     migrateCommand.setTables("actor", "film_actor", "film");
     migrateCommand.setTableOrder(new DatabaseTableOrder(databaseConnection));
     migrateCommand.setResultDecorator(ds -> new ConsistentDatabaseDataSet(databaseConnection, ds));
