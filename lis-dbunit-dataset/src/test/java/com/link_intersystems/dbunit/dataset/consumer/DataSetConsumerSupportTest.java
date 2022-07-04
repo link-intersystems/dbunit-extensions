@@ -1,5 +1,6 @@
 package com.link_intersystems.dbunit.dataset.consumer;
 
+import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 import org.dbunit.operation.DatabaseOperation;
@@ -7,9 +8,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.sql.Connection;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -29,6 +30,7 @@ class DataSetConsumerSupportTest implements DataSetConsumerSupport {
         this.dataSetConsumer = dataSetConsumer;
     }
 
+
     @Test
     void setDatabaseConsumer() {
         IDataSetConsumer dataSetConsumer = mock(IDataSetConsumer.class);
@@ -39,10 +41,22 @@ class DataSetConsumerSupportTest implements DataSetConsumerSupport {
     }
 
     @Test
-    void testSetDatabaseConsumer() {
-        setDatabaseConsumer(mock(IDatabaseConnection.class));
+    void testSetDatabaseConsumer() throws DatabaseUnitException {
+        setDatabaseConsumer(mock(Connection.class));
 
         assertNotNull(dataSetConsumer);
+    }
+
+    @Test
+    void setDatabaseConsumerWithDatabaseOperation() throws DatabaseUnitException {
+        Connection connection = mock(Connection.class);
+
+        setDatabaseConsumer(connection, DatabaseOperation.REFRESH);
+
+        assertNotNull(dataSetConsumer);
+
+        DatabaseDataSetConsumer databaseDataSetConsumer = (DatabaseDataSetConsumer) dataSetConsumer;
+        assertEquals(DatabaseOperation.REFRESH, databaseDataSetConsumer.getDatabaseOperation());
     }
 
     @Test

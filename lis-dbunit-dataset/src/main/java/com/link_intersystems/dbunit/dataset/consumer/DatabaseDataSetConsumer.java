@@ -34,6 +34,10 @@ public class DatabaseDataSetConsumer extends CopyDataSetConsumer {
         this.databaseOperation = requireNonNull(databaseOperation);
     }
 
+    public DatabaseOperation getDatabaseOperation() {
+        return databaseOperation;
+    }
+
     public void setLenient(boolean lenient) {
         this.lenient = lenient;
     }
@@ -65,11 +69,11 @@ public class DatabaseDataSetConsumer extends CopyDataSetConsumer {
             }
         }
 
-        if(databaseMetaData != null){
+        if (databaseMetaData != null) {
             if (databaseMetaData.getColumns().length != metaData.getColumns().length) {
                 if (!isLenient()) {
                     throw new DataSetException("Target database table '" + tableName + "' columns differ:\ndb     : "
-                             + Arrays.asList(databaseMetaData.getColumns()) + "\nsource : " + Arrays.asList(metaData.getColumns()));
+                            + Arrays.asList(databaseMetaData.getColumns()) + "\nsource : " + Arrays.asList(metaData.getColumns()));
                 }
             }
             metaData = databaseMetaData;
@@ -82,7 +86,7 @@ public class DatabaseDataSetConsumer extends CopyDataSetConsumer {
         super.endDataSet(dataSet);
 
         try {
-            databaseOperation.execute(databaseConnection, dataSet);
+            getDatabaseOperation().execute(databaseConnection, dataSet);
         } catch (DatabaseUnitException | SQLException e) {
             throw new DataSetException(e);
         }

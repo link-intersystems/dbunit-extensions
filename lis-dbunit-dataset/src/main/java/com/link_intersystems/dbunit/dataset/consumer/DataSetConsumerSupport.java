@@ -1,5 +1,7 @@
 package com.link_intersystems.dbunit.dataset.consumer;
 
+import org.dbunit.DatabaseUnitException;
+import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.csv.CsvDataSetWriter;
 import org.dbunit.dataset.stream.IDataSetConsumer;
@@ -10,6 +12,7 @@ import org.dbunit.operation.DatabaseOperation;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -17,6 +20,14 @@ import java.nio.charset.StandardCharsets;
 public interface DataSetConsumerSupport {
 
     // DatabaseConsumer
+    default public void setDatabaseConsumer(Connection connection) throws DatabaseUnitException {
+        setDatabaseConsumer(new DatabaseConnection(connection));
+    }
+
+    default public void setDatabaseConsumer(Connection connection, DatabaseOperation databaseOperation) throws DatabaseUnitException {
+        setDatabaseConsumer(new DatabaseConnection(connection), databaseOperation);
+    }
+
     default public void setDatabaseConsumer(IDatabaseConnection connection) {
         setDatabaseConsumer(connection, DatabaseOperation.INSERT);
     }
