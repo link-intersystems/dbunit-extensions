@@ -1,7 +1,10 @@
-package com.link_intersystems.dbunit.dataset;
+package com.link_intersystems.dbunit.dataset.producer;
 
-import com.link_intersystems.dbunit.dataset.consumer.CopyDataSetConsumer;
-import com.link_intersystems.dbunit.dataset.producer.DataSetProducerSupport;
+import com.link_intersystems.dbunit.dataset.DataSetDecorator;
+import com.link_intersystems.dbunit.dataset.RowFilteredDataSet;
+import com.link_intersystems.dbunit.dataset.producer.DataSetSource;
+import com.link_intersystems.dbunit.dataset.producer.DataSetSourceProducer;
+import com.link_intersystems.dbunit.dataset.producer.DataSetSourceSupport;
 import com.link_intersystems.dbunit.table.IRowFilterFactory;
 import com.link_intersystems.dbunit.table.TableOrder;
 import org.dbunit.database.AmbiguousTableNameException;
@@ -11,14 +14,15 @@ import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ReplacementDataSet;
 import org.dbunit.dataset.filter.SequenceTableFilter;
 import org.dbunit.dataset.stream.DataSetProducerAdapter;
-import org.dbunit.dataset.stream.IDataSetProducer;
 
 import java.util.Map;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class DataSetBuilder implements DataSetProducerSupport {
+public class DataSetBuilder implements DataSetSourceSupport {
 
     public static enum BuildStrategy {
         DECORATE {
@@ -30,25 +34,11 @@ public class DataSetBuilder implements DataSetProducerSupport {
         COPY {
             @Override
             protected IDataSet apply(IDataSet dataSet) throws DataSetException {
-                return copy(dataSet);
+                return new DataSetSourceProducer(new DataSetProducerAdapter(dataSet)).get();
             }
         };
 
         protected abstract IDataSet apply(IDataSet dataSet) throws DataSetException;
-    }
-
-    public static IDataSet copy(IDataSet dataSet) throws DataSetException {
-        DataSetProducerAdapter producer = new DataSetProducerAdapter(dataSet);
-        return produce(producer);
-    }
-
-    public static IDataSet produce(IDataSetProducer dataSetProducer) throws DataSetException {
-        CopyDataSetConsumer copyDataSetConsumer = new CopyDataSetConsumer();
-        dataSetProducer.setConsumer(copyDataSetConsumer);
-
-        dataSetProducer.produce();
-
-        return copyDataSetConsumer.getDataSet();
     }
 
     private String[] tables = new String[0];
@@ -57,7 +47,7 @@ public class DataSetBuilder implements DataSetProducerSupport {
     private Map<Object, Object> replacementObjects;
     private TableOrder tableOrder;
 
-    private IDataSetProducer dataSetProducer;
+    private DataSetSource dataSetSource;
 
     public void setTables(String... tables) {
         this.tables = tables;
@@ -79,9 +69,8 @@ public class DataSetBuilder implements DataSetProducerSupport {
         this.tableOrder = tableOrder;
     }
 
-    @Override
-    public void setDataSetProducer(IDataSetProducer dataSetProducer) {
-        this.dataSetProducer = dataSetProducer;
+    public void setDataSetSource(DataSetSource dataSetSource) {
+        this.dataSetSource = requireNonNull(dataSetSource);
     }
 
     public IDataSet build() throws DataSetException {
@@ -89,12 +78,12 @@ public class DataSetBuilder implements DataSetProducerSupport {
     }
 
     public IDataSet build(BuildStrategy buildStrategy) throws DataSetException {
-        if (dataSetProducer == null) {
-            String msg = "Can not build data set. No dataSetProducer set.";
+        if (dataSetSource == null) {
+            String msg = "Can not build data set. No DataSetProducer or DataSetSource set.";
             throw new DataSetException(msg);
         }
 
-        IDataSet baseDataSet = produce(dataSetProducer);
+        IDataSet baseDataSet = dataSetSource.get();
 
         IDataSet tableFilteredDataSet = filterTables(baseDataSet);
         IDataSet tableContentFilteredDataSet = filterTablesContent(tableFilteredDataSet);

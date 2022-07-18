@@ -1,9 +1,7 @@
 package com.link_intersystems.dbunit.dataset.producer;
 
-import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.csv.CsvProducer;
-import org.dbunit.dataset.stream.DataSetProducerAdapter;
 import org.dbunit.dataset.stream.IDataSetProducer;
 import org.dbunit.dataset.xml.FlatXmlProducer;
 import org.dbunit.dataset.xml.XmlProducer;
@@ -82,8 +80,8 @@ public interface DataSetProducerSupport {
 
     //
 
-    default public void setDataSetProducer(IDataSet dataSet) throws DataSetException {
-        setDataSetProducer(new DataSetProducerAdapter(dataSet));
+    default public void setDataSetProducer(IDataSet dataSet) {
+        setDataSetProducer(new DataSetSourceProducerAdapter(dataSet));
     }
 
     public void setDataSetProducer(IDataSetProducer dataSetProducer);

@@ -1,10 +1,12 @@
 package com.link_intersystems.dbunit.commands;
 
-import com.link_intersystems.dbunit.dataset.DataSetBuilder;
+import com.link_intersystems.dbunit.dataset.producer.DataSetBuilder;
 import com.link_intersystems.dbunit.dataset.DataSetDecorator;
+import com.link_intersystems.dbunit.dataset.producer.DataSetSource;
 import com.link_intersystems.dbunit.dataset.consumer.DataSetConsumerSupport;
 import com.link_intersystems.dbunit.dataset.consumer.DataSetPrinterConsumer;
 import com.link_intersystems.dbunit.dataset.producer.DataSetProducerSupport;
+import com.link_intersystems.dbunit.dataset.producer.DataSetSourceProducer;
 import com.link_intersystems.dbunit.table.IRowFilterFactory;
 import com.link_intersystems.dbunit.table.TableOrder;
 import org.dbunit.dataset.DataSetException;
@@ -15,6 +17,8 @@ import org.dbunit.dataset.stream.IDataSetProducer;
 
 import java.util.Map;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
@@ -22,7 +26,7 @@ public class DataSetCommand implements DataSetConsumerSupport, DataSetProducerSu
 
     public static final String DEFAULT_NULL_REPLACEMENT = "[null]";
 
-    private IDataSetProducer dataSetProducer;
+    private DataSetSource dataSetSource;
     private IDataSetConsumer dataSetConsumer;
 
     private String[] tables = new String[0];
@@ -31,6 +35,7 @@ public class DataSetCommand implements DataSetConsumerSupport, DataSetProducerSu
     private IRowFilterFactory rowFilterFactory;
 
     private Map<Object, Object> replacementObjects;
+
 
     public void setTables(String... tables) {
         this.tables = tables;
@@ -46,7 +51,18 @@ public class DataSetCommand implements DataSetConsumerSupport, DataSetProducerSu
 
     @Override
     public void setDataSetProducer(IDataSetProducer dataSetProducer) {
-        this.dataSetProducer = dataSetProducer;
+        DataSetSource dataSetSource;
+        if (dataSetProducer instanceof DataSetSource) {
+            dataSetSource = (DataSetSource) dataSetProducer;
+        } else {
+            dataSetSource = new DataSetSourceProducer(dataSetProducer);
+        }
+
+        setDataSetSource(dataSetSource);
+    }
+
+    public void setDataSetSource(DataSetSource dataSetSource) {
+        this.dataSetSource = requireNonNull(dataSetSource);
     }
 
     public void setTableContentFilter(IRowFilterFactory rowFilterFactory) {
@@ -67,8 +83,9 @@ public class DataSetCommand implements DataSetConsumerSupport, DataSetProducerSu
 
     public void exec() throws DataSetException {
         DataSetBuilder dataSetBuilder = new DataSetBuilder();
+        IDataSet dataSet = dataSetSource.get();
 
-        dataSetBuilder.setDataSetProducer(dataSetProducer);
+        dataSetBuilder.setDataSetProducer(dataSet);
         dataSetBuilder.setTables(tables);
         dataSetBuilder.setTableContentFilter(rowFilterFactory);
         dataSetBuilder.setResultDecorator(resultDecorator);
