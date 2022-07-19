@@ -1,12 +1,12 @@
 package com.link_intersystems.dbunit.commands;
 
-import com.link_intersystems.dbunit.dataset.producer.DataSetBuilder;
+import com.link_intersystems.dbunit.stream.producer.DataSetBuilder;
 import com.link_intersystems.dbunit.dataset.DataSetDecorator;
-import com.link_intersystems.dbunit.dataset.producer.DataSetSource;
-import com.link_intersystems.dbunit.dataset.consumer.DataSetConsumerSupport;
-import com.link_intersystems.dbunit.dataset.consumer.DataSetPrinterConsumer;
-import com.link_intersystems.dbunit.dataset.producer.DataSetProducerSupport;
-import com.link_intersystems.dbunit.dataset.producer.DataSetSourceProducer;
+import com.link_intersystems.dbunit.stream.producer.DataSetSource;
+import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerSupport;
+import com.link_intersystems.dbunit.stream.consumer.DataSetPrinterConsumer;
+import com.link_intersystems.dbunit.stream.producer.DataSetProducerSupport;
+import com.link_intersystems.dbunit.stream.producer.DataSetSourceProducer;
 import com.link_intersystems.dbunit.table.IRowFilterFactory;
 import com.link_intersystems.dbunit.table.TableOrder;
 import org.dbunit.dataset.DataSetException;
@@ -41,7 +41,7 @@ public class DataSetCommand implements DataSetConsumerSupport, DataSetProducerSu
         this.tables = tables;
     }
 
-    public DataSetCommand(IDataSet sourceDataSet) throws DataSetException {
+    public DataSetCommand(IDataSet sourceDataSet) {
         setDataSetProducer(sourceDataSet);
     }
 

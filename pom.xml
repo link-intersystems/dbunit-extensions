@@ -21,6 +21,7 @@
         <module>lis-dbunit-sql</module>
         <module>lis-dbunit-commands</module>
         <module>lis-dbunit-test</module>
+        <module>lis-dbunit-stream</module>
     </modules>
 
     <properties>
