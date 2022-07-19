@@ -1,13 +1,14 @@
 package com.link_intersystems.dbunit.table;
 
+import com.link_intersystems.util.Serialization;
 import org.dbunit.dataset.*;
 import org.dbunit.dataset.datatype.DataType;
 import org.dbunit.dataset.datatype.TypeCastException;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
@@ -19,8 +20,45 @@ public class MutableTable extends AbstractTable {
 
     private final TableUtil thisTableUtil;
 
-    private static class RowOverride {
+    static class RowOverride {
         private Map<String, Object> cellValues = new HashMap<>();
+
+        RowOverride() {
+        }
+
+        RowOverride(RowOverride rowOverride) {
+            Set<Map.Entry<String, Object>> rowOverrideEntries = rowOverride.cellValues.entrySet();
+            for (Map.Entry<String, Object> rowOverrideEntry : rowOverrideEntries) {
+                cellValues.put(rowOverrideEntry.getKey(), tryCopy(rowOverrideEntry.getValue()));
+            }
+        }
+
+        private Object tryCopy(Object value) {
+            if (value == null) {
+                return null;
+            }
+
+            Object copy = null;
+
+            if (value instanceof Cloneable) {
+                try {
+                    Method clone = Object.class.getDeclaredMethod("clone");
+                    clone.setAccessible(true);
+                    copy = clone.invoke(value);
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                }
+            }
+
+            if (copy == null && value instanceof Serializable) {
+                copy = Serialization.clone((Serializable) value);
+            }
+
+            if (copy == null) {
+                copy = value;
+            }
+
+            return copy;
+        }
 
         public void setValue(Column column, Object columnValue) throws TypeCastException {
             String columnName = column.getColumnName();
@@ -65,6 +103,10 @@ public class MutableTable extends AbstractTable {
 
     @Override
     public Object getValue(int rowIndex, String columnName) throws DataSetException {
+        if (rowIndex >= getRowCount()) {
+            throw new DataSetException(new IndexOutOfBoundsException("row index"));
+        }
+
         Object value = null;
 
         RowOverride rowOverride = rowOverrides.get(rowIndex);
@@ -105,6 +147,11 @@ public class MutableTable extends AbstractTable {
 
     public Row getValues(int rowIndex) throws DataSetException {
         return thisTableUtil.getRow(rowIndex);
+    }
+
+    public void applyMutationsFrom(MutableTable otherMutableTable) {
+        SortedMap<Integer, RowOverride> otherRowOverrides = otherMutableTable.rowOverrides;
+        otherRowOverrides.entrySet().stream().forEach(e -> rowOverrides.put(e.getKey(), new RowOverride(e.getValue())));
     }
 
 }

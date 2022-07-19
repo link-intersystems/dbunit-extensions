@@ -25,6 +25,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>com.link-intersystems.commons</groupId>
+            <artifactId>lis-commons-util</artifactId>
+            <version>1.6.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>com.link-intersystems.dbunit</groupId>
             <artifactId>lis-dbunit-test</artifactId>
         </dependency>

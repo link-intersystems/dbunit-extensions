@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.BitSet;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -28,6 +28,12 @@ class MutableTableTest {
         actor = tinySakilaDataSet.getTable("actor");
 
         mutableActor = new MutableTable(actor);
+    }
+
+
+    @Test
+    void getCellValueOutOfRowBounds() {
+        assertThrows(DataSetException.class, () -> mutableActor.getValues(3));
     }
 
     @Test
@@ -81,5 +87,31 @@ class MutableTableTest {
     @Test
     void getRowCount() {
         assertEquals(actor.getRowCount(), mutableActor.getRowCount());
+    }
+
+
+    @Test
+    void applyMutations() throws DataSetException {
+        assertEquals(2, mutableActor.getRowCount());
+
+        Object oldName = mutableActor.getValue(1, "first_name");
+        assertEquals(oldName, "NICK");
+
+
+        mutableActor.setValues(3, new Object[]{"20", "TEST", null, new BitSet()});
+
+        MutableTable newMutableTable = new MutableTable(actor);
+        newMutableTable.applyMutationsFrom(mutableActor);
+
+        Row row1 = newMutableTable.getValues(1);
+        assertEquals(Arrays.asList("2", "NICK", "WAHLBERG", "2006-02-15 04:34:33.0"), row1);
+
+        Row row2 = newMutableTable.getValues(2);
+        assertEquals(Arrays.asList(null, null, null, null), row2);
+
+        Row row3 = newMutableTable.getValues(3);
+        assertEquals(Arrays.asList("20", "TEST", null, new BitSet()), row3);
+
+        assertEquals(4, mutableActor.getRowCount());
     }
 }
