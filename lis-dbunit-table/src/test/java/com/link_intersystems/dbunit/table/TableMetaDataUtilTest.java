@@ -44,4 +44,10 @@ class TableMetaDataUtilTest {
         assertFalse(tableMetaDataUtil.isPrimaryKey("first_name"));
         assertTrue(tableMetaDataUtil.isPrimaryKey("actor_id"));
     }
+
+    @Test
+    void indexOf() throws DataSetException {
+        assertEquals(1, tableMetaDataUtil.indexOf("first_name"));
+        assertEquals(-1, tableMetaDataUtil.indexOf("first"));
+    }
 }

@@ -38,7 +38,7 @@ class DataSetBuilderTest {
         IDataSet tinySakilaDataSet = TestDataSets.getTinySakilaDataSet();
         DataSetBuilder dataSetBuilder = new DataSetBuilder();
         dataSetBuilder.setDataSetProducer(tinySakilaDataSet);
-        dataSetBuilder.setTableContentFilter(t -> t.getTableMetaData().getTableName().equals("language") ? rvp -> false : null);
+        dataSetBuilder.setTableContentFilter(t -> t.getTableName().equals("language") ? rvp -> false : null);
 
         IDataSet dataSet = dataSetBuilder.build();
 

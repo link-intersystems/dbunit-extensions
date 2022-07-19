@@ -6,7 +6,9 @@ import org.dbunit.dataset.ITableMetaData;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -16,10 +18,9 @@ import static java.util.Objects.requireNonNull;
 public class TableMetaDataUtil {
 
     private ITableMetaData metaData;
-
     private Map<String, Column> columnsByName;
-
     private Map<String, Column> pksByName;
+    private List<String> columnNames;
 
     public TableMetaDataUtil(ITableMetaData metaData) {
         this.metaData = requireNonNull(metaData);
@@ -57,6 +58,17 @@ public class TableMetaDataUtil {
 
     public Column[] getPrimaryKeys() throws DataSetException {
         Map<String, Column> primaryKeysByName = getPrimaryKeysByName();
-        return primaryKeysByName.values().stream().toArray(Column[]::new);
+        return primaryKeysByName.values().toArray(new Column[0]);
+    }
+
+    private List<String> getColumnNames() throws DataSetException {
+        if (columnNames == null) {
+            columnNames = Arrays.stream(metaData.getColumns()).map(Column::getColumnName).collect(Collectors.toList());
+        }
+        return columnNames;
+    }
+
+    public int indexOf(String columnName) throws DataSetException {
+        return getColumnNames().indexOf(columnName);
     }
 }

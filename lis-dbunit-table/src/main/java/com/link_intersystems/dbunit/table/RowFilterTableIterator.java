@@ -62,10 +62,18 @@ public class RowFilterTableIterator implements ITableIterator {
     }
 
     private ITable createFilteredTable(ITable baseTable) throws DataSetException {
-        IRowFilter rowFilter = rowFilterFactory.createRowFilter(baseTable);
+        IRowFilter rowFilter = rowFilterFactory.createRowFilter(baseTable.getTableMetaData());
         if (rowFilter == null) {
             return baseTable;
         }
-        return new RowFilterTable(baseTable, rowFilter);
+
+        IRowFilter effectiveRowFilter = rowFilter;
+
+        if (rowFilter instanceof TableAwareRowFilter) {
+            TableAwareRowFilter tableAwareRowFilter = (TableAwareRowFilter) rowFilter;
+            effectiveRowFilter = iRowValueProvider -> tableAwareRowFilter.accept(baseTable, iRowValueProvider);
+        }
+
+        return new RowFilterTable(baseTable, effectiveRowFilter);
     }
 }

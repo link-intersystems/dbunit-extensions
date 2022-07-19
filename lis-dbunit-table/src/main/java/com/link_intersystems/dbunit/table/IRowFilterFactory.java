@@ -1,6 +1,7 @@
 package com.link_intersystems.dbunit.table;
 
 import org.dbunit.dataset.ITable;
+import org.dbunit.dataset.ITableMetaData;
 import org.dbunit.dataset.filter.IRowFilter;
 
 /**
@@ -10,5 +11,5 @@ import org.dbunit.dataset.filter.IRowFilter;
  */
 public interface IRowFilterFactory {
 
-    public IRowFilter createRowFilter(ITable table);
+    public IRowFilter createRowFilter(ITableMetaData tableMetaData);
 }

@@ -98,7 +98,7 @@ class DataSetCommandTest {
     void filterAllLanguages() throws Exception {
         IDataSet tinySakilaDataSet = TestDataSets.getTinySakilaDataSet();
         DataSetCommand migrateCommand = new DataSetCommand(tinySakilaDataSet);
-        migrateCommand.setTableContentFilter(t -> t.getTableMetaData().getTableName().equals("language") ? rvp -> false : null);
+        migrateCommand.setTableContentFilter(t -> t.getTableName().equals("language") ? rvp -> false : null);
 
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         migrateCommand.setXmlConsumer(bout);
