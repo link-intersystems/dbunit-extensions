@@ -13,6 +13,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
+import java.util.List;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -101,6 +102,15 @@ public interface DataSetConsumerSupport {
 
     //
 
+    default public void setDataSetConsumers(IDataSetConsumer... dataSetConsumers) {
+        setDataSetConsumer(new RepeatingDataSetConsumer(dataSetConsumers));
+    }
+
+    default public void setDataSetConsumers(List<IDataSetConsumer> dataSetConsumers) {
+        setDataSetConsumer(new RepeatingDataSetConsumer(dataSetConsumers));
+    }
+
     public void setDataSetConsumer(IDataSetConsumer dataSetConsumer);
+
 
 }

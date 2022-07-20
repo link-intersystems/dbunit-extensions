@@ -74,6 +74,17 @@ public class DataSetBuilder implements DataSetSourceSupport {
         return build(BuildStrategy.COPY);
     }
 
+    /**
+     * @param buildStrategy the strategy to build the final {@link IDataSet}. Use {@link BuildStrategy#DECORATE} if you
+     *                      want to get a decorated result that uses the decorator pattern to apply all builder rules.
+     *                      The decorated result might consume more memory, but can reflect changes to
+     *                      the source data set immediately (depending on the kind of source data set you use).
+     *                      Use {@link BuildStrategy#COPY} if you want a clean copy of the decorated result. The
+     *                      copied {@link IDataSet} will not reflect changes of the source data set, but since there
+     *                      are no decorators anymore it consumes less memory.
+     * @return the {@link IDataSet} based on the rules you set this {@link DataSetBuilder}.
+     * @throws DataSetException if any exception occurs.
+     */
     public IDataSet build(BuildStrategy buildStrategy) throws DataSetException {
         if (dataSetSource == null) {
             String msg = "Can not build data set. No DataSetProducer or DataSetSource set.";
@@ -90,7 +101,6 @@ public class DataSetBuilder implements DataSetSourceSupport {
 
         IDataSet buildDataSet = orderedDataSet;
 
-        // copy again to remove all decorators in order to reduce memory consumption.
         return buildStrategy.apply(buildDataSet);
     }
 
