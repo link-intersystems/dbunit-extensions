@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.commands;
 
-import com.link_intersystems.dbunit.commands.flyway.FlywayDatabaseMigrationSupport;
+import com.link_intersystems.dbunit.flyway.FlywayDatabaseMigrationSupport;
 import com.link_intersystems.dbunit.testcontainers.consumer.TestContainersDataSetTransformer;
 import com.link_intersystems.dbunit.stream.consumer.*;
 import com.link_intersystems.dbunit.test.TestDataSets;
@@ -9,7 +9,6 @@ import org.dbunit.dataset.DefaultTable;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.stream.IDataSetConsumer;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
 
@@ -26,7 +25,7 @@ class DataSetTransformCommandTest {
 
     @Test
     void applyDataSetMigration() throws DataSetException, IOException {
-        DataSetTransformCommand dataSetTransformCommand = new DataSetTransformCommand();
+        DataSetTransformExecutor dataSetTransformCommand = new DataSetTransformExecutor();
 
         IDataSet sourceDataSet = TestDataSets.getTinySakilaDataSet();
         dataSetTransformCommand.setDataSetProducer(sourceDataSet);

@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.commands.flyway;
+package com.link_intersystems.dbunit.flyway;
 
 import com.link_intersystems.dbunit.stream.consumer.DatabaseMigrationSupport;
 import org.dbunit.dataset.DataSetException;

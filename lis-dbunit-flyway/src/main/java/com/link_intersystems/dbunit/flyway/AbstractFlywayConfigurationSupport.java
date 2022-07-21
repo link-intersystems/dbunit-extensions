@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.commands.flyway;
+package com.link_intersystems.dbunit.flyway;
 
 import org.flywaydb.core.api.ClassProvider;
 import org.flywaydb.core.api.migration.JavaMigration;

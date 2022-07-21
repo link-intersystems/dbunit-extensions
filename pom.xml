@@ -23,6 +23,7 @@
         <module>lis-dbunit-test</module>
         <module>lis-dbunit-stream</module>
         <module>lis-dbunit-testcontainers</module>
+        <module>lis-dbunit-flyway</module>
     </modules>
 
     <properties>

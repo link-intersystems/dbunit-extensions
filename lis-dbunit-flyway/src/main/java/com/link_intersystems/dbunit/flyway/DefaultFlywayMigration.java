@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.commands.flyway;
+package com.link_intersystems.dbunit.flyway;
 
 import org.dbunit.dataset.DataSetException;
 import org.flywaydb.core.Flyway;
@@ -8,8 +8,6 @@ import org.flywaydb.core.api.migration.JavaMigration;
 import org.flywaydb.core.api.output.MigrateResult;
 
 import javax.sql.DataSource;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
