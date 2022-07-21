@@ -22,6 +22,7 @@
         <module>lis-dbunit-commands</module>
         <module>lis-dbunit-test</module>
         <module>lis-dbunit-stream</module>
+        <module>lis-dbunit-testcontainers</module>
     </modules>
 
     <properties>

@@ -1,6 +1,7 @@
-package com.link_intersystems.dbunit.commands.flyway;
+package com.link_intersystems.dbunit.testcontainers.consumer;
 
-import com.link_intersystems.dbunit.commands.DataSetTransformer;
+import com.link_intersystems.dbunit.stream.consumer.DataSetTransformer;
+import com.link_intersystems.dbunit.stream.consumer.DatabaseMigrationSupport;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 
 /**
@@ -8,7 +9,11 @@ import org.dbunit.dataset.stream.IDataSetConsumer;
  */
 public class TestContainersDataSetTransformer implements DataSetTransformer {
 
-    private TestContainersConsumer testContainersConsumer = new TestContainersConsumer();
+    private TestContainersConsumer testContainersConsumer;
+
+    public TestContainersDataSetTransformer(JdbcDatabaseContainerLifecycle containerLifecycle) {
+        testContainersConsumer = new TestContainersConsumer(containerLifecycle);
+    }
 
     @Override
     public IDataSetConsumer getInputConsumer() {

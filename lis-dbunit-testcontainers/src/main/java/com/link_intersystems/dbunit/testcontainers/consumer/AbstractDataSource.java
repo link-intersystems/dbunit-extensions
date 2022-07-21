@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.commands.flyway;
+package com.link_intersystems.dbunit.testcontainers.consumer;
 
 import javax.sql.DataSource;
 import java.io.PrintWriter;

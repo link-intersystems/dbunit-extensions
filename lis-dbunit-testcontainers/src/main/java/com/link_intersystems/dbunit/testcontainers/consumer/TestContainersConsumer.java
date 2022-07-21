@@ -1,5 +1,6 @@
-package com.link_intersystems.dbunit.commands.flyway;
+package com.link_intersystems.dbunit.testcontainers.consumer;
 
+import com.link_intersystems.dbunit.stream.consumer.DatabaseMigrationSupport;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.DatabaseDataSet;
@@ -9,12 +10,11 @@ import org.dbunit.dataset.stream.DefaultConsumer;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 import org.dbunit.operation.DatabaseOperation;
 import org.testcontainers.containers.JdbcDatabaseContainer;
-import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -26,9 +26,13 @@ public class TestContainersConsumer extends DefaultConsumer {
 
     private IDataSetConsumer resultConsumer;
     private DatabaseMigrationSupport migrationSupport;
-    private Connection connection;
-    private AbstractDataSource dataSource;
     private DefaultTable currentTable;
+    private JdbcDatabaseContainerLifecycle containerLifecycle;
+    private DatabaseContainerDataSource dataSource;
+
+    public TestContainersConsumer(JdbcDatabaseContainerLifecycle containerLifecycle) {
+        this.containerLifecycle = requireNonNull(containerLifecycle);
+    }
 
     public void setResultConsumer(IDataSetConsumer resultConsumer) {
         this.resultConsumer = resultConsumer;
@@ -43,31 +47,14 @@ public class TestContainersConsumer extends DefaultConsumer {
         jdbcDatabaseContainer = createDatabaseContainer();
         jdbcDatabaseContainer.start();
 
-        String jdbcUrl = jdbcDatabaseContainer.getJdbcUrl();
+        dataSource = new DatabaseContainerDataSource(jdbcDatabaseContainer);
         try {
-            String username = jdbcDatabaseContainer.getUsername();
-            String password = jdbcDatabaseContainer.getPassword();
-            connection = DriverManager.getConnection(jdbcUrl, username, password);
-            connection.setAutoCommit(false);
-
-            dataSource = new AbstractDataSource() {
-
-                @Override
-                public Connection getConnection() {
-                    return ReusableConnectionProxy.createProxy(connection);
-                }
-
-                @Override
-                public Connection getConnection(String username, String password) {
-                    return ReusableConnectionProxy.createProxy(connection);
-                }
-            };
-            databaseConnection = new DatabaseConnection(connection);
-        } catch (SQLException | DatabaseUnitException e) {
+            databaseConnection = new DatabaseConnection(dataSource.getConnection());
+        } catch (DatabaseUnitException | SQLException e) {
             throw new DataSetException(e);
         }
 
-        migrationSupport.startDataSet(dataSource);
+        migrationSupport.startDataSet(this.dataSource);
     }
 
     @Override
@@ -98,15 +85,12 @@ public class TestContainersConsumer extends DefaultConsumer {
     public void endDataSet() throws DataSetException {
         try {
             migrationSupport.endDataSet(dataSource);
-            try (Statement statement = connection.createStatement()) {
-                statement.execute("commit");
-            }
 
             processResult(databaseConnection, resultConsumer);
         } catch (SQLException e) {
             throw new DataSetException(e);
         } finally {
-            close(databaseConnection, jdbcDatabaseContainer);
+            close(dataSource, databaseConnection, jdbcDatabaseContainer);
         }
     }
 
@@ -122,20 +106,24 @@ public class TestContainersConsumer extends DefaultConsumer {
         return new DatabaseDataSet(databaseConnection, false);
     }
 
-    protected void close(DatabaseConnection databaseConnection, JdbcDatabaseContainer<?> jdbcDatabaseContainer) throws DataSetException {
+    protected void close(DatabaseContainerDataSource dataSource, DatabaseConnection databaseConnection, JdbcDatabaseContainer<?> jdbcDatabaseContainer) throws DataSetException {
         try {
             databaseConnection.close();
-            connection = null;
-            dataSource = null;
+            this.dataSource = null;
         } catch (SQLException e) {
             throw new DataSetException(e);
         } finally {
-            jdbcDatabaseContainer.stop();
+            try {
+
+                dataSource.close();
+            } finally {
+                containerLifecycle.stop(jdbcDatabaseContainer);
+                jdbcDatabaseContainer.stop();
+            }
         }
     }
 
     protected JdbcDatabaseContainer<?> createDatabaseContainer() {
-        PostgreSQLContainer<?> latest = new PostgreSQLContainer<>("postgres:latest");
-        return latest;
+        return containerLifecycle.create();
     }
 }

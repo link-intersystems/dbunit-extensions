@@ -1,6 +1,7 @@
 package com.link_intersystems.dbunit.commands;
 
 import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerSupport;
+import com.link_intersystems.dbunit.stream.consumer.DataSetTransformer;
 import com.link_intersystems.dbunit.stream.producer.DataSetProducerSupport;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.stream.IDataSetConsumer;

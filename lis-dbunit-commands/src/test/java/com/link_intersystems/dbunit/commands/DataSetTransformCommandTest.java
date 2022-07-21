@@ -1,12 +1,9 @@
 package com.link_intersystems.dbunit.commands;
 
 import com.link_intersystems.dbunit.commands.flyway.FlywayDatabaseMigrationSupport;
-import com.link_intersystems.dbunit.commands.flyway.TestContainersDataSetTransformer;
+import com.link_intersystems.dbunit.testcontainers.consumer.TestContainersDataSetTransformer;
 import com.link_intersystems.dbunit.stream.consumer.*;
-import com.link_intersystems.dbunit.stream.producer.DataSetBuilder;
-import com.link_intersystems.dbunit.table.DatabaseTableOrder;
 import com.link_intersystems.dbunit.test.TestDataSets;
-import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.DefaultTable;
 import org.dbunit.dataset.IDataSet;
@@ -14,6 +11,7 @@ import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.io.IOException;
 
@@ -43,7 +41,8 @@ class DataSetTransformCommandTest {
 
         dataSetTransformCommand.setDataSetConsumers(copyDataSetConsumer, csvConsumer,flatXmlConsumer, new DataSetPrinterConsumer());
 
-        TestContainersDataSetTransformer transformer = new TestContainersDataSetTransformer();
+
+        TestContainersDataSetTransformer transformer = new TestContainersDataSetTransformer(() -> new PostgreSQLContainer<>("postgres:latest"));
         FlywayDatabaseMigrationSupport databaseContainerHandler = new FlywayDatabaseMigrationSupport();
         databaseContainerHandler.setLocations("com/link_intersystems/dbunit/commands/migrations");
         databaseContainerHandler.setStartVersion("1");
