@@ -10,9 +10,9 @@ import javax.sql.DataSource;
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 public interface DatabaseMigrationSupport {
-    void startDataSet(DataSource dataSource) throws DataSetException;
+    void prepareDataSource(DataSource dataSource) throws DataSetException;
 
-    void endDataSet(DataSource dataSource) throws DataSetException;
+    void migrateDataSource(DataSource dataSource) throws DataSetException;
 
     default IDataSet decorateResultDataSet(IDatabaseConnection databaseConnection, IDataSet resultDataSet) throws DataSetException {
         return resultDataSet;

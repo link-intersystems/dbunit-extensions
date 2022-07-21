@@ -1,28 +1,32 @@
 package com.link_intersystems.dbunit.commands.flyway;
 
 import com.link_intersystems.dbunit.stream.consumer.DatabaseMigrationSupport;
-import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.DataSetException;
-import org.dbunit.dataset.FilteredDataSet;
-import org.dbunit.dataset.IDataSet;
-import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.MigrationVersion;
-import org.flywaydb.core.api.configuration.FluentConfiguration;
-import org.flywaydb.core.api.output.MigrateResult;
 
 import javax.sql.DataSource;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.function.Supplier;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class FlywayDatabaseMigrationSupport implements DatabaseMigrationSupport {
+public class FlywayDatabaseMigrationSupport extends AbstractFlywayConfigurationSupport implements DatabaseMigrationSupport {
 
     private static final Collection<String> FLYWAY_TABLES = Arrays.asList("flyway_schema_history");
+
     private MigrationVersion startVersion;
     private MigrationVersion endVersion;
-    private String[] locations;
-    private boolean filterFlywayTables = true;
+    private boolean removeFlywayTables = true;
+
+    private FlywayMigration flywayMigration;
+    private Supplier<FlywayMigration> flywayMigrationSupplier = DefaultFlywayMigration::new;
 
     public void setStartVersion(String version) {
         setStartVersion(MigrationVersion.fromVersion(version));
@@ -40,62 +44,61 @@ public class FlywayDatabaseMigrationSupport implements DatabaseMigrationSupport 
         this.endVersion = endVersion;
     }
 
-    public void setFilterFlywayTables(boolean filterFlywayTables) {
-        this.filterFlywayTables = filterFlywayTables;
+    public void setRemoveFlywayTables(boolean removeFlywayTables) {
+        this.removeFlywayTables = removeFlywayTables;
     }
 
-    public void setLocations(String... locations) {
-        this.locations = locations;
-    }
-
-    @Override
-    public void startDataSet(DataSource dataSource) throws DataSetException {
-        migrate(dataSource, startVersion);
+    protected void setFlywayMigrationSupplier(Supplier<FlywayMigration> flywayMigrationSupplier) {
+        this.flywayMigrationSupplier = requireNonNull(flywayMigrationSupplier);
     }
 
     @Override
-    public void endDataSet(DataSource dataSource) throws DataSetException {
-        migrate(dataSource, endVersion);
+    public void prepareDataSource(DataSource dataSource) throws DataSetException {
+        FlywayMigration flywayMigration = getFlywayMigration();
+        flywayMigration.execute(dataSource, startVersion);
     }
 
     @Override
-    public IDataSet decorateResultDataSet(IDatabaseConnection databaseConnection, IDataSet resultDataSet) throws DataSetException {
-        if (filterFlywayTables) {
-            List<String> tableNames = new ArrayList<>(Arrays.asList(resultDataSet.getTableNames()));
-            Iterator<String> resultTableNamesIterator = tableNames.iterator();
-            while (resultTableNamesIterator.hasNext()) {
-                String resultTableName = resultTableNamesIterator.next();
-                if (!acceptResultTable(resultTableName)) {
-                    resultTableNamesIterator.remove();
+    public void migrateDataSource(DataSource dataSource) throws DataSetException {
+        FlywayMigration flywayMigration = getFlywayMigration();
+        flywayMigration.execute(dataSource, endVersion);
+
+        afterMigrate(dataSource);
+    }
+
+    protected void afterMigrate(DataSource dataSource) throws DataSetException {
+        if (removeFlywayTables) {
+            try (Connection connection = dataSource.getConnection()) {
+                try (Statement statement = connection.createStatement()) {
+                    for (String flywayTable : getFlywayTables()) {
+                        dropTable(statement, flywayTable);
+                    }
                 }
+            } catch (SQLException e) {
+                throw new DataSetException(e);
             }
-            return new FilteredDataSet(tableNames.toArray(new String[0]), resultDataSet);
-        }
-
-        return DatabaseMigrationSupport.super.decorateResultDataSet(databaseConnection, resultDataSet);
-    }
-
-    protected boolean acceptResultTable(String resultTableName) {
-        return !resultTableName.toLowerCase().startsWith("flyway_");
-    }
-
-    protected void migrate(DataSource dataSource, MigrationVersion targetVersion) throws DataSetException {
-        FluentConfiguration configuration = Flyway.configure();
-        if (locations != null) {
-            configuration.locations(locations);
-        }
-        configuration.dataSource(dataSource);
-        configuration.target(targetVersion);
-
-        Flyway flyway = configuration.load();
-        migrate(flyway);
-    }
-
-    protected void migrate(Flyway flyway) throws DataSetException {
-        MigrateResult migrateResult = flyway.migrate();
-        if (!migrateResult.success) {
-            throw new DataSetException("Unable to setup baseline ");
         }
     }
+
+    private FlywayMigration getFlywayMigration() {
+        if (flywayMigration == null) {
+            flywayMigration = flywayMigrationSupplier.get();
+            flywayMigration.apply(this);
+        }
+        return flywayMigration;
+    }
+
+    protected Collection<String> getFlywayTables() {
+        return FLYWAY_TABLES;
+    }
+
+    protected void dropTable(Statement statement, String flywayTable) {
+        try {
+            statement.execute("drop table " + flywayTable);
+        } catch (SQLException e) {
+            // TODO log
+        }
+    }
+
 
 }

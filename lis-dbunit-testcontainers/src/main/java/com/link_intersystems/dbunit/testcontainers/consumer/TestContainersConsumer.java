@@ -11,8 +11,9 @@ import org.dbunit.dataset.stream.IDataSetConsumer;
 import org.dbunit.operation.DatabaseOperation;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
-import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -30,8 +31,16 @@ public class TestContainersConsumer extends DefaultConsumer {
     private JdbcDatabaseContainerLifecycle containerLifecycle;
     private DatabaseContainerDataSource dataSource;
 
+    private boolean passOnlyConsumedTablesToSubsequentConsumer = true;
+
+    private List<String> consumedTableNames;
+
     public TestContainersConsumer(JdbcDatabaseContainerLifecycle containerLifecycle) {
         this.containerLifecycle = requireNonNull(containerLifecycle);
+    }
+
+    public void setPassOnlyConsumedTablesToSubsequentConsumer(boolean passOnlyConsumedTablesToSubsequentConsumer) {
+        this.passOnlyConsumedTablesToSubsequentConsumer = passOnlyConsumedTablesToSubsequentConsumer;
     }
 
     public void setResultConsumer(IDataSetConsumer resultConsumer) {
@@ -54,13 +63,16 @@ public class TestContainersConsumer extends DefaultConsumer {
             throw new DataSetException(e);
         }
 
-        migrationSupport.startDataSet(this.dataSource);
+        migrationSupport.prepareDataSource(this.dataSource);
+        consumedTableNames = new ArrayList<>();
     }
 
     @Override
     public void startTable(ITableMetaData metaData) throws DataSetException {
         currentTable = new DefaultTable(metaData);
         super.startTable(metaData);
+
+        consumedTableNames.add(metaData.getTableName());
     }
 
     @Override
@@ -84,7 +96,7 @@ public class TestContainersConsumer extends DefaultConsumer {
     @Override
     public void endDataSet() throws DataSetException {
         try {
-            migrationSupport.endDataSet(dataSource);
+            migrationSupport.migrateDataSource(dataSource);
 
             processResult(databaseConnection, resultConsumer);
         } catch (SQLException e) {

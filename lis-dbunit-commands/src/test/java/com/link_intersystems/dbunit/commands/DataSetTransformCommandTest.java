@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-@Disabled("I have to figure out how to start containers in github actions first")
+//@Disabled("I have to figure out how to start containers in github actions first")
 class DataSetTransformCommandTest {
 
     @Test
@@ -43,10 +43,12 @@ class DataSetTransformCommandTest {
 
 
         TestContainersDataSetTransformer transformer = new TestContainersDataSetTransformer(() -> new PostgreSQLContainer<>("postgres:latest"));
-        FlywayDatabaseMigrationSupport databaseContainerHandler = new FlywayDatabaseMigrationSupport();
-        databaseContainerHandler.setLocations("com/link_intersystems/dbunit/commands/migrations");
-        databaseContainerHandler.setStartVersion("1");
-        transformer.setDatabaseContainerHandler(databaseContainerHandler);
+        FlywayDatabaseMigrationSupport flywaySupport = new FlywayDatabaseMigrationSupport();
+
+        flywaySupport.setRemoveFlywayTables(false);
+        flywaySupport.setLocations("com/link_intersystems/dbunit/commands/migrations");
+        flywaySupport.setStartVersion("1");
+        transformer.setDatabaseContainerHandler(flywaySupport);
         dataSetTransformCommand.setDataSetTransformer(transformer);
 
         dataSetTransformCommand.exec();
