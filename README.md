@@ -24,11 +24,10 @@ A module that provides support for data set migration.
     IDataSet sourceDataSet = ...;
 
     DataSetFlywayMigration flywayMigration = new DataSetFlywayMigration();
-    flywayMigration.setDataSetProducer(sourceDataSet);
+    flywayMigration.setFlatXmlProducer("somepath/flat-v1.xml");
     flywayMigration.setSourceVersion("1");
     
-    CopyDataSetConsumer migratedDataSet = new CopyDataSetConsumer(); 
-    flywayMigration.setDataSetConsumer(migratedDataSet); 
+    flywayMigration.setFlatXmlConsumer("somepath/flat-v2.xml");
     
     flywayMigration.setJdbcDatabaseContainerFactory(() -> new PostgreSQLContainer<>("postgres:latest")));
     flywayMigration.setLocations("com/link_intersystems/dbunit/migration/postgres");
