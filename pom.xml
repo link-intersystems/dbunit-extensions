@@ -230,6 +230,7 @@
                         <artifactId>coveralls-maven-plugin</artifactId>
                         <version>4.3.0</version>
                         <configuration>
+                            <scanForSources>true</scanForSources>
                             <!--suppress UnresolvedMavenProperty -->
                             <repoToken>${env.COVERALLS_TOKEN}</repoToken>
                         </configuration>
