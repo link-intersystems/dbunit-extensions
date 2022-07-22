@@ -71,7 +71,7 @@ class DataSetFlywayMigrationTest {
         consumerSupport.setFlatXmlConsumer("target/flat.xml");
         IDataSetConsumer flatXmlConsumer = consumerSupport.getDataSetConsumer();
 
-        flywayMigrationCommand.setDataSetConsumers(copyDataSetConsumer, csvConsumer, flatXmlConsumer, new DataSetPrinterConsumer());
+        flywayMigrationCommand.setDataSetConsumers(copyDataSetConsumer, csvConsumer, flatXmlConsumer);
 
         flywayMigrationCommand.setJdbcDatabaseContainerFactory(databaseDefinition.jdbcDatabaseContainerFactory);
 
