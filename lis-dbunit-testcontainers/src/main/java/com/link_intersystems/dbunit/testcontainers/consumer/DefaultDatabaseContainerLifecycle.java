@@ -9,7 +9,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class DefaultDatabaseContainerLifecycle implements JdbcDatabaseContainerLifecycle {
+public class DefaultDatabaseContainerLifecycle implements JdbcDatabaseContainerFactory {
 
     private Supplier<JdbcDatabaseContainer<?>> containerSupplier;
 

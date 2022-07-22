@@ -5,10 +5,6 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public interface JdbcDatabaseContainerLifecycle {
+public interface JdbcDatabaseContainerFactory {
     public JdbcDatabaseContainer<?> create();
-
-    default public void stop(JdbcDatabaseContainer<?> jdbcDatabaseContainer) {
-        jdbcDatabaseContainer.stop();
-    }
 }

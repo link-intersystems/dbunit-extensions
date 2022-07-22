@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public interface FlywayConfigurationSupport {
+public interface FlywayConfigurationSupport extends FlywayMigrationConfiguration {
     void setLocations(String... locations);
 
     void setLocations(List<String> locations);
@@ -17,21 +17,15 @@ public interface FlywayConfigurationSupport {
 
     void setJavaMigrations(List<JavaMigration> javaMigrations);
 
-    ClassProvider<JavaMigration> getJavaMigrationClassProvider();
-
     void setJavaMigrationClassProvider(ClassProvider<JavaMigration> javaMigrationClassProvider);
 
-    List<JavaMigration> getJavaMigrations();
-
-    List<String> getLocations();
-
-    default void apply(FlywayConfigurationSupport flywayConfigurationSupport) {
-        if (this == flywayConfigurationSupport) {
+    default void apply(FlywayMigrationConfiguration migrationConfiguration) {
+        if (this == migrationConfiguration) {
             return;
         }
 
-        setLocations(flywayConfigurationSupport.getLocations());
-        setJavaMigrations(flywayConfigurationSupport.getJavaMigrations());
-        setJavaMigrationClassProvider(flywayConfigurationSupport.getJavaMigrationClassProvider());
+        setLocations(migrationConfiguration.getLocations());
+        setJavaMigrations(migrationConfiguration.getJavaMigrations());
+        setJavaMigrationClassProvider(migrationConfiguration.getJavaMigrationClassProvider());
     }
 }

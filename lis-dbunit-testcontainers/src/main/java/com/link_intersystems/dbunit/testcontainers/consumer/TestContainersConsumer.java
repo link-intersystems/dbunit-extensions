@@ -28,19 +28,13 @@ public class TestContainersConsumer extends DefaultConsumer {
     private IDataSetConsumer resultConsumer;
     private DatabaseMigrationSupport migrationSupport;
     private DefaultTable currentTable;
-    private JdbcDatabaseContainerLifecycle containerLifecycle;
+    private JdbcDatabaseContainerFactory databaseContainerFactory;
     private DatabaseContainerDataSource dataSource;
-
-    private boolean passOnlyConsumedTablesToSubsequentConsumer = true;
 
     private List<String> consumedTableNames;
 
-    public TestContainersConsumer(JdbcDatabaseContainerLifecycle containerLifecycle) {
-        this.containerLifecycle = requireNonNull(containerLifecycle);
-    }
-
-    public void setPassOnlyConsumedTablesToSubsequentConsumer(boolean passOnlyConsumedTablesToSubsequentConsumer) {
-        this.passOnlyConsumedTablesToSubsequentConsumer = passOnlyConsumedTablesToSubsequentConsumer;
+    public TestContainersConsumer(JdbcDatabaseContainerFactory databaseContainerFactory) {
+        this.databaseContainerFactory = requireNonNull(databaseContainerFactory);
     }
 
     public void setResultConsumer(IDataSetConsumer resultConsumer) {
@@ -53,7 +47,7 @@ public class TestContainersConsumer extends DefaultConsumer {
 
     @Override
     public void startDataSet() throws DataSetException {
-        jdbcDatabaseContainer = createDatabaseContainer();
+        jdbcDatabaseContainer = databaseContainerFactory.create();
         jdbcDatabaseContainer.start();
 
         dataSource = new DatabaseContainerDataSource(jdbcDatabaseContainer);
@@ -129,13 +123,13 @@ public class TestContainersConsumer extends DefaultConsumer {
 
                 dataSource.close();
             } finally {
-                containerLifecycle.stop(jdbcDatabaseContainer);
-                jdbcDatabaseContainer.stop();
+                stopContainer(jdbcDatabaseContainer);
             }
         }
     }
 
-    protected JdbcDatabaseContainer<?> createDatabaseContainer() {
-        return containerLifecycle.create();
+    protected void stopContainer(JdbcDatabaseContainer<?> jdbcDatabaseContainer) {
+        jdbcDatabaseContainer.stop();
     }
+
 }

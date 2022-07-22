@@ -11,7 +11,7 @@ public class TestContainersDataSetTransformer implements DataSetTransformer {
 
     private TestContainersConsumer testContainersConsumer;
 
-    public TestContainersDataSetTransformer(JdbcDatabaseContainerLifecycle containerLifecycle) {
+    public TestContainersDataSetTransformer(JdbcDatabaseContainerFactory containerLifecycle) {
         testContainersConsumer = new TestContainersConsumer(containerLifecycle);
     }
 
@@ -20,7 +20,7 @@ public class TestContainersDataSetTransformer implements DataSetTransformer {
         return testContainersConsumer;
     }
 
-    public void setDatabaseContainerHandler(DatabaseMigrationSupport databaseContainerHandler) {
+    public void setDatabaseMigrationSupport(DatabaseMigrationSupport databaseContainerHandler) {
         testContainersConsumer.setDatabaseMigrationSupport(databaseContainerHandler);
     }
 
