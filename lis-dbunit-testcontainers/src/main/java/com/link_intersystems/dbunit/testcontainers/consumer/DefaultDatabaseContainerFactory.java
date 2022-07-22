@@ -9,11 +9,11 @@ import static java.util.Objects.requireNonNull;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class DefaultDatabaseContainerLifecycle implements JdbcDatabaseContainerFactory {
+public class DefaultDatabaseContainerFactory implements DatabaseContainerFactory {
 
     private Supplier<JdbcDatabaseContainer<?>> containerSupplier;
 
-    public DefaultDatabaseContainerLifecycle(Supplier<JdbcDatabaseContainer<?>> containerSupplier) {
+    public DefaultDatabaseContainerFactory(Supplier<JdbcDatabaseContainer<?>> containerSupplier) {
         this.containerSupplier = requireNonNull(containerSupplier);
     }
 

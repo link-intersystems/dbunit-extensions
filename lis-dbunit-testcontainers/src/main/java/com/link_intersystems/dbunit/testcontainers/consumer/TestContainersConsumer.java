@@ -28,12 +28,12 @@ public class TestContainersConsumer extends DefaultConsumer {
     private IDataSetConsumer resultConsumer;
     private DatabaseMigrationSupport migrationSupport;
     private DefaultTable currentTable;
-    private JdbcDatabaseContainerFactory databaseContainerFactory;
+    private DatabaseContainerFactory databaseContainerFactory;
     private DatabaseContainerDataSource dataSource;
 
     private List<String> consumedTableNames;
 
-    public TestContainersConsumer(JdbcDatabaseContainerFactory databaseContainerFactory) {
+    public TestContainersConsumer(DatabaseContainerFactory databaseContainerFactory) {
         this.databaseContainerFactory = requireNonNull(databaseContainerFactory);
     }
 

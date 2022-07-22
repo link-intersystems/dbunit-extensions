@@ -15,25 +15,25 @@ At the moment only flyway migrations are supported.
 
        flywayMigration.setFlatXmlProducer("somepath/flat-v1.xml");
 
-5. Set the target data set file
+3. Set the target data set file
    
    Since `DataSetFlywayMigration` implements `DataSetConsumerSupport` you can use a lot of utility
    methods to define the target data set.
 
        flywayMigration.setFlatXmlConsumer("somepath/flat-v2.xml");
 
-6. Tell the migration command which container should be used:
+4. Tell the migration command which container should be used:
 
-       flywayMigration.setJdbcDatabaseContainerFactory(() -> new PostgreSQLContainer<>("postgres:latest")));
+       flywayMigration.setDatabaseContainerFactory(() -> new PostgreSQLContainer<>("postgres:latest")));
 
-7. Tell the migration command on which flyway version the source data set is based.
+5. Tell the migration command on which flyway version the source data set is based.
 
        flywayMigration.setSourceVersion("1");
 
-8. Optionally tell the migration command to which flyway version the data set should be migrated.
+6. Optionally tell the migration command to which flyway version the data set should be migrated.
 
        flywayMigration.setTargetVersion("2"); // flyway uses the latest version if omitted.
 
-9. Execute the migration
+7Execute the migration
 
        flywayMigration.exec();

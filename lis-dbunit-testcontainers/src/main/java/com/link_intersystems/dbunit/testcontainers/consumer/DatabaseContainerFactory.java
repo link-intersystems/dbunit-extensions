@@ -5,6 +5,6 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public interface JdbcDatabaseContainerFactory {
+public interface DatabaseContainerFactory {
     public JdbcDatabaseContainer<?> create();
 }

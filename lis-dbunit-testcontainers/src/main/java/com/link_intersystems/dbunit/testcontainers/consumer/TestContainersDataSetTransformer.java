@@ -11,7 +11,7 @@ public class TestContainersDataSetTransformer implements DataSetTransformer {
 
     private TestContainersConsumer testContainersConsumer;
 
-    public TestContainersDataSetTransformer(JdbcDatabaseContainerFactory containerLifecycle) {
+    public TestContainersDataSetTransformer(DatabaseContainerFactory containerLifecycle) {
         testContainersConsumer = new TestContainersConsumer(containerLifecycle);
     }
 

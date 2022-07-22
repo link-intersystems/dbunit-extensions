@@ -1,10 +1,9 @@
 package com.link_intersystems.dbunit.migration;
 
 import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
-import com.link_intersystems.dbunit.stream.consumer.DataSetPrinterConsumer;
 import com.link_intersystems.dbunit.stream.consumer.DefaultDataSetConsumerSupport;
 import com.link_intersystems.dbunit.test.TestDataSets;
-import com.link_intersystems.dbunit.testcontainers.consumer.JdbcDatabaseContainerFactory;
+import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseContainerFactory;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.DefaultTable;
 import org.dbunit.dataset.IDataSet;
@@ -31,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class DataSetFlywayMigrationTest {
 
     private static class DatabaseDefinition {
-        JdbcDatabaseContainerFactory jdbcDatabaseContainerFactory;
+        DatabaseContainerFactory jdbcDatabaseContainerFactory;
         String containerName;
 
 
@@ -73,7 +72,7 @@ class DataSetFlywayMigrationTest {
 
         flywayMigrationCommand.setDataSetConsumers(copyDataSetConsumer, csvConsumer, flatXmlConsumer);
 
-        flywayMigrationCommand.setJdbcDatabaseContainerFactory(databaseDefinition.jdbcDatabaseContainerFactory);
+        flywayMigrationCommand.setDatabaseContainerFactory(databaseDefinition.jdbcDatabaseContainerFactory);
 
         flywayMigrationCommand.setSourceVersion("1");
         flywayMigrationCommand.setLocations("com/link_intersystems/dbunit/migration/" + databaseDefinition.containerName);

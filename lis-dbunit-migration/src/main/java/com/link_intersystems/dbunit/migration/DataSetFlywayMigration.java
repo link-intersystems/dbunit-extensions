@@ -6,7 +6,7 @@ import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerSupport;
 import com.link_intersystems.dbunit.stream.consumer.DataSetTransformExecutor;
 import com.link_intersystems.dbunit.stream.producer.DataSetSource;
 import com.link_intersystems.dbunit.stream.producer.DataSetSourceSupport;
-import com.link_intersystems.dbunit.testcontainers.consumer.JdbcDatabaseContainerFactory;
+import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseContainerFactory;
 import com.link_intersystems.dbunit.testcontainers.consumer.TestContainersDataSetTransformer;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
@@ -21,7 +21,7 @@ public class DataSetFlywayMigration extends AbstractFlywayConfigurationSupport i
 
     private DataSetSource sourceDataSet;
     private IDataSetConsumer targetConsumer;
-    private JdbcDatabaseContainerFactory databaseContainerFactory;
+    private DatabaseContainerFactory databaseContainerFactory;
     private MigrationVersion sourceVersion;
     private MigrationVersion targetVersion;
 
@@ -52,7 +52,7 @@ public class DataSetFlywayMigration extends AbstractFlywayConfigurationSupport i
         this.sourceDataSet = dataSetSource;
     }
 
-    public void setJdbcDatabaseContainerFactory(JdbcDatabaseContainerFactory databaseContainerFactory) {
+    public void setDatabaseContainerFactory(DatabaseContainerFactory databaseContainerFactory) {
         this.databaseContainerFactory = databaseContainerFactory;
     }
 
