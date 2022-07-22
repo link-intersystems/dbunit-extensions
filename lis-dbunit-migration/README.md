@@ -13,14 +13,14 @@ At the moment only flyway migrations are supported.
    Since `DataSetFlywayMigration` implements `DataSetProducerSupport` you can use a lot of utility
    methods to define the source data set.
 
-       flywayMigrationCommand.setFlatXmlProducer("somepath/flat-v1.xml");
+       flywayMigration.setFlatXmlProducer("somepath/flat-v1.xml");
 
 5. Set the target data set file
    
    Since `DataSetFlywayMigration` implements `DataSetConsumerSupport` you can use a lot of utility
    methods to define the target data set.
 
-       flywayMigrationCommand.setFlatXmlConsumer("somepath/flat-v2.xml");
+       flywayMigration.setFlatXmlConsumer("somepath/flat-v2.xml");
 
 6. Tell the migration command which container should be used:
 
