@@ -31,5 +31,9 @@
             <groupId>com.link-intersystems.dbunit</groupId>
             <artifactId>lis-dbunit-table</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.link-intersystems.dbunit</groupId>
+            <artifactId>lis-dbunit-test</artifactId>
+        </dependency>
     </dependencies>
 </project>
