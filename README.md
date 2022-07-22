@@ -21,27 +21,18 @@ Limitations and exceptions are listed below.
 
 A module that provides support for data set migration.
 
-    IDataSet sourceDataSet = ...; // some data set to migrate.
+    IDataSet sourceDataSet = ...;
 
     DataSetFlywayMigration flywayMigration = new DataSetFlywayMigration();
-
-    // DataSetFlywayMigration implements DataSetProducerSupport. Take a look at DataSetProducerSupport for details.
     flywayMigration.setDataSetProducer(sourceDataSet);
+    flywayMigration.setSourceVersion("1");
     
     CopyDataSetConsumer migratedDataSet = new CopyDataSetConsumer(); 
-    // DataSetFlywayMigration implements DataSetConsumerSupport. Take a look at DataSetConsumerSupport for details.
     flywayMigration.setDataSetConsumer(migratedDataSet); 
     
-    // set a testcontainer to use for migration
     flywayMigration.setJdbcDatabaseContainerFactory(() -> new PostgreSQLContainer<>("postgres:latest")));
-
-    // set the flyway version of the source data set.
-    flywayMigration.setSourceVersion("1");
-
-    // tell the migration where the flyway migration files are located
     flywayMigration.setLocations("com/link_intersystems/dbunit/migration/postgres");
     
-    // migrate the data set.
     flywayMigration.exec();
 
 ## [lis-dbunit-commands](lis-dbunit-commands/README.md)
