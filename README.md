@@ -26,7 +26,7 @@ A module that provides support for data set migration.
     DataSetFlywayMigration flywayMigration = new DataSetFlywayMigration();
 
     // DataSetFlywayMigration implements DataSetProducerSupport. Take a look at DataSetProducerSupport for details.
-    flywayMigrationCommand.setDataSetProducer(sourceDataSet);
+    flywayMigration.setDataSetProducer(sourceDataSet);
     
     CopyDataSetConsumer migratedDataSet = new CopyDataSetConsumer(); 
     // DataSetFlywayMigration implements DataSetConsumerSupport. Take a look at DataSetConsumerSupport for details.
@@ -42,7 +42,7 @@ A module that provides support for data set migration.
     flywayMigration.setLocations("com/link_intersystems/dbunit/migration/postgres");
     
     // migrate the data set.
-    flywayMigrationCommand.exec();
+    flywayMigration.exec();
 
 ## [lis-dbunit-commands](lis-dbunit-commands/README.md)
 
