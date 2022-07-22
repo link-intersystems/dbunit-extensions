@@ -21,9 +21,8 @@ Limitations and exceptions are listed below.
 
 A module that provides support for data set migration.
 
-    IDataSet sourceDataSet = ...;
-
     DataSetFlywayMigration flywayMigration = new DataSetFlywayMigration();
+
     flywayMigration.setFlatXmlProducer("somepath/flat-v1.xml");
     flywayMigration.setSourceVersion("1");
     
