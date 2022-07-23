@@ -11,23 +11,19 @@ import java.io.InputStream;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class FlatXmlDataSetDetector extends AbstractXmlTableMetaDataDataSetFileDetector {
-
+public class XmlDataSetDetector extends AbstractXmlTableMetaDataDataSetFileDetector {
     @Override
     protected DataSetFile dataSetFileDetectedSucessfully(File file) {
-        return new FlatXmlDataSetFile(file);
+        return new XmlDataSetFile(file);
     }
 
     @Override
     protected void setProducer(DefaultDataSetProducerSupport producerSupport, InputStream inputStream) {
-        producerSupport.setFlatXmlProducer(inputStream);
+        producerSupport.setXmlProducer(inputStream);
     }
 
     @Override
     protected boolean isMatch(ITableMetaData metaData) throws DataSetException {
-        return !metaData.getTableName().equals("table") &&
-                !(metaData.getColumns().length == 1
-                        && metaData.getColumns()[0].getColumnName().equals("name")
-                );
+        return true;
     }
 }

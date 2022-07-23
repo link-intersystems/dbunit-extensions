@@ -1,3 +1,4 @@
 com.link_intersystems.dbunit.migration.detection.csv.CsvDataSetDetector
 com.link_intersystems.dbunit.migration.detection.xls.XlsDataSetDetector
 com.link_intersystems.dbunit.migration.detection.xml.FlatXmlDataSetDetector
+com.link_intersystems.dbunit.migration.detection.xml.XmlDataSetDetector
