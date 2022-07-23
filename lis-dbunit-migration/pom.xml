@@ -28,7 +28,11 @@
             <artifactId>lis-dbunit-testcontainers</artifactId>
             <version>1.0.3-SNAPSHOT</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.link-intersystems.commons</groupId>
+            <artifactId>lis-commons-io</artifactId>
+            <version>1.6.1-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>com.link-intersystems.dbunit</groupId>
             <artifactId>lis-dbunit-test</artifactId>
@@ -56,6 +60,11 @@
             <artifactId>flyway-mysql</artifactId>
             <version>8.5.12</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>5.2.2</version>
         </dependency>
     </dependencies>
 </project>
