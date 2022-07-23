@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.migration;
+package com.link_intersystems.dbunit.migration.detection;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -8,27 +8,27 @@ import java.util.ServiceLoader;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class DataSetFileDetector {
+public class DataSetFileDetection {
 
-    private List<DataSetDetector> detectors;
+    private List<DataSetFileDetector> detectors;
 
-    public void setDetectors(List<DataSetDetector> detectors) {
+    public void setDetectors(List<DataSetFileDetector> detectors) {
         this.detectors = detectors;
     }
 
-    private List<DataSetDetector> getDetectors() {
+    private List<DataSetFileDetector> getDetectors() {
         if (detectors != null) {
             return detectors;
         }
 
-        List<DataSetDetector> dataSetDetectors = new ArrayList<>();
-        ServiceLoader<DataSetDetector> dataSetDetectorsLoader = ServiceLoader.load(DataSetDetector.class, Thread.currentThread().getContextClassLoader());
+        List<DataSetFileDetector> dataSetDetectors = new ArrayList<>();
+        ServiceLoader<DataSetFileDetector> dataSetDetectorsLoader = ServiceLoader.load(DataSetFileDetector.class, Thread.currentThread().getContextClassLoader());
         dataSetDetectorsLoader.forEach(dataSetDetectors::add);
         return dataSetDetectors;
     }
 
     public DataSetFile detect(File file) {
-        for (DataSetDetector detector : getDetectors()) {
+        for (DataSetFileDetector detector : getDetectors()) {
             DataSetFile dataSetFile = detector.detect(file);
             if (dataSetFile != null) {
                 return dataSetFile;

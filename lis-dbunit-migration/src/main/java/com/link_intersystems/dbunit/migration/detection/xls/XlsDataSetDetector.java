@@ -1,7 +1,7 @@
-package com.link_intersystems.dbunit.migration.xls;
+package com.link_intersystems.dbunit.migration.detection.xls;
 
-import com.link_intersystems.dbunit.migration.DataSetDetector;
-import com.link_intersystems.dbunit.migration.DataSetFile;
+import com.link_intersystems.dbunit.migration.detection.DataSetFileDetector;
+import com.link_intersystems.dbunit.migration.detection.DataSetFile;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
@@ -10,7 +10,7 @@ import java.io.*;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class XlsDataSetDetector implements DataSetDetector {
+public class XlsDataSetDetector implements DataSetFileDetector {
     @Override
     public DataSetFile detect(File file) {
         if(file.isDirectory()){

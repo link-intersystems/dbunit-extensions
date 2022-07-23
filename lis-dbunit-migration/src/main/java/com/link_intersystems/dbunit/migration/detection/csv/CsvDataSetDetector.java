@@ -1,14 +1,14 @@
-package com.link_intersystems.dbunit.migration.csv;
+package com.link_intersystems.dbunit.migration.detection.csv;
 
-import com.link_intersystems.dbunit.migration.DataSetDetector;
-import com.link_intersystems.dbunit.migration.DataSetFile;
+import com.link_intersystems.dbunit.migration.detection.DataSetFileDetector;
+import com.link_intersystems.dbunit.migration.detection.DataSetFile;
 
 import java.io.File;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class CsvDataSetDetector implements DataSetDetector {
+public class CsvDataSetDetector implements DataSetFileDetector {
     @Override
     public DataSetFile detect(File file) {
         if (file.isFile()) {

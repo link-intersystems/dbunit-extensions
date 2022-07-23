@@ -1,7 +1,8 @@
 package com.link_intersystems.dbunit.migration;
 
+import com.link_intersystems.dbunit.migration.detection.DataSetFile;
+import com.link_intersystems.dbunit.migration.detection.DataSetFileDetection;
 import com.link_intersystems.io.Unzip;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -28,7 +29,7 @@ class DataSetFileDetectorTest {
 
     @Test
     void csv(){
-        DataSetFileDetector dataSetFileDetector = new DataSetFileDetector();
+        DataSetFileDetection dataSetFileDetector = new DataSetFileDetection();
         File file = Paths.get(tmpDir.toString(), "tiny-sakila-csv").toFile();
         DataSetFile dataSetFile = dataSetFileDetector.detect(file);
 
@@ -37,8 +38,17 @@ class DataSetFileDetectorTest {
 
     @Test
     void xls(){
-        DataSetFileDetector dataSetFileDetector = new DataSetFileDetector();
+        DataSetFileDetection dataSetFileDetector = new DataSetFileDetection();
         File file = Paths.get(tmpDir.toString(), "tiny-sakila.xls").toFile();
+        DataSetFile dataSetFile = dataSetFileDetector.detect(file);
+
+        assertNotNull(dataSetFile);
+    }
+
+    @Test
+    void flatXml(){
+        DataSetFileDetection dataSetFileDetector = new DataSetFileDetection();
+        File file = Paths.get(tmpDir.toString(), "tiny-sakila-flat.xml").toFile();
         DataSetFile dataSetFile = dataSetFileDetector.detect(file);
 
         assertNotNull(dataSetFile);

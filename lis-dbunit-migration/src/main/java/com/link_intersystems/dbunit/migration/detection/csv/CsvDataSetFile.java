@@ -1,6 +1,6 @@
-package com.link_intersystems.dbunit.migration.csv;
+package com.link_intersystems.dbunit.migration.detection.csv;
 
-import com.link_intersystems.dbunit.migration.DataSetFile;
+import com.link_intersystems.dbunit.migration.detection.DataSetFile;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 import org.dbunit.dataset.stream.IDataSetProducer;
 
