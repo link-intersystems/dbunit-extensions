@@ -1,6 +1,7 @@
 package com.link_intersystems.dbunit.flyway;
 
 import org.flywaydb.core.api.ClassProvider;
+import org.flywaydb.core.api.MigrationVersion;
 import org.flywaydb.core.api.migration.JavaMigration;
 
 import java.util.ArrayList;
@@ -17,6 +18,8 @@ public class AbstractFlywayConfigurationSupport implements FlywayConfigurationSu
     private List<String> locations = new ArrayList<>();
     private List<JavaMigration> javaMigrations = new ArrayList<>();
     private ClassProvider<JavaMigration> javaMigrationClassProvider;
+    private MigrationVersion sourceVersion;
+    private MigrationVersion targetVersion;
 
     @Override
     public void setLocations(String... locations) {
@@ -61,4 +64,33 @@ public class AbstractFlywayConfigurationSupport implements FlywayConfigurationSu
     }
 
 
+    @Override
+    public void setSourceVersion(String sourceVersion) {
+        setSourceVersion(MigrationVersion.fromVersion(sourceVersion));
+    }
+
+    @Override
+    public void setSourceVersion(MigrationVersion sourceVersion) {
+        this.sourceVersion = sourceVersion;
+    }
+
+    @Override
+    public MigrationVersion getSourceVersion() {
+        return sourceVersion;
+    }
+
+    @Override
+    public void setTargetVersion(String targetVersion) {
+        setTargetVersion(MigrationVersion.fromVersion(targetVersion));
+    }
+
+    @Override
+    public void setTargetVersion(MigrationVersion targetVersion) {
+        this.targetVersion = targetVersion;
+    }
+
+    @Override
+    public MigrationVersion getTargetVersion() {
+        return targetVersion;
+    }
 }

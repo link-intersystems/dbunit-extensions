@@ -1,6 +1,7 @@
 package com.link_intersystems.dbunit.flyway;
 
 import org.flywaydb.core.api.ClassProvider;
+import org.flywaydb.core.api.MigrationVersion;
 import org.flywaydb.core.api.migration.JavaMigration;
 
 import java.util.List;
@@ -27,5 +28,15 @@ public interface FlywayConfigurationSupport extends FlywayMigrationConfiguration
         setLocations(migrationConfiguration.getLocations());
         setJavaMigrations(migrationConfiguration.getJavaMigrations());
         setJavaMigrationClassProvider(migrationConfiguration.getJavaMigrationClassProvider());
+        setSourceVersion(migrationConfiguration.getSourceVersion());
+        setTargetVersion(migrationConfiguration.getTargetVersion());
     }
+
+    void setSourceVersion(String sourceVersion);
+
+    void setSourceVersion(MigrationVersion sourceVersion);
+
+    void setTargetVersion(String targetVersion);
+
+    void setTargetVersion(MigrationVersion targetVersion);
 }

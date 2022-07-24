@@ -4,6 +4,8 @@ import com.link_intersystems.dbunit.flyway.AbstractFlywayConfigurationSupport;
 import com.link_intersystems.dbunit.flyway.FlywayDatabaseMigrationSupport;
 import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerSupport;
 import com.link_intersystems.dbunit.stream.consumer.DataSetTransformExecutor;
+import com.link_intersystems.dbunit.stream.consumer.DataSetTransformerChain;
+import com.link_intersystems.dbunit.stream.consumer.DataSetTransormer;
 import com.link_intersystems.dbunit.stream.producer.DataSetSource;
 import com.link_intersystems.dbunit.stream.producer.DataSetSourceSupport;
 import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseContainerFactory;
@@ -11,7 +13,6 @@ import com.link_intersystems.dbunit.testcontainers.consumer.TestContainersDataSe
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.stream.IDataSetConsumer;
-import org.flywaydb.core.api.MigrationVersion;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -22,25 +23,9 @@ public class DataSetFlywayMigration extends AbstractFlywayConfigurationSupport i
     private DataSetSource sourceDataSet;
     private IDataSetConsumer targetConsumer;
     private DatabaseContainerFactory databaseContainerFactory;
-    private MigrationVersion sourceVersion;
-    private MigrationVersion targetVersion;
-
-    public void setSourceVersion(String sourceVersion) {
-        setSourceVersion(MigrationVersion.fromVersion(sourceVersion));
-    }
-
-    public void setSourceVersion(MigrationVersion sourceVersion) {
-        this.sourceVersion = sourceVersion;
-    }
-
-
-    public void setTargetVersion(String targetVersion) {
-        setSourceVersion(MigrationVersion.fromVersion(targetVersion));
-    }
-
-    public void setTargetVersion(MigrationVersion targetVersion) {
-        this.targetVersion = targetVersion;
-    }
+    private boolean removeFlywayTables = true;
+    private DataSetTransormer beforeMigrationTransformer;
+    private DataSetTransormer afterMigrationTransformer;
 
     @Override
     public void setDataSetConsumer(IDataSetConsumer dataSetConsumer) {
@@ -56,26 +41,65 @@ public class DataSetFlywayMigration extends AbstractFlywayConfigurationSupport i
         this.databaseContainerFactory = databaseContainerFactory;
     }
 
+    public void setRemoveFlywayTables(boolean removeFlywayTables) {
+        this.removeFlywayTables = removeFlywayTables;
+    }
+
+    public void setBeforeMigrationTransformer(DataSetTransormer beforeMigrationTransformer) {
+        this.beforeMigrationTransformer = beforeMigrationTransformer;
+    }
+
+    public DataSetTransormer getBeforeMigrationTransformer() {
+        return beforeMigrationTransformer;
+    }
+
+    public void setAfterMigrationTransformer(DataSetTransormer afterMigrationTransformer) {
+        this.afterMigrationTransformer = afterMigrationTransformer;
+    }
+
+    public DataSetTransormer getAfterMigrationTransformer() {
+        return afterMigrationTransformer;
+    }
+
     public void exec() throws DataSetException {
-        DataSetTransformExecutor dataSetTransformCommand = new DataSetTransformExecutor();
+        DataSetTransformExecutor transformExecutor = new DataSetTransformExecutor();
 
         IDataSet dataSet = sourceDataSet.get();
-        dataSetTransformCommand.setDataSetProducer(dataSet);
+        transformExecutor.setDataSetProducer(dataSet);
 
-        dataSetTransformCommand.setDataSetConsumer(targetConsumer);
+        transformExecutor.setDataSetConsumer(targetConsumer);
 
+        TestContainersDataSetTransformer migrationTransformer = createMigrationTransformer();
 
+        DataSetTransormer dataSetTransormer = applyBeforeAndAfterTransformers(migrationTransformer);
+        transformExecutor.setDataSetTransformer(dataSetTransormer);
+
+        transformExecutor.exec();
+    }
+
+    protected TestContainersDataSetTransformer createMigrationTransformer() {
         TestContainersDataSetTransformer transformer = new TestContainersDataSetTransformer(databaseContainerFactory);
         FlywayDatabaseMigrationSupport flywaySupport = new FlywayDatabaseMigrationSupport();
-
-        flywaySupport.setRemoveFlywayTables(false);
+        flywaySupport.setRemoveFlywayTables(removeFlywayTables);
         flywaySupport.apply(this);
-        flywaySupport.setStartVersion(sourceVersion);
-        flywaySupport.setEndVersion(targetVersion);
         transformer.setDatabaseMigrationSupport(flywaySupport);
-        dataSetTransformCommand.setDataSetTransformer(transformer);
+        return transformer;
+    }
 
-        dataSetTransformCommand.exec();
+    protected DataSetTransormer applyBeforeAndAfterTransformers(TestContainersDataSetTransformer transformer) {
+        DataSetTransformerChain dataSetTransformerChain = new DataSetTransformerChain();
+
+        if (getBeforeMigrationTransformer() != null) {
+            dataSetTransformerChain.add(getBeforeMigrationTransformer());
+        }
+
+        dataSetTransformerChain.add(transformer);
+
+        if (getAfterMigrationTransformer() != null) {
+            dataSetTransformerChain.add(getAfterMigrationTransformer());
+        }
+
+        return dataSetTransformerChain;
     }
 
 

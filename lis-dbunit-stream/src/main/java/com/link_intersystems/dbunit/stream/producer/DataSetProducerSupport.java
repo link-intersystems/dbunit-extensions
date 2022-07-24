@@ -23,7 +23,9 @@ public interface DataSetProducerSupport {
     }
 
     default public void setCsvProducer(File inputDirectory) {
-        setDataSetProducer(new CsvProducer(inputDirectory));
+        CsvProducer dataSetProducer = new CsvProducer(inputDirectory);
+        CloseableDataSetProducer closeableDataSetProducer = new CloseableDataSetProducer(dataSetProducer);
+        setDataSetProducer(closeableDataSetProducer);
     }
 
 
@@ -34,11 +36,14 @@ public interface DataSetProducerSupport {
     }
 
     default public void setXlsProducer(File file) throws IOException {
-        setXlsProducer(new FileInputStream(file));
+        FileInputStream inputStream = new FileInputStream(file);
+        XlsDataSetProducer dataSetProducer = new XlsDataSetProducer(new BufferedInputStream(inputStream));
+        setDataSetProducer(new CloseableDataSetProducer(dataSetProducer, inputStream));
     }
 
     default public void setXlsProducer(InputStream inputStream) throws IOException {
-        setDataSetProducer(new XlsDataSetProducer(new BufferedInputStream(inputStream)));
+        XlsDataSetProducer dataSetProducer = new XlsDataSetProducer(new BufferedInputStream(inputStream));
+        setDataSetProducer(dataSetProducer);
     }
 
 
@@ -49,7 +54,16 @@ public interface DataSetProducerSupport {
     }
 
     default public void setXmlProducer(File file) throws IOException {
-        setXmlProducer(new FileInputStream(file));
+        setXmlProducer(file, StandardCharsets.UTF_8);
+    }
+
+    default public void setXmlProducer(File file, Charset charset) throws IOException {
+        FileInputStream inputStream = new FileInputStream(file);
+        BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+        InputStreamReader reader = new InputStreamReader(bufferedInputStream, charset);
+        InputSource inputSource = new InputSource(reader);
+        XmlProducer xmlProducer = new XmlProducer(inputSource);
+        setDataSetProducer(new CloseableDataSetProducer(xmlProducer, inputStream));
     }
 
     default public void setXmlProducer(InputStream inputStream) {

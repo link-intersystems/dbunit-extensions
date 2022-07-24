@@ -12,8 +12,6 @@ import org.dbunit.operation.DatabaseOperation;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -30,8 +28,6 @@ public class TestContainersConsumer extends DefaultConsumer {
     private DefaultTable currentTable;
     private DatabaseContainerFactory databaseContainerFactory;
     private DatabaseContainerDataSource dataSource;
-
-    private List<String> consumedTableNames;
 
     public TestContainersConsumer(DatabaseContainerFactory databaseContainerFactory) {
         this.databaseContainerFactory = requireNonNull(databaseContainerFactory);
@@ -58,15 +54,12 @@ public class TestContainersConsumer extends DefaultConsumer {
         }
 
         migrationSupport.prepareDataSource(this.dataSource);
-        consumedTableNames = new ArrayList<>();
     }
 
     @Override
     public void startTable(ITableMetaData metaData) throws DataSetException {
         currentTable = new DefaultTable(metaData);
         super.startTable(metaData);
-
-        consumedTableNames.add(metaData.getTableName());
     }
 
     @Override
@@ -120,7 +113,6 @@ public class TestContainersConsumer extends DefaultConsumer {
             throw new DataSetException(e);
         } finally {
             try {
-
                 dataSource.close();
             } finally {
                 stopContainer(jdbcDatabaseContainer);

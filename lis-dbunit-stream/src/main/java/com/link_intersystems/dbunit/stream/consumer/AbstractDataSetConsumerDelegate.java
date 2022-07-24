@@ -12,29 +12,36 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractDataSetConsumerDelegate extends DefaultConsumer {
 
+    private static final DefaultConsumer NOOP_CONSUMER = new DefaultConsumer();
+
     @Override
     public void startDataSet() throws DataSetException {
-        getDelegate().startDataSet();
+        getNullSafeDelegate().startDataSet();
     }
 
     @Override
     public void endDataSet() throws DataSetException {
-        getDelegate().endDataSet();
+        getNullSafeDelegate().endDataSet();
     }
 
     @Override
     public void startTable(ITableMetaData iTableMetaData) throws DataSetException {
-        getDelegate().startTable(iTableMetaData);
+        getNullSafeDelegate().startTable(iTableMetaData);
     }
 
     @Override
     public void endTable() throws DataSetException {
-        getDelegate().endTable();
+        getNullSafeDelegate().endTable();
     }
 
     @Override
     public void row(Object[] objects) throws DataSetException {
-        getDelegate().row(objects);
+        getNullSafeDelegate().row(objects);
+    }
+
+    private IDataSetConsumer getNullSafeDelegate(){
+        IDataSetConsumer delegate = getDelegate();
+        return delegate == null ? NOOP_CONSUMER : delegate;
     }
 
     protected abstract IDataSetConsumer getDelegate();

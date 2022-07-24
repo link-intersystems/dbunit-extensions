@@ -4,6 +4,7 @@ import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 import org.dbunit.dataset.stream.IDataSetProducer;
 
+import java.io.File;
 import java.nio.file.Path;
 
 /**
@@ -16,4 +17,7 @@ public interface DataSetFile {
     public IDataSetConsumer createConsumer() throws DataSetException;
 
     DataSetFile withNewPath(Path path) throws DataSetException;
+
+    File getFile();
+
 }

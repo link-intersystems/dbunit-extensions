@@ -13,7 +13,7 @@ public class DataSetTransformExecutor implements DataSetProducerSupport, DataSet
     private IDataSetProducer dataSetProducer;
     private IDataSetConsumer dataSetConsumer;
 
-    private DataSetTransformer dataSetTransformer;
+    private DataSetTransormer dataSetTransformer;
 
     @Override
     public void setDataSetProducer(IDataSetProducer dataSetProducer) {
@@ -25,7 +25,7 @@ public class DataSetTransformExecutor implements DataSetProducerSupport, DataSet
         this.dataSetConsumer = dataSetConsumer;
     }
 
-    public void setDataSetTransformer(DataSetTransformer dataSetTransformer) {
+    public void setDataSetTransformer(DataSetTransormer dataSetTransformer) {
         this.dataSetTransformer = dataSetTransformer;
     }
 

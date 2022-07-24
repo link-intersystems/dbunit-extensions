@@ -21,28 +21,10 @@ public class FlywayDatabaseMigrationSupport extends AbstractFlywayConfigurationS
 
     private static final Collection<String> FLYWAY_TABLES = Arrays.asList("flyway_schema_history");
 
-    private MigrationVersion startVersion;
-    private MigrationVersion endVersion;
     private boolean removeFlywayTables = true;
 
     private FlywayMigration flywayMigration;
     private Supplier<FlywayMigration> flywayMigrationSupplier = DefaultFlywayMigration::new;
-
-    public void setStartVersion(String version) {
-        setStartVersion(MigrationVersion.fromVersion(version));
-    }
-
-    public void setStartVersion(MigrationVersion startVersion) {
-        this.startVersion = startVersion;
-    }
-
-    public void setEndVersion(String version) {
-        setEndVersion(MigrationVersion.fromVersion(version));
-    }
-
-    public void setEndVersion(MigrationVersion endVersion) {
-        this.endVersion = endVersion;
-    }
 
     public void setRemoveFlywayTables(boolean removeFlywayTables) {
         this.removeFlywayTables = removeFlywayTables;
@@ -55,13 +37,13 @@ public class FlywayDatabaseMigrationSupport extends AbstractFlywayConfigurationS
     @Override
     public void prepareDataSource(DataSource dataSource) throws DataSetException {
         FlywayMigration flywayMigration = getFlywayMigration();
-        flywayMigration.execute(dataSource, startVersion);
+        flywayMigration.execute(dataSource, getSourceVersion());
     }
 
     @Override
     public void migrateDataSource(DataSource dataSource) throws DataSetException {
         FlywayMigration flywayMigration = getFlywayMigration();
-        flywayMigration.execute(dataSource, endVersion);
+        flywayMigration.execute(dataSource, getTargetVersion());
 
         afterMigrate(dataSource);
     }

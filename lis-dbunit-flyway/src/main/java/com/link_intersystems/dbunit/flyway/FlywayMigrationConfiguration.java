@@ -1,6 +1,7 @@
 package com.link_intersystems.dbunit.flyway;
 
 import org.flywaydb.core.api.ClassProvider;
+import org.flywaydb.core.api.MigrationVersion;
 import org.flywaydb.core.api.migration.JavaMigration;
 
 import java.util.Collections;
@@ -21,4 +22,8 @@ public interface FlywayMigrationConfiguration {
     default List<String> getLocations() {
         return Collections.emptyList();
     }
+
+    MigrationVersion getSourceVersion();
+
+    MigrationVersion getTargetVersion();
 }

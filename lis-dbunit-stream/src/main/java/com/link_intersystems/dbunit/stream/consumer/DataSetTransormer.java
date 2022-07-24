@@ -5,7 +5,7 @@ import org.dbunit.dataset.stream.IDataSetConsumer;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public interface DataSetTransformer {
+public interface DataSetTransormer {
 
     public IDataSetConsumer getInputConsumer();
 

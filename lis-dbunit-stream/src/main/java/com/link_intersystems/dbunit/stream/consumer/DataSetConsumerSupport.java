@@ -56,11 +56,14 @@ public interface DataSetConsumerSupport {
     }
 
     default public void setXlsConsumer(File file) throws IOException {
-        setXlsConsumer(new FileOutputStream(file));
+        FileOutputStream outputStream = new FileOutputStream(file);
+        XlsDataSetConsumer dataSetConsumer = new XlsDataSetConsumer(new BufferedOutputStream(outputStream));
+        setDataSetConsumer(new CloseableDataSetConsumer(dataSetConsumer, outputStream));
     }
 
     default public void setXlsConsumer(OutputStream outputStream) {
-        setDataSetConsumer(new XlsDataSetConsumer(new BufferedOutputStream(outputStream)));
+        XlsDataSetConsumer dataSetConsumer = new XlsDataSetConsumer(new BufferedOutputStream(outputStream));
+        setDataSetConsumer(dataSetConsumer);
     }
 
 
@@ -71,7 +74,13 @@ public interface DataSetConsumerSupport {
     }
 
     default public void setXmlConsumer(File file) throws IOException {
-        setXmlConsumer(new FileOutputStream(file));
+        setXmlConsumer(file, StandardCharsets.UTF_8);
+    }
+
+    default public void setXmlConsumer(File file, Charset charset) throws IOException {
+        FileOutputStream outputStream = new FileOutputStream(file);
+        XmlDataSetWriter xmlDataSetWriter = new XmlDataSetWriter(new OutputStreamWriter(new BufferedOutputStream(outputStream), charset));
+        setDataSetConsumer(new CloseableDataSetConsumer(xmlDataSetWriter, outputStream));
     }
 
     default public void setXmlConsumer(OutputStream outputStream) {
@@ -89,7 +98,14 @@ public interface DataSetConsumerSupport {
     }
 
     default public void setFlatXmlConsumer(File file) throws IOException {
-        setFlatXmlConsumer(new FileOutputStream(file));
+        setFlatXmlConsumer(file, StandardCharsets.UTF_8);
+    }
+
+    default public void setFlatXmlConsumer(File file, Charset charset) throws IOException {
+        OutputStream outputStream = new FileOutputStream(file);
+        FlatXmlWriter flatXmlWriter = new FlatXmlWriter(new OutputStreamWriter(new BufferedOutputStream(outputStream), charset));
+        CloseableDataSetConsumer closeableDataSetConsumer = new CloseableDataSetConsumer(flatXmlWriter, outputStream);
+        setDataSetConsumer(closeableDataSetConsumer);
     }
 
     default public void setFlatXmlConsumer(OutputStream outputStream) {

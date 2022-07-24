@@ -5,6 +5,8 @@ import com.link_intersystems.dbunit.table.TableOrder;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 import org.dbunit.dataset.stream.IDataSetProducer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -19,7 +21,9 @@ import java.util.Objects;
  *
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class ExternalSortTableConsumer extends AbstractDataSetConsumerDelegate {
+public class ExternalSortTableConsumer extends AbstractDataSetConsumerDelegate implements Closeable {
+
+    private Logger logger = LoggerFactory.getLogger(ExternalSortTableConsumer.class);
 
     private final IDataSetConsumer subsequentConsumer;
     private final TableOrder tableOrder;
@@ -68,7 +72,18 @@ public class ExternalSortTableConsumer extends AbstractDataSetConsumerDelegate {
             dataSetProducer.setConsumer(subsequentConsumer);
             dataSetProducer.produce();
         } finally {
-            deleteDirectory(tempDir);
+            try {
+                close();
+            } catch (IOException e) {
+                logger.error("External sort finished, but unable to clean up temporary directory.", e);
+            }
+        }
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (!deleteDirectory(tempDir)) {
+            throw new IOException("Unable to delete temporary directory: " + tempDir);
         }
     }
 
