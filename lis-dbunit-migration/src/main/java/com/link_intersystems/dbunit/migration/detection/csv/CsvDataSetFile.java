@@ -1,30 +1,27 @@
 package com.link_intersystems.dbunit.migration.detection.csv;
 
-import com.link_intersystems.dbunit.migration.detection.DataSetFile;
-import org.dbunit.dataset.stream.IDataSetConsumer;
-import org.dbunit.dataset.stream.IDataSetProducer;
+import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerSupport;
+import com.link_intersystems.dbunit.stream.producer.DataSetProducerSupport;
 
 import java.io.File;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class CsvDataSetFile implements DataSetFile {
-
-    private File file;
+public class CsvDataSetFile extends AbstractDataSetFile {
 
     CsvDataSetFile(File file) {
-        this.file = file;
+        super(file);
     }
 
     @Override
-
-    public IDataSetProducer createProducer() {
-        return null;
+    protected void setProducer(DataSetProducerSupport producerSupport, File file) {
+        producerSupport.setCsvProducer(file);
     }
 
     @Override
-    public IDataSetConsumer createConsumer() {
-        return null;
+    protected void setConsumer(DataSetConsumerSupport consumerSupport, File file) {
+        consumerSupport.setCsvConsumer(file);
     }
+
 }

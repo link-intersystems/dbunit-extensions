@@ -1,29 +1,29 @@
 package com.link_intersystems.dbunit.migration.detection.xls;
 
-import com.link_intersystems.dbunit.migration.detection.DataSetFile;
-import org.dbunit.dataset.stream.IDataSetConsumer;
-import org.dbunit.dataset.stream.IDataSetProducer;
+import com.link_intersystems.dbunit.migration.detection.csv.AbstractDataSetFile;
+import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerSupport;
+import com.link_intersystems.dbunit.stream.producer.DataSetProducerSupport;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class XlsDataSetFile implements DataSetFile {
-
-    private File file;
+public class XlsDataSetFile extends AbstractDataSetFile {
 
     XlsDataSetFile(File file) {
-        this.file = file;
+        super(file);
     }
 
     @Override
-    public IDataSetProducer createProducer() {
-        return null;
+    protected void setProducer(DataSetProducerSupport producerSupport, File file) throws IOException {
+        producerSupport.setXlsProducer(file);
     }
 
     @Override
-    public IDataSetConsumer createConsumer() {
-        return null;
+    protected void setConsumer(DataSetConsumerSupport consumerSupport, File file) throws IOException {
+        consumerSupport.setXlsConsumer(file);
     }
+
 }

@@ -1,6 +1,7 @@
 package com.link_intersystems.dbunit.migration.detection;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -25,6 +26,10 @@ public class DataSetFileDetection {
         ServiceLoader<DataSetFileDetector> dataSetDetectorsLoader = ServiceLoader.load(DataSetFileDetector.class, Thread.currentThread().getContextClassLoader());
         dataSetDetectorsLoader.forEach(dataSetDetectors::add);
         return dataSetDetectors;
+    }
+
+    public DataSetFile detect(Path path) {
+        return detect(path.toFile());
     }
 
     public DataSetFile detect(File file) {
