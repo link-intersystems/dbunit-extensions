@@ -148,7 +148,7 @@
 
         <dependency>
             <groupId>com.link-intersystems.dbunit</groupId>
-            <artifactId>lis-dbunit-commands</artifactId>
+            <artifactId>lis-dbunit-stream</artifactId>
             <version>${lis-dbunit.version}</version>
             <exclusions>
                 <exclusion>
@@ -159,7 +159,7 @@
         </dependency>
         <dependency>
             <groupId>com.link-intersystems.dbunit</groupId>
-            <artifactId>lis-dbunit-commands</artifactId>
+            <artifactId>lis-dbunit-stream</artifactId>
             <version>${lis-dbunit.version}</version>
             <scope>test</scope>
             <type>test-jar</type>
