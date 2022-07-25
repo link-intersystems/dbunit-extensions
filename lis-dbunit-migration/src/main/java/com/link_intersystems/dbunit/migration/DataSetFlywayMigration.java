@@ -8,7 +8,7 @@ import com.link_intersystems.dbunit.stream.consumer.DataSetTransformerChain;
 import com.link_intersystems.dbunit.stream.consumer.DataSetTransormer;
 import com.link_intersystems.dbunit.stream.producer.DataSetSource;
 import com.link_intersystems.dbunit.stream.producer.DataSetSourceSupport;
-import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseContainerFactory;
+import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseContainerSupport;
 import com.link_intersystems.dbunit.testcontainers.consumer.TestContainersDataSetTransformer;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
@@ -22,7 +22,7 @@ public class DataSetFlywayMigration extends AbstractFlywayConfigurationSupport i
 
     private DataSetSource sourceDataSet;
     private IDataSetConsumer targetConsumer;
-    private DatabaseContainerFactory databaseContainerFactory;
+    private DatabaseContainerSupport databaseContainerSupport;
     private boolean removeFlywayTables = true;
     private DataSetTransormer beforeMigrationTransformer;
     private DataSetTransormer afterMigrationTransformer;
@@ -37,8 +37,8 @@ public class DataSetFlywayMigration extends AbstractFlywayConfigurationSupport i
         this.sourceDataSet = dataSetSource;
     }
 
-    public void setDatabaseContainerFactory(DatabaseContainerFactory databaseContainerFactory) {
-        this.databaseContainerFactory = databaseContainerFactory;
+    public void setDatabaseContainerSupport(DatabaseContainerSupport databaseContainerSupport) {
+        this.databaseContainerSupport = databaseContainerSupport;
     }
 
     public void setRemoveFlywayTables(boolean removeFlywayTables) {
@@ -78,7 +78,7 @@ public class DataSetFlywayMigration extends AbstractFlywayConfigurationSupport i
     }
 
     protected TestContainersDataSetTransformer createMigrationTransformer() {
-        TestContainersDataSetTransformer transformer = new TestContainersDataSetTransformer(databaseContainerFactory);
+        TestContainersDataSetTransformer transformer = new TestContainersDataSetTransformer(databaseContainerSupport);
         FlywayDatabaseMigrationSupport flywaySupport = new FlywayDatabaseMigrationSupport();
         flywaySupport.setRemoveFlywayTables(removeFlywayTables);
         flywaySupport.apply(this);

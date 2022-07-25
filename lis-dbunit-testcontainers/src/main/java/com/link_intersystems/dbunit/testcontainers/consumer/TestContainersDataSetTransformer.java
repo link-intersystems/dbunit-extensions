@@ -11,8 +11,8 @@ public class TestContainersDataSetTransformer implements DataSetTransormer {
 
     private TestContainersConsumer testContainersConsumer;
 
-    public TestContainersDataSetTransformer(DatabaseContainerFactory containerLifecycle) {
-        testContainersConsumer = new TestContainersConsumer(containerLifecycle);
+    public TestContainersDataSetTransformer(DatabaseContainerSupport databaseContainerSupport) {
+        testContainersConsumer = new TestContainersConsumer(databaseContainerSupport);
     }
 
     @Override
@@ -20,8 +20,8 @@ public class TestContainersDataSetTransformer implements DataSetTransormer {
         return testContainersConsumer;
     }
 
-    public void setDatabaseMigrationSupport(DatabaseMigrationSupport databaseContainerHandler) {
-        testContainersConsumer.setDatabaseMigrationSupport(databaseContainerHandler);
+    public void setDatabaseMigrationSupport(DatabaseMigrationSupport databaseMigrationSupport) {
+        testContainersConsumer.setDatabaseMigrationSupport(databaseMigrationSupport);
     }
 
     @Override

@@ -3,7 +3,8 @@ package com.link_intersystems.dbunit.migration;
 import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
 import com.link_intersystems.dbunit.stream.consumer.DefaultDataSetConsumerSupport;
 import com.link_intersystems.dbunit.test.TestDataSets;
-import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseContainerFactory;
+import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseContainerSupport;
+import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseContainerSupportFactory;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.DefaultTable;
 import org.dbunit.dataset.IDataSet;
@@ -11,13 +12,9 @@ import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.testcontainers.containers.JdbcDatabaseContainer;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,16 +23,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-//@Disabled("I have to figure out how to start containers in github actions first")
 class DataSetFlywayMigrationTest {
 
     private static class DatabaseDefinition {
-        DatabaseContainerFactory jdbcDatabaseContainerFactory;
+        DatabaseContainerSupport databaseContainerSupport;
         String containerName;
 
 
-        public DatabaseDefinition(String containerName, Function<String, JdbcDatabaseContainer<?>> containerConstructor) {
-            this.jdbcDatabaseContainerFactory = () -> containerConstructor.apply(containerName);
+        public DatabaseDefinition(String containerName, DatabaseContainerSupport databaseContainerSupport) {
+            this.databaseContainerSupport = databaseContainerSupport;
             this.containerName = containerName;
         }
 
@@ -48,8 +44,8 @@ class DataSetFlywayMigrationTest {
 
     static Stream<DatabaseDefinition> databases() {
         return Arrays.asList(
-                        new DatabaseDefinition("postgres", PostgreSQLContainer::new),
-                        new DatabaseDefinition("mysql", MySQLContainer::new))
+                        new DatabaseDefinition("postgres", DatabaseContainerSupportFactory.forPostgres("postgres:latest")),
+                        new DatabaseDefinition("mysql", DatabaseContainerSupportFactory.forMysql("mysql:latest")))
                 .stream();
     }
 
@@ -72,7 +68,7 @@ class DataSetFlywayMigrationTest {
 
         flywayMigrationCommand.setDataSetConsumers(copyDataSetConsumer, csvConsumer, flatXmlConsumer);
 
-        flywayMigrationCommand.setDatabaseContainerFactory(databaseDefinition.jdbcDatabaseContainerFactory);
+        flywayMigrationCommand.setDatabaseContainerSupport(databaseDefinition.databaseContainerSupport);
 
         flywayMigrationCommand.setSourceVersion("1");
         flywayMigrationCommand.setLocations("com/link_intersystems/dbunit/migration/" + databaseDefinition.containerName);

@@ -3,12 +3,13 @@ package com.link_intersystems.dbunit.migration;
 import com.link_intersystems.dbunit.stream.consumer.ExternalSortTableCosumerTransformer;
 import com.link_intersystems.dbunit.table.DefaultTableOrder;
 import com.link_intersystems.dbunit.table.TableOrder;
+import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseContainerSupportFactory;
+import com.link_intersystems.dbunit.testcontainers.consumer.DefaultDatabaseContainerSupport;
 import com.link_intersystems.io.Unzip;
 import org.dbunit.dataset.DataSetException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -34,7 +35,7 @@ class DataSetCollectionFlywayMigrationTest {
         DataSetCollectionFlywayMigration dataSetCollectionMigration = new DataSetCollectionFlywayMigration(sourcePath);
 
         dataSetCollectionMigration.addDefaultFilePatterns();
-        dataSetCollectionMigration.setDatabaseContainerFactory(() -> new PostgreSQLContainer<>("postgres:latest"));
+        dataSetCollectionMigration.setDatabaseContainerSupport(DatabaseContainerSupportFactory.forPostgres("postgres:latest"));
         dataSetCollectionMigration.setLocations("com/link_intersystems/dbunit/migration/postgres");
         dataSetCollectionMigration.setTargetPathSupplier(new BasepathTargetPathSupplier(targetPath));
         dataSetCollectionMigration.setSourceVersion("1");

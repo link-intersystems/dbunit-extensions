@@ -4,7 +4,7 @@ import com.link_intersystems.dbunit.flyway.AbstractFlywayConfigurationSupport;
 import com.link_intersystems.dbunit.stream.consumer.DataSetTransormer;
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFileDetection;
-import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseContainerFactory;
+import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseContainerSupport;
 import com.link_intersystems.io.FileScanner;
 import com.link_intersystems.io.PathMatch;
 import com.link_intersystems.io.PathMatches;
@@ -29,7 +29,7 @@ public class DataSetCollectionFlywayMigration extends AbstractFlywayConfiguratio
     private TargetPathSupplier targetPathSupplier = new BasepathTargetPathSupplier();
     private FileScanner fileScanner;
 
-    private DatabaseContainerFactory databaseContainerFactory;
+    private DatabaseContainerSupport databaseContainerSupport;
     private DataSetTransormer beforeMigrationTransformer;
     private DataSetTransormer afterMigrationTransformer;
 
@@ -70,8 +70,13 @@ public class DataSetCollectionFlywayMigration extends AbstractFlywayConfiguratio
         this.targetPathSupplier = requireNonNull(targetPathSupplier);
     }
 
-    public void setDatabaseContainerFactory(DatabaseContainerFactory databaseContainerFactory) {
-        this.databaseContainerFactory = databaseContainerFactory;
+    /**
+     *
+     * @param databaseContainerSupport
+     * @see com.link_intersystems.dbunit.testcontainers.consumer.DatabaseContainerSupportFactory
+     */
+    public void setDatabaseContainerSupport(DatabaseContainerSupport databaseContainerSupport) {
+        this.databaseContainerSupport = databaseContainerSupport;
     }
 
     public void exec() throws DataSetException {
@@ -91,7 +96,7 @@ public class DataSetCollectionFlywayMigration extends AbstractFlywayConfiguratio
 
             DataSetFlywayMigration flywayMigration = new DataSetFlywayMigration();
             flywayMigration.setDataSetProducer(sourceDataSetFile.createProducer());
-            flywayMigration.setDatabaseContainerFactory(databaseContainerFactory);
+            flywayMigration.setDatabaseContainerSupport(databaseContainerSupport);
             flywayMigration.apply(this);
             flywayMigration.setBeforeMigrationTransformer(beforeMigrationTransformer);
             flywayMigration.setAfterMigrationTransformer(afterMigrationTransformer);
