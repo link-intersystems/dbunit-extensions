@@ -26,11 +26,6 @@ public abstract class AbstractDataSetFile implements DataSetFile {
     }
 
     @Override
-    public File getFile() {
-        return file;
-    }
-
-    @Override
     public IDataSetProducer createProducer() throws DataSetException {
         DefaultDataSetProducerSupport producerSupport = new DefaultDataSetProducerSupport();
         try {

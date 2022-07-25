@@ -17,7 +17,7 @@ import java.util.Set;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class DataSetCollectionFlywayMigrationLogger {
+class DataSetCollectionFlywayMigrationLogger {
     private Logger logger = LoggerFactory.getLogger(DataSetCollectionFlywayMigration.class);
 
     public void logMigrated(DataSetFile dataSetFile) {

@@ -25,13 +25,13 @@ public class DataSetCollectionFlywayMigration extends AbstractFlywayConfiguratio
 
     private DataSetCollectionFlywayMigrationLogger logger = new DataSetCollectionFlywayMigrationLogger();
 
+    private DataSetFileDetection dataSetFileDetection = new DataSetFileDetection();
+    private TargetPathSupplier targetPathSupplier = new BasepathTargetPathSupplier();
     private FileScanner fileScanner;
 
-    private DataSetFileDetection dataSetFileDetection = new DataSetFileDetection();
     private DatabaseContainerFactory databaseContainerFactory;
     private DataSetTransormer beforeMigrationTransformer;
     private DataSetTransormer afterMigrationTransformer;
-    private TargetPathSupplier targetPathSupplier = new BasepathTargetPathSupplier();
 
     public DataSetCollectionFlywayMigration(File basedir) {
         this(basedir.toPath());
