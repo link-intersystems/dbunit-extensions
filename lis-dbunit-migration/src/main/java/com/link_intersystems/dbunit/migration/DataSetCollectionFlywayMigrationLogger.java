@@ -1,6 +1,5 @@
 package com.link_intersystems.dbunit.migration;
 
-import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
 import com.link_intersystems.io.PathMatch;
 import com.link_intersystems.io.PathMatches;
 import org.dbunit.dataset.DataSetException;
@@ -17,29 +16,39 @@ import java.util.Set;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-class DataSetCollectionFlywayMigrationLogger {
+public class DataSetCollectionFlywayMigrationLogger implements DataSetCollectionMigrationListener {
+
     private Logger logger = LoggerFactory.getLogger(DataSetCollectionFlywayMigration.class);
 
-    public void logMigrated(Path path) {
+    @Override
+    public void successfullyMigrated(Path path) {
         String msg = "\u2714\ufe0e Migrated '{}'";
         logger.info(msg, path);
     }
 
-    void logMigrationError(Path path, DataSetException e) {
+    @Override
+    public void failedMigration(Path path, DataSetException e) {
         String msg = "\u274c\ufe0e Unable to migrate '{}'";
-        logger.error(msg, path, e);
+        if (logger.isDebugEnabled()) {
+            logger.error(msg, path, e);
+        } else {
+            logger.error(msg, path);
+        }
     }
 
-    public void logNotMigrated(Path path) {
+    @Override
+    public void skippedMigrationTypeNotDetectable(Path path) {
         String msg = "\u26A1\ufe0e Not a dataset file '{}'";
         logger.error(msg, path);
     }
 
-    void logStartMigration(DataSetFile dataSetFile) {
-        logger.info("\u267b\ufe0e Start migration '{}'", dataSetFile);
+    @Override
+    public void startMigration(Path path) {
+        logger.info("\u267b\ufe0e Start migration '{}'", path);
     }
 
-    void logDataSetMatches(PathMatches dataSetMatches) {
+    @Override
+    public void pathScanned(PathMatches dataSetMatches) {
         logger.info("Found {} files matching the file pattern", dataSetMatches.size());
         if (logger.isDebugEnabled()) {
             StringWriter sw = new StringWriter();
@@ -62,14 +71,15 @@ class DataSetCollectionFlywayMigrationLogger {
         }
     }
 
-    public void logMigrationFinished(Map<Path, Path> migratedPaths) {
-        logger.info("Migrated {} files ", migratedPaths.size());
+    @Override
+    public void dataSetCollectionMigrationFinished(Map<Path, Path> fromToPathMap) {
+        logger.info("Migrated {} files ", fromToPathMap.size());
         if (logger.isDebugEnabled()) {
             StringWriter sw = new StringWriter();
             try (PrintWriter pw = new PrintWriter(sw)) {
                 pw.println("Migrated files:");
 
-                Set<Map.Entry<Path, Path>> entries = migratedPaths.entrySet();
+                Set<Map.Entry<Path, Path>> entries = fromToPathMap.entrySet();
                 Iterator<Map.Entry<Path, Path>> iterator = entries.iterator();
                 while (iterator.hasNext()) {
                     Map.Entry<Path, Path> entry = iterator.next();
@@ -87,6 +97,4 @@ class DataSetCollectionFlywayMigrationLogger {
             logger.debug(sw.toString());
         }
     }
-
-
 }

@@ -8,6 +8,7 @@ import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseContainerSup
 import com.link_intersystems.io.FileScanner;
 import com.link_intersystems.io.PathMatch;
 import com.link_intersystems.io.PathMatches;
+import com.link_intersystems.util.concurrent.ProgressListener;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 
@@ -23,7 +24,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class DataSetCollectionFlywayMigration extends AbstractFlywayConfigurationSupport {
 
-    private DataSetCollectionFlywayMigrationLogger logger = new DataSetCollectionFlywayMigrationLogger();
+    private DataSetCollectionMigrationListener migrationListener = new DataSetCollectionFlywayMigrationLogger();
 
     private DataSetFileDetection dataSetFileDetection = new DataSetFileDetection();
     private TargetPathSupplier targetPathSupplier = new BasepathTargetPathSupplier();
@@ -39,6 +40,10 @@ public class DataSetCollectionFlywayMigration extends AbstractFlywayConfiguratio
 
     public DataSetCollectionFlywayMigration(Path basepath) {
         fileScanner = new FileScanner(basepath);
+    }
+
+    public void setMigrationListener(DataSetCollectionMigrationListener migrationListener) {
+        this.migrationListener = requireNonNull(migrationListener);
     }
 
     public void setBeforeMigration(DataSetTransormer beforeMigrationTransformer) {
@@ -71,47 +76,65 @@ public class DataSetCollectionFlywayMigration extends AbstractFlywayConfiguratio
     }
 
     /**
-     * @param databaseContainerSupport
      * @see com.link_intersystems.dbunit.testcontainers.consumer.DatabaseContainerSupportFactory
      */
     public void setDatabaseContainerSupport(DatabaseContainerSupport databaseContainerSupport) {
         this.databaseContainerSupport = databaseContainerSupport;
     }
 
-    public void exec() throws DataSetException {
+    public void exec() {
+        exec(NullProgressListener.INSTANCE);
+    }
+
+    public void exec(ProgressListener progressListener) {
         PathMatches dataSetMatches = fileScanner.scan();
 
-        logger.logDataSetMatches(dataSetMatches);
+        migrationListener.pathScanned(dataSetMatches);
 
-        if (!dataSetMatches.isEmpty()) {
-            migrate(dataSetMatches);
+        progressListener.begin(dataSetMatches.size());
+        try {
+            if (!dataSetMatches.isEmpty()) {
+                migrate(progressListener, dataSetMatches);
+            }
+        } finally {
+            progressListener.done();
         }
     }
 
-    private void migrate(PathMatches dataSetMatches) throws DataSetException {
+    private void migrate(ProgressListener progressListener, PathMatches dataSetMatches) {
         if (databaseContainerSupport == null) {
             throw new IllegalStateException("datasetContainerSupport must be set");
         }
 
-
         Map<Path, Path> migratedPaths = new LinkedHashMap<>();
 
         for (PathMatch dataSetMatch : dataSetMatches) {
-            Path sourcePathAbsolute = dataSetMatch.getAbsolutePath();
-            try {
-                Path migratedDataSetFile = migrate(dataSetMatch);
-                if (migratedDataSetFile != null) {
-                    migratedPaths.put(sourcePathAbsolute, migratedDataSetFile);
-                    logger.logMigrated(migratedDataSetFile);
-                } else {
-                    logger.logNotMigrated(sourcePathAbsolute);
-                }
-            } catch (DataSetException e) {
-                logger.logMigrationError(sourcePathAbsolute, e);
+            Path migratedPath = tryMigrate(dataSetMatch);
+            if (migratedPath != null) {
+                Path sourcePathAbsolute = dataSetMatch.getAbsolutePath();
+                migratedPaths.put(sourcePathAbsolute, migratedPath);
             }
+            progressListener.worked(1);
         }
 
-        logger.logMigrationFinished(migratedPaths);
+        migrationListener.dataSetCollectionMigrationFinished(migratedPaths);
+    }
+
+    private Path tryMigrate(PathMatch dataSetMatch) {
+        try {
+            Path migratedDataSetFile = migrate(dataSetMatch);
+            if (migratedDataSetFile != null) {
+                migrationListener.successfullyMigrated(migratedDataSetFile);
+            } else {
+                Path sourcePathAbsolute = dataSetMatch.getAbsolutePath();
+                migrationListener.skippedMigrationTypeNotDetectable(sourcePathAbsolute);
+            }
+            return migratedDataSetFile;
+        } catch (DataSetException e) {
+            Path sourcePathAbsolute = dataSetMatch.getAbsolutePath();
+            migrationListener.failedMigration(sourcePathAbsolute, e);
+            return null;
+        }
     }
 
     private Path migrate(PathMatch dataSetMatch) throws DataSetException {
@@ -136,7 +159,7 @@ public class DataSetCollectionFlywayMigration extends AbstractFlywayConfiguratio
         IDataSetConsumer targetDataSetFileConsumer = targetDataSetFile.createConsumer();
         flywayMigration.setDataSetConsumer(targetDataSetFileConsumer);
 
-        logger.logStartMigration(sourceDataSetFile);
+        migrationListener.startMigration(sourcePathAbsolute);
         flywayMigration.exec();
         return targetDataSetPath;
     }
