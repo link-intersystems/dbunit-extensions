@@ -1,10 +1,10 @@
 package com.link_intersystems.dbunit.migration;
 
-import com.link_intersystems.dbunit.stream.consumer.ExternalSortTableCosumerTransformer;
+import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerPipeTransformerAdapter;
+import com.link_intersystems.dbunit.stream.consumer.ExternalSortTableConsumer;
 import com.link_intersystems.dbunit.table.DefaultTableOrder;
 import com.link_intersystems.dbunit.table.TableOrder;
 import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseContainerSupportFactory;
-import com.link_intersystems.dbunit.testcontainers.consumer.DefaultDatabaseContainerSupport;
 import com.link_intersystems.io.Unzip;
 import org.dbunit.dataset.DataSetException;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,7 +40,8 @@ class DataSetCollectionFlywayMigrationTest {
         dataSetCollectionMigration.setTargetPathSupplier(new BasepathTargetPathSupplier(targetPath));
         dataSetCollectionMigration.setSourceVersion("1");
         TableOrder tableOrder = new DefaultTableOrder("language", "film", "actor", "film_actor");
-        dataSetCollectionMigration.setBeforeMigration(new ExternalSortTableCosumerTransformer(tableOrder));
+        ExternalSortTableConsumer externalSortTableConsumer = new ExternalSortTableConsumer(tableOrder);
+        dataSetCollectionMigration.setBeforeMigration(new DataSetConsumerPipeTransformerAdapter(externalSortTableConsumer));
 
 
         dataSetCollectionMigration.exec();

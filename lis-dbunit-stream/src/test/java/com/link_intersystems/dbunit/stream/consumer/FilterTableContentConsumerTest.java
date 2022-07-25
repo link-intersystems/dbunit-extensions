@@ -23,7 +23,7 @@ class FilterTableContentConsumerTest {
         IDataSet tinySakilaDataSet = TestDataSets.getTinySakilaDataSet();
 
         CopyDataSetConsumer copyDataSetConsumer = new CopyDataSetConsumer();
-        FilterTableContentConsumer filterTableContentConsumer = new FilterTableContentConsumer(copyDataSetConsumer, metaData -> {
+        FilterTableContentConsumer filterTableContentConsumer = new FilterTableContentConsumer(metaData -> {
             if (metaData.getTableName().equals("actor")) {
                 return iRowValueProvider -> {
                     try {
@@ -35,6 +35,7 @@ class FilterTableContentConsumerTest {
             }
             return null;
         });
+        filterTableContentConsumer.setSubsequentConsumer(copyDataSetConsumer);
 
         DataSetProducerAdapter dataSetProducerAdapter = new DataSetProducerAdapter(tinySakilaDataSet);
         dataSetProducerAdapter.setConsumer(filterTableContentConsumer);

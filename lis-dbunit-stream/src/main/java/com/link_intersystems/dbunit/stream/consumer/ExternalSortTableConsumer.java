@@ -3,6 +3,7 @@ package com.link_intersystems.dbunit.stream.consumer;
 import com.link_intersystems.dbunit.stream.producer.DefaultDataSetProducerSupport;
 import com.link_intersystems.dbunit.table.TableOrder;
 import org.dbunit.dataset.DataSetException;
+import org.dbunit.dataset.ITableMetaData;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 import org.dbunit.dataset.stream.IDataSetProducer;
 import org.slf4j.Logger;
@@ -21,17 +22,15 @@ import java.util.Objects;
  *
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class ExternalSortTableConsumer extends AbstractDataSetConsumerDelegate implements Closeable {
+public class ExternalSortTableConsumer extends DefaultDataSetConsumerPipe implements Closeable {
 
     private Logger logger = LoggerFactory.getLogger(ExternalSortTableConsumer.class);
 
-    private final IDataSetConsumer subsequentConsumer;
     private final TableOrder tableOrder;
     private IDataSetConsumer tempDataSetConsumer;
     private File tempDir;
 
-    public ExternalSortTableConsumer(IDataSetConsumer subsequentConsumer, TableOrder tableOrder) {
-        this.subsequentConsumer = Objects.requireNonNull(subsequentConsumer);
+    public ExternalSortTableConsumer(TableOrder tableOrder) {
         this.tableOrder = Objects.requireNonNull(tableOrder);
     }
 
@@ -48,18 +47,29 @@ public class ExternalSortTableConsumer extends AbstractDataSetConsumerDelegate i
         }
 
 
-        super.startDataSet();
+        tempDataSetConsumer.startDataSet();
     }
 
     @Override
-    protected IDataSetConsumer getDelegate() {
-        return tempDataSetConsumer;
+    public void startTable(ITableMetaData iTableMetaData) throws DataSetException {
+        tempDataSetConsumer.startTable(iTableMetaData);
+    }
+
+    @Override
+    public void row(Object[] objects) throws DataSetException {
+        tempDataSetConsumer.row(objects);
+    }
+
+    @Override
+    public void endTable() throws DataSetException {
+        tempDataSetConsumer.endTable();
     }
 
     @Override
     public void endDataSet() throws DataSetException {
         try {
-            super.endDataSet();
+            tempDataSetConsumer.endDataSet();
+            tempDataSetConsumer = null;
 
             List<String> tableNames = readTableNames();
             String[] orderedTables = tableOrder.orderTables(tableNames.toArray(new String[0]));
@@ -69,7 +79,7 @@ public class ExternalSortTableConsumer extends AbstractDataSetConsumerDelegate i
             defaultDataSetProducerSupport.setCsvProducer(tempDir);
             IDataSetProducer dataSetProducer = defaultDataSetProducerSupport.getDataSetProducer();
 
-            dataSetProducer.setConsumer(subsequentConsumer);
+            dataSetProducer.setConsumer(getDelegate());
             dataSetProducer.produce();
         } finally {
             try {

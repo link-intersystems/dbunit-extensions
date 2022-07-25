@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class RepeatingDataSetConsumer implements IDataSetConsumer {
+public class BroadcastingDataSetConsumer implements IDataSetConsumer {
 
     private static interface DataSetConsumerMethod {
 
@@ -20,11 +20,11 @@ public class RepeatingDataSetConsumer implements IDataSetConsumer {
 
     private List<IDataSetConsumer> targetConsumers = new ArrayList<>();
 
-    public RepeatingDataSetConsumer(IDataSetConsumer... dataSetConsumers) {
+    public BroadcastingDataSetConsumer(IDataSetConsumer... dataSetConsumers) {
         this(Arrays.asList(dataSetConsumers));
     }
 
-    public RepeatingDataSetConsumer(List<IDataSetConsumer> dataSetConsumers) {
+    public BroadcastingDataSetConsumer(List<IDataSetConsumer> dataSetConsumers) {
         this.targetConsumers.addAll(dataSetConsumers);
     }
 

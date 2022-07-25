@@ -24,7 +24,8 @@ class SortTableConsumerTest {
         DataSetProducerAdapter dataSetProducerAdapter = new DataSetProducerAdapter(tinySakilaDataSet);
 
         CopyDataSetConsumer subsequentConsumer = new CopyDataSetConsumer();
-        ExternalSortTableConsumer sortTableConsumer = new ExternalSortTableConsumer(subsequentConsumer, tableNames -> new String[]{"language", "film", "actor", "film_actor"});
+        ExternalSortTableConsumer sortTableConsumer = new ExternalSortTableConsumer(tableNames -> new String[]{"language", "film", "actor", "film_actor"});
+        sortTableConsumer.setSubsequentConsumer(subsequentConsumer);
 
         dataSetProducerAdapter.setConsumer(sortTableConsumer);
 

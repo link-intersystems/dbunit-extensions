@@ -9,8 +9,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
@@ -22,7 +20,7 @@ class RepeatingDataSetConsumerTest {
         CopyDataSetConsumer copyDataSetConsumer1 = new CopyDataSetConsumer();
         CopyDataSetConsumer copyDataSetConsumer2 = new CopyDataSetConsumer();
 
-        RepeatingDataSetConsumer repeatingDataSetConsumer = new RepeatingDataSetConsumer(copyDataSetConsumer1, copyDataSetConsumer2);
+        BroadcastingDataSetConsumer repeatingDataSetConsumer = new BroadcastingDataSetConsumer(copyDataSetConsumer1, copyDataSetConsumer2);
 
         IDataSet tinySakilaDataSet = TestDataSets.getTinySakilaDataSet();
         DataSetProducerAdapter dataSetProducerAdapter = new DataSetProducerAdapter(tinySakilaDataSet);

@@ -6,29 +6,20 @@ import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IRowValueProvider;
 import org.dbunit.dataset.ITableMetaData;
 import org.dbunit.dataset.filter.IRowFilter;
-import org.dbunit.dataset.stream.DefaultConsumer;
-import org.dbunit.dataset.stream.IDataSetConsumer;
 
 import static java.util.Objects.requireNonNull;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class FilterTableContentConsumer extends DefaultConsumer {
+public class FilterTableContentConsumer extends DefaultDataSetConsumerPipe {
 
-    private final IDataSetConsumer subsequentConsumer;
     private final IRowFilterFactory rowFilterFactory;
     private IRowFilter rowFilter;
     private ITableMetaData metaData;
 
-    public FilterTableContentConsumer(IDataSetConsumer subsequentConsumer, IRowFilterFactory rowFilterFactory) {
-        this.subsequentConsumer = requireNonNull(subsequentConsumer);
+    public FilterTableContentConsumer(IRowFilterFactory rowFilterFactory) {
         this.rowFilterFactory = requireNonNull(rowFilterFactory);
-    }
-
-    @Override
-    public void startDataSet() throws DataSetException {
-        subsequentConsumer.startDataSet();
     }
 
     @Override
@@ -38,24 +29,14 @@ public class FilterTableContentConsumer extends DefaultConsumer {
             rowFilter = r -> true;
         }
         this.metaData = metaData;
-        subsequentConsumer.startTable(metaData);
+        super.startTable(metaData);
     }
 
     @Override
     public void row(Object[] values) throws DataSetException {
         if (rowFilter.accept(getRowValueProvider(values))) {
-            subsequentConsumer.row(values);
+            super.row(values);
         }
-    }
-
-    @Override
-    public void endTable() throws DataSetException {
-        subsequentConsumer.endTable();
-    }
-
-    @Override
-    public void endDataSet() throws DataSetException {
-        subsequentConsumer.endDataSet();
     }
 
     private IRowValueProvider getRowValueProvider(Object[] values) {

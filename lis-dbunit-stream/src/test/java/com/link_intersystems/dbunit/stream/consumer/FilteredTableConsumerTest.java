@@ -21,13 +21,14 @@ import static org.mockito.Mockito.*;
 class FilteredTableConsumerTest {
 
     private IDataSetConsumer dataSetConsumer;
-    private FilteredTableConsumer filteredTableConsumer;
+    private FilterTableConsumer filteredTableConsumer;
     private IDataSet tinySakilaDataSet;
 
     @BeforeEach
     void setUp() throws DataSetException, IOException {
         dataSetConsumer = mock(IDataSetConsumer.class);
-        filteredTableConsumer = new FilteredTableConsumer(dataSetConsumer, "actor"::equals);
+        filteredTableConsumer = new FilterTableConsumer("actor"::equals);
+        filteredTableConsumer.setSubsequentConsumer(dataSetConsumer);
 
         tinySakilaDataSet = TestDataSets.getTinySakilaDataSet();
     }

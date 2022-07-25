@@ -19,7 +19,6 @@ import org.dbunit.dataset.stream.IDataSetConsumer;
  */
 public class DataSetFlywayMigration extends AbstractFlywayConfigurationSupport implements DataSetSourceSupport, DataSetConsumerSupport {
 
-
     private DataSetSource sourceDataSet;
     private IDataSetConsumer targetConsumer;
     private DatabaseContainerSupport databaseContainerSupport;
