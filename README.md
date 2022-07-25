@@ -38,7 +38,7 @@ A module that provides support for data set migration.
 
 The stream module provides a lot of utility classes for dbunit stream handling.
 
-It also contains the stream.commands` package that provides a high level 
+It also contains the `stream.commands` package that provides a high level 
 api for common dbunit tasks.
 
     Connection sourceConnection = ...; // java.sql.Connection
