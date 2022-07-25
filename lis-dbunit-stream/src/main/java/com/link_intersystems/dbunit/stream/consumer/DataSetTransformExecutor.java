@@ -12,7 +12,6 @@ public class DataSetTransformExecutor implements DataSetProducerSupport, DataSet
 
     private IDataSetProducer dataSetProducer;
     private IDataSetConsumer dataSetConsumer;
-
     private DataSetTransormer dataSetTransformer;
 
     @Override
@@ -30,6 +29,16 @@ public class DataSetTransformExecutor implements DataSetProducerSupport, DataSet
     }
 
     public void exec() throws DataSetException {
+        if(dataSetProducer == null){
+            throw new DataSetException("dataSetProducer not set");
+        }
+        if(dataSetConsumer == null){
+            throw new DataSetException("dataSetConsumer not set");
+        }
+        if(dataSetTransformer == null){
+            throw new DataSetException("dataSetTransformer not set");
+        }
+
         IDataSetConsumer inputConsumer = dataSetTransformer.getInputConsumer();
         dataSetProducer.setConsumer(inputConsumer);
         dataSetTransformer.setOutputConsumer(dataSetConsumer);
