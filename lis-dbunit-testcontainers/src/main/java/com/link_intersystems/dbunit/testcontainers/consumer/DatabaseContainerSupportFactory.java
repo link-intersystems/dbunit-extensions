@@ -1,5 +1,8 @@
 package com.link_intersystems.dbunit.testcontainers.consumer;
 
+import org.dbunit.database.DatabaseConfig;
+import org.dbunit.ext.mysql.MySqlDataTypeFactory;
+import org.dbunit.ext.mysql.MySqlMetadataHandler;
 import org.dbunit.ext.postgresql.PostgresqlDataTypeFactory;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
@@ -8,6 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import static java.text.MessageFormat.format;
 import static org.dbunit.database.DatabaseConfig.PROPERTY_DATATYPE_FACTORY;
+import static org.dbunit.database.DatabaseConfig.PROPERTY_METADATA_HANDLER;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -56,23 +60,23 @@ public class DatabaseContainerSupportFactory {
      */
     public static DatabaseContainerSupport forMysql(String dockerImageName) {
         String containerClass = "org.testcontainers.containers.MySQLContainer";
-        DefaultDatabaseContainerSupport postgresSupport = createContainerSupport(containerClass, dockerImageName);
-        postgresSupport.getDatabaseConfig().setProperty(PROPERTY_DATATYPE_FACTORY, new PostgresqlDataTypeFactory());
-        return postgresSupport;
+        DefaultDatabaseContainerSupport containerSupport = createContainerSupport(containerClass, dockerImageName);
+        containerSupport.getDatabaseConfig().setProperty(PROPERTY_DATATYPE_FACTORY, new MySqlDataTypeFactory());
+        containerSupport.getDatabaseConfig().setProperty(PROPERTY_METADATA_HANDLER, new MySqlMetadataHandler());
+        return containerSupport;
     }
 
     private static DefaultDatabaseContainerSupport createContainerSupport(String containerClass, String dockerImageName) {
         try {
             Class<?> postgresContainerClass = Class.forName(containerClass);
             Constructor<?> containerConstructor = postgresContainerClass.getDeclaredConstructor(String.class);
-            DefaultDatabaseContainerSupport containerSupport = new DefaultDatabaseContainerSupport(() -> {
+            return new DefaultDatabaseContainerSupport(() -> {
                 try {
                     return (JdbcDatabaseContainer<?>) containerConstructor.newInstance(dockerImageName);
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                     throw new RuntimeException(e);
                 }
             });
-            return containerSupport;
         } catch (NoClassDefFoundError | ClassNotFoundException | NoSuchMethodException e) {
             throw noContainerSuppportAvailable("postgres", e);
         }
