@@ -1,11 +1,13 @@
 package com.link_intersystems.dbunit.stream.resource.file.xml;
 
-import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
 import com.link_intersystems.dbunit.stream.producer.DefaultDataSetProducerSupport;
+import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITableMetaData;
 import org.dbunit.dataset.stream.DefaultConsumer;
 import org.dbunit.dataset.stream.IDataSetProducer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,6 +18,9 @@ import java.io.InputStream;
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 public abstract class AbstractXmlTableMetaDataDataSetFileDetector extends AbstractXmlDataSetFileDetector {
+
+    private Logger logger = LoggerFactory.getLogger(AbstractXmlTableMetaDataDataSetFileDetector.class);
+
     @Override
     protected DataSetFile detectXmlFile(File file) {
         DefaultDataSetProducerSupport producerSupport = new DefaultDataSetProducerSupport();
@@ -40,7 +45,10 @@ public abstract class AbstractXmlTableMetaDataDataSetFileDetector extends Abstra
 
                 try {
                     dataSetProducer.produce();
-                } catch (DataSetException e) {
+                } catch (Exception e) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("DataSet type can not be detected.", e);
+                    }
                 }
 
                 if (consumerDetector.seemsToBeAFlatXmlDataSet) {

@@ -31,7 +31,7 @@ class DataSetCollectionFlywayMigrationTest {
     }
 
     @Test
-    void applyDataSetMigration() throws DataSetException {
+    void migrateDataSetCollection() throws DataSetException {
         DataSetCollectionFlywayMigration dataSetCollectionMigration = new DataSetCollectionFlywayMigration(sourcePath);
 
         dataSetCollectionMigration.addDefaultFilePatterns();

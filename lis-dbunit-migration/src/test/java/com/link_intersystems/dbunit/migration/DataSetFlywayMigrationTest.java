@@ -51,7 +51,7 @@ class DataSetFlywayMigrationTest {
 
     @ParameterizedTest
     @MethodSource("databases")
-    void applyDataSetMigration(DatabaseDefinition databaseDefinition) throws DataSetException, IOException {
+    void migrate(DatabaseDefinition databaseDefinition) throws DataSetException, IOException {
         DataSetFlywayMigration flywayMigrationCommand = new DataSetFlywayMigration();
 
         IDataSet sourceDataSet = TestDataSets.getTinySakilaDataSet();

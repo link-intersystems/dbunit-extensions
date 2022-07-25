@@ -63,7 +63,7 @@ public class DataSetCollectionFlywayMigration extends AbstractFlywayConfiguratio
     }
 
     public void setDataSetFileDetection(DataSetFileDetection dataSetFileDetection) {
-        this.dataSetFileDetection = dataSetFileDetection;
+        this.dataSetFileDetection = requireNonNull(dataSetFileDetection);
     }
 
     public void setTargetPathSupplier(TargetPathSupplier targetPathSupplier) {
@@ -71,7 +71,6 @@ public class DataSetCollectionFlywayMigration extends AbstractFlywayConfiguratio
     }
 
     /**
-     *
      * @param databaseContainerSupport
      * @see com.link_intersystems.dbunit.testcontainers.consumer.DatabaseContainerSupportFactory
      */
@@ -84,41 +83,62 @@ public class DataSetCollectionFlywayMigration extends AbstractFlywayConfiguratio
 
         logger.logDataSetMatches(dataSetMatches);
 
+        if (!dataSetMatches.isEmpty()) {
+            migrate(dataSetMatches);
+        }
+    }
+
+    private void migrate(PathMatches dataSetMatches) throws DataSetException {
+        if (databaseContainerSupport == null) {
+            throw new IllegalStateException("datasetContainerSupport must be set");
+        }
+
+
         Map<Path, Path> migratedPaths = new LinkedHashMap<>();
 
         for (PathMatch dataSetMatch : dataSetMatches) {
             Path sourcePathAbsolute = dataSetMatch.getAbsolutePath();
-            DataSetFile sourceDataSetFile = dataSetFileDetection.detect(sourcePathAbsolute);
-
-            if (sourceDataSetFile == null) {
-                continue;
-            }
-
-            DataSetFlywayMigration flywayMigration = new DataSetFlywayMigration();
-            flywayMigration.setDataSetProducer(sourceDataSetFile.createProducer());
-            flywayMigration.setDatabaseContainerSupport(databaseContainerSupport);
-            flywayMigration.apply(this);
-            flywayMigration.setBeforeMigrationTransformer(beforeMigrationTransformer);
-            flywayMigration.setAfterMigrationTransformer(afterMigrationTransformer);
-
-
-            Path targetDataSetPath = targetPathSupplier.getTarget(dataSetMatch.getPath());
-            DataSetFile targetDataSetFile = sourceDataSetFile.withNewPath(targetDataSetPath);
-
-            IDataSetConsumer targetDataSetFileConsumer = targetDataSetFile.createConsumer();
-            flywayMigration.setDataSetConsumer(targetDataSetFileConsumer);
-
-            logger.logStartMigration(sourceDataSetFile);
             try {
-                flywayMigration.exec();
-                migratedPaths.put(sourcePathAbsolute, targetDataSetPath);
-                logger.logMigrated(targetDataSetFile);
+                Path migratedDataSetFile = migrate(dataSetMatch);
+                if (migratedDataSetFile != null) {
+                    migratedPaths.put(sourcePathAbsolute, migratedDataSetFile);
+                    logger.logMigrated(migratedDataSetFile);
+                } else {
+                    logger.logNotMigrated(sourcePathAbsolute);
+                }
             } catch (DataSetException e) {
-                logger.logMigrationError(sourceDataSetFile, e);
+                logger.logMigrationError(sourcePathAbsolute, e);
             }
         }
 
         logger.logMigrationFinished(migratedPaths);
+    }
+
+    private Path migrate(PathMatch dataSetMatch) throws DataSetException {
+        Path sourcePathAbsolute = dataSetMatch.getAbsolutePath();
+        DataSetFile sourceDataSetFile = dataSetFileDetection.detect(sourcePathAbsolute);
+
+        if (sourceDataSetFile == null) {
+            return null;
+        }
+
+        DataSetFlywayMigration flywayMigration = new DataSetFlywayMigration();
+        flywayMigration.setDataSetProducer(sourceDataSetFile.createProducer());
+        flywayMigration.setDatabaseContainerSupport(databaseContainerSupport);
+        flywayMigration.apply(this);
+        flywayMigration.setBeforeMigrationTransformer(beforeMigrationTransformer);
+        flywayMigration.setAfterMigrationTransformer(afterMigrationTransformer);
+
+
+        Path targetDataSetPath = targetPathSupplier.getTarget(dataSetMatch.getPath());
+        DataSetFile targetDataSetFile = sourceDataSetFile.withNewPath(targetDataSetPath);
+
+        IDataSetConsumer targetDataSetFileConsumer = targetDataSetFile.createConsumer();
+        flywayMigration.setDataSetConsumer(targetDataSetFileConsumer);
+
+        logger.logStartMigration(sourceDataSetFile);
+        flywayMigration.exec();
+        return targetDataSetPath;
     }
 
 }

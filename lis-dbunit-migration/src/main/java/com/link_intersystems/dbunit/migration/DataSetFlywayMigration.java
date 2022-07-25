@@ -61,6 +61,13 @@ public class DataSetFlywayMigration extends AbstractFlywayConfigurationSupport i
     }
 
     public void exec() throws DataSetException {
+        if (sourceDataSet == null) {
+            throw new IllegalStateException("source dataset must be set");
+        }
+        if (targetConsumer == null) {
+            throw new IllegalStateException("target consumer must be set");
+        }
+
         DataSetTransformExecutor transformExecutor = new DataSetTransformExecutor();
 
         IDataSet dataSet = sourceDataSet.get();

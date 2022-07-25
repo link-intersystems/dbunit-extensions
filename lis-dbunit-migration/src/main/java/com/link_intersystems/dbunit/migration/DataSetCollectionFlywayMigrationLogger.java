@@ -20,14 +20,19 @@ import java.util.Set;
 class DataSetCollectionFlywayMigrationLogger {
     private Logger logger = LoggerFactory.getLogger(DataSetCollectionFlywayMigration.class);
 
-    public void logMigrated(DataSetFile dataSetFile) {
+    public void logMigrated(Path path) {
         String msg = "\u2714\ufe0e Migrated '{}'";
-        logger.info(msg, dataSetFile);
+        logger.info(msg, path);
     }
 
-    void logMigrationError(DataSetFile sourceDataSetFile, DataSetException e) {
+    void logMigrationError(Path path, DataSetException e) {
         String msg = "\u274c\ufe0e Unable to migrate '{}'";
-            logger.error(msg, sourceDataSetFile, e);
+        logger.error(msg, path, e);
+    }
+
+    public void logNotMigrated(Path path) {
+        String msg = "\u26A1\ufe0e Not a dataset file '{}'";
+        logger.error(msg, path);
     }
 
     void logStartMigration(DataSetFile dataSetFile) {
@@ -82,5 +87,6 @@ class DataSetCollectionFlywayMigrationLogger {
             logger.debug(sw.toString());
         }
     }
+
 
 }
