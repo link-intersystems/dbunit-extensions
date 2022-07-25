@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.migration.detection;
+package com.link_intersystems.dbunit.stream.file;
 
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.stream.IDataSetConsumer;

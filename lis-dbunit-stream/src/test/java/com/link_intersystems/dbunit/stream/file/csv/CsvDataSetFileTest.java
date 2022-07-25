@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.migration.detection.csv;
+package com.link_intersystems.dbunit.stream.file.csv;
 
 import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
 import com.link_intersystems.io.Unzip;
@@ -15,8 +15,6 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}

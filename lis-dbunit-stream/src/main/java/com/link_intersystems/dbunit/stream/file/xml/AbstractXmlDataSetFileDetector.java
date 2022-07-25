@@ -1,7 +1,7 @@
-package com.link_intersystems.dbunit.migration.detection.xml;
+package com.link_intersystems.dbunit.stream.file.xml;
 
-import com.link_intersystems.dbunit.migration.detection.DataSetFile;
-import com.link_intersystems.dbunit.migration.detection.DataSetFileDetector;
+import com.link_intersystems.dbunit.stream.file.DataSetFile;
+import com.link_intersystems.dbunit.stream.file.DataSetFileDetector;
 
 import java.io.File;
 

@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.migration.detection;
+package com.link_intersystems.dbunit.stream.file;
 
 import java.io.File;
 import java.nio.file.Path;

@@ -1,9 +1,8 @@
 package com.link_intersystems.dbunit.migration;
 
-import com.github.dockerjava.api.model.Link;
 import com.link_intersystems.dbunit.flyway.AbstractFlywayConfigurationSupport;
-import com.link_intersystems.dbunit.migration.detection.DataSetFile;
-import com.link_intersystems.dbunit.migration.detection.DataSetFileDetection;
+import com.link_intersystems.dbunit.stream.file.DataSetFile;
+import com.link_intersystems.dbunit.stream.file.DataSetFileDetection;
 import com.link_intersystems.dbunit.stream.consumer.DataSetTransormer;
 import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseContainerFactory;
 import com.link_intersystems.io.FileScanner;

@@ -1,14 +1,10 @@
-package com.link_intersystems.dbunit.migration;
+package com.link_intersystems.dbunit.stream.file;
 
-import com.link_intersystems.dbunit.migration.detection.DataSetFile;
-import com.link_intersystems.dbunit.migration.detection.DataSetFileDetection;
-import com.link_intersystems.dbunit.migration.detection.csv.CsvDataSetFile;
-import com.link_intersystems.dbunit.migration.detection.xls.XlsDataSetFile;
-import com.link_intersystems.dbunit.migration.detection.xml.FlatXmlDataSetFile;
-import com.link_intersystems.dbunit.migration.detection.xml.XmlDataSetFile;
+import com.link_intersystems.dbunit.stream.file.csv.CsvDataSetFile;
+import com.link_intersystems.dbunit.stream.file.xls.XlsDataSetFile;
+import com.link_intersystems.dbunit.stream.file.xml.FlatXmlDataSetFile;
+import com.link_intersystems.dbunit.stream.file.xml.XmlDataSetFile;
 import com.link_intersystems.io.Unzip;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -18,7 +14,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -37,7 +33,7 @@ class DataSetFileDetectorTest {
     }
 
     @Test
-    void csv(){
+    void csv() {
         File file = getFile("tiny-sakila-csv");
 
         DataSetFile dataSetFile = dataSetFileDetector.detect(file);
@@ -46,7 +42,7 @@ class DataSetFileDetectorTest {
     }
 
     @Test
-    void xls(){
+    void xls() {
         File file = getFile("tiny-sakila.xls");
 
         DataSetFile dataSetFile = dataSetFileDetector.detect(file);
@@ -55,7 +51,7 @@ class DataSetFileDetectorTest {
     }
 
     @Test
-    void flatXml(){
+    void flatXml() {
         File file = getFile("tiny-sakila-flat.xml");
 
         DataSetFile dataSetFile = dataSetFileDetector.detect(file);
@@ -64,7 +60,7 @@ class DataSetFileDetectorTest {
     }
 
     @Test
-    void xml(){
+    void xml() {
         File file = getFile("tiny-sakila.xml");
 
         DataSetFile dataSetFile = dataSetFileDetector.detect(file);
@@ -72,7 +68,6 @@ class DataSetFileDetectorTest {
         assertEquals(XmlDataSetFile.class, dataSetFile.getClass());
     }
 
-    @NotNull
     private File getFile(String filename) {
         return Paths.get(tmpDir.toString(), filename).toFile();
     }

@@ -1,12 +1,11 @@
-package com.link_intersystems.dbunit.migration.detection.xml;
+package com.link_intersystems.dbunit.stream.file.xml;
 
-import com.link_intersystems.dbunit.migration.detection.DataSetFile;
+import com.link_intersystems.dbunit.stream.file.DataSetFile;
 import com.link_intersystems.dbunit.stream.producer.DefaultDataSetProducerSupport;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITableMetaData;
 import org.dbunit.dataset.stream.DefaultConsumer;
 import org.dbunit.dataset.stream.IDataSetProducer;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileInputStream;

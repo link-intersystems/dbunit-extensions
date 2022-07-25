@@ -1,6 +1,6 @@
-package com.link_intersystems.dbunit.migration.detection.xls;
+package com.link_intersystems.dbunit.stream.file.xls;
 
-import com.link_intersystems.dbunit.migration.detection.csv.AbstractDataSetFile;
+import com.link_intersystems.dbunit.stream.file.AbstractDataSetFile;
 import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerSupport;
 import com.link_intersystems.dbunit.stream.producer.DataSetProducerSupport;
 
