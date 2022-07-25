@@ -37,3 +37,21 @@ At the moment only flyway migrations are supported.
 7. Execute the migration
 
        flywayMigration.exec();
+
+
+# Migrate a collection of DataSets
+
+    DataSetCollectionFlywayMigration dataSetCollectionMigration = new DataSetCollectionFlywayMigration(sourcePath);
+    
+    dataSetCollectionMigration.addDefaultFilePatterns();
+    dataSetCollectionMigration.setDatabaseContainerSupport(DatabaseContainerSupportFactory.forPostgres("postgres:latest"));
+    dataSetCollectionMigration.setLocations("com/link_intersystems/dbunit/migration/postgres");
+    dataSetCollectionMigration.setTargetPathSupplier(new BasepathTargetPathSupplier(targetPath));
+    dataSetCollectionMigration.setSourceVersion("1");
+   
+    // optionally sort tables before inserting to ensure foreign key contraints.
+    TableOrder tableOrder = new DefaultTableOrder("language", "film", "actor", "film_actor");
+    ExternalSortTableConsumer externalSortTableConsumer = new ExternalSortTableConsumer(tableOrder);
+    dataSetCollectionMigration.setBeforeMigration(new DataSetConsumerPipeTransformerAdapter(externalSortTableConsumer));
+    
+    DataSetCollectionMigrationResult result = dataSetCollectionMigration.exec();
