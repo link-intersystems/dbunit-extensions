@@ -11,35 +11,61 @@
 
     <artifactId>lis-dbunit-testcontainers</artifactId>
 
+    <properties>
+        <org.testcontainers.version>1.17.3</org.testcontainers.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers</artifactId>
-            <version>1.17.3</version>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>jdbc</artifactId>
-            <version>1.17.3</version>
         </dependency>
         <dependency>
             <groupId>com.link-intersystems.dbunit</groupId>
             <artifactId>lis-dbunit-stream</artifactId>
-            <version>1.0.3-SNAPSHOT</version>
         </dependency>
 
         <!-- OPTIONAL DEPENDENCIES -->
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>mysql</artifactId>
-            <version>1.17.2</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>1.17.3</version>
             <optional>true</optional>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers</artifactId>
+                <version>${org.testcontainers.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>jdbc</artifactId>
+                <version>${org.testcontainers.version}</version>
+            </dependency>
+
+            <!-- OPTIONAL DEPENDENCIES -->
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>mysql</artifactId>
+                <version>${org.testcontainers.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${org.testcontainers.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>

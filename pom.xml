@@ -27,7 +27,7 @@
     </modules>
 
     <properties>
-        <lis-commons.version>1.6.0</lis-commons.version>
+        <lis-commons.version>1.6.1</lis-commons.version>
         <junit.jupiter.version>5.8.2</junit.jupiter.version>
         <mockito.version>4.4.0</mockito.version>
         <slf4j.version>1.7.36</slf4j.version>
@@ -94,7 +94,22 @@
             </dependency>
             <dependency>
                 <groupId>com.link-intersystems.dbunit</groupId>
-                <artifactId>lis-dbunit-commands</artifactId>
+                <artifactId>lis-dbunit-stream</artifactId>
+                <version>1.0.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.link-intersystems.dbunit</groupId>
+                <artifactId>lis-dbunit-testcontainers</artifactId>
+                <version>1.0.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.link-intersystems.dbunit</groupId>
+                <artifactId>lis-dbunit-flyway</artifactId>
+                <version>1.0.3-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.link-intersystems.dbunit</groupId>
+                <artifactId>lis-dbunit-migration</artifactId>
                 <version>1.0.3-SNAPSHOT</version>
             </dependency>
             <dependency>
@@ -144,6 +159,11 @@
             <dependency>
                 <groupId>com.link-intersystems.commons</groupId>
                 <artifactId>lis-commons-swing</artifactId>
+                <version>${lis-commons.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.link-intersystems.commons</groupId>
+                <artifactId>lis-commons-io</artifactId>
                 <version>${lis-commons.version}</version>
             </dependency>
 

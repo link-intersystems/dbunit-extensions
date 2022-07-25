@@ -11,16 +11,28 @@
 
     <artifactId>lis-dbunit-flyway</artifactId>
 
+    <properties>
+        <org.flywaydb.version>9.0.1</org.flywaydb.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
-            <version>9.0.1</version>
         </dependency>
         <dependency>
             <groupId>com.link-intersystems.dbunit</groupId>
             <artifactId>lis-dbunit-stream</artifactId>
-            <version>1.0.3-SNAPSHOT</version>
         </dependency>
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-core</artifactId>
+                <version>${org.flywaydb.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>

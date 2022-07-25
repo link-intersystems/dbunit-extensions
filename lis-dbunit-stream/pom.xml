@@ -11,6 +11,10 @@
 
     <artifactId>lis-dbunit-stream</artifactId>
 
+    <properties>
+        <org.apache.poi.version>5.2.2</org.apache.poi.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.link-intersystems.dbunit</groupId>
@@ -19,7 +23,6 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>5.2.2</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -33,4 +36,14 @@
         </dependency>
     </dependencies>
 
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>${org.apache.poi.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
