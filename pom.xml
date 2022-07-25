@@ -19,7 +19,6 @@
         <module>lis-dbunit-table</module>
         <module>lis-dbunit-meta</module>
         <module>lis-dbunit-sql</module>
-        <module>lis-dbunit-commands</module>
         <module>lis-dbunit-test</module>
         <module>lis-dbunit-stream</module>
         <module>lis-dbunit-testcontainers</module>

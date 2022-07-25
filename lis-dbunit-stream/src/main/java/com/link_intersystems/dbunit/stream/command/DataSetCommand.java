@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.commands;
+package com.link_intersystems.dbunit.stream.command;
 
 import com.link_intersystems.dbunit.stream.producer.DataSetBuilder;
 import com.link_intersystems.dbunit.dataset.DataSetDecorator;

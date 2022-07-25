@@ -1,6 +1,11 @@
-A high level api for common dbunit tasks.
+# lis-dbunit-stream
 
-# Basic data set migration command setup
+This module contains a lot of utility classes for dbunit stream handline.
+
+## commands package
+The commands package contains a high level api for common dbunit tasks.
+
+### Basic data set migration command setup
 
 1. Create a DataSetCommand, e.g. based on a database connection:
 
@@ -23,27 +28,27 @@ A high level api for common dbunit tasks.
        dataSetCommand.setResultDecorator(ds -> new ConsistentDatabaseDataSet(databaseConnection, ds));
 
 
-## Migrate to another database
+### Migrate to another database
 
     dataSetCommand.setDatabaseConsumer(targetDatabaseConnection, DatabaseOperation.UPDATE);
     dataSetCommand.exec();
 
-## Migrate as CSV
+### Migrate as CSV
 
     dataSetCommand.setCsvConsumer("target/export/csv");
     dataSetCommand.exec();
 
-## Migrate as flat XML
+### Migrate as flat XML
 
     dataSetCommand.setFlatXmlConsumer("target/export/flat.xml");
     dataSetCommand.exec();
 
-## Migrate as XML
+### Migrate as XML
 
     dataSetCommand.setXmlConsumer("target/export/flat.xml");
     dataSetCommand.exec();
 
-# Transform one data set format to another
+### Transform one data set format to another
 
 E.g. convert a flat xml format to csv.
 

@@ -33,9 +33,13 @@ A module that provides support for data set migration.
     
     flywayMigration.exec();
 
-## [lis-dbunit-commands](lis-dbunit-commands/README.md)
 
-A high level api for common dbunit tasks.
+## [lis-dbunit-stream](lis-dbunit-stream/README.md)
+
+The stream module provides a lot of utility classes for dbunit stream handling.
+
+It also contains the stream.commands` package that provides a high level 
+api for common dbunit tasks.
 
     Connection sourceConnection = ...; // java.sql.Connection
     DatabaseConnection databaseConnection = new DatabaseConnection(sourceConnection);
