@@ -1,7 +1,7 @@
-package com.link_intersystems.dbunit.stream.file.xls;
+package com.link_intersystems.dbunit.stream.resource.file.xls;
 
-import com.link_intersystems.dbunit.stream.file.DataSetFile;
-import com.link_intersystems.dbunit.stream.file.DataSetFileDetector;
+import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
+import com.link_intersystems.dbunit.stream.resource.file.DataSetFileDetector;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;

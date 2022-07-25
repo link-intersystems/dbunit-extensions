@@ -36,7 +36,7 @@ class DataSetCollectionFlywayMigrationTest {
         dataSetCollectionMigration.addDefaultFilePatterns();
         dataSetCollectionMigration.setDatabaseContainerFactory(() -> new PostgreSQLContainer<>("postgres:latest"));
         dataSetCollectionMigration.setLocations("com/link_intersystems/dbunit/migration/postgres");
-        dataSetCollectionMigration.setTargetPath(targetPath);
+        dataSetCollectionMigration.setTargetPathSupplier(new BasepathTargetPathSupplier(targetPath));
         dataSetCollectionMigration.setSourceVersion("1");
         TableOrder tableOrder = new DefaultTableOrder("language", "film", "actor", "film_actor");
         dataSetCollectionMigration.setBeforeMigration(new ExternalSortTableCosumerTransformer(tableOrder));

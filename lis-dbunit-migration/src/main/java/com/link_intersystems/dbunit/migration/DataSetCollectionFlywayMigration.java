@@ -1,9 +1,9 @@
 package com.link_intersystems.dbunit.migration;
 
 import com.link_intersystems.dbunit.flyway.AbstractFlywayConfigurationSupport;
-import com.link_intersystems.dbunit.stream.file.DataSetFile;
-import com.link_intersystems.dbunit.stream.file.DataSetFileDetection;
 import com.link_intersystems.dbunit.stream.consumer.DataSetTransormer;
+import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
+import com.link_intersystems.dbunit.stream.resource.file.DataSetFileDetection;
 import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseContainerFactory;
 import com.link_intersystems.io.FileScanner;
 import com.link_intersystems.io.PathMatch;
@@ -15,7 +15,8 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -27,13 +28,13 @@ public class DataSetCollectionFlywayMigration extends AbstractFlywayConfiguratio
     private FileScanner fileScanner;
 
     private DataSetFileDetection dataSetFileDetection = new DataSetFileDetection();
-    private Path targetPath;
     private DatabaseContainerFactory databaseContainerFactory;
     private DataSetTransormer beforeMigrationTransformer;
     private DataSetTransormer afterMigrationTransformer;
+    private TargetPathSupplier targetPathSupplier = new BasepathTargetPathSupplier();
 
     public DataSetCollectionFlywayMigration(File basedir) {
-        fileScanner = new FileScanner(basedir);
+        this(basedir.toPath());
     }
 
     public DataSetCollectionFlywayMigration(Path basepath) {
@@ -62,11 +63,11 @@ public class DataSetCollectionFlywayMigration extends AbstractFlywayConfiguratio
     }
 
     public void setDataSetFileDetection(DataSetFileDetection dataSetFileDetection) {
-        this.dataSetFileDetection = Objects.requireNonNull(dataSetFileDetection);
+        this.dataSetFileDetection = dataSetFileDetection;
     }
 
-    public void setTargetPath(Path targetPath) {
-        this.targetPath = targetPath;
+    public void setTargetPathSupplier(TargetPathSupplier targetPathSupplier) {
+        this.targetPathSupplier = requireNonNull(targetPathSupplier);
     }
 
     public void setDatabaseContainerFactory(DatabaseContainerFactory databaseContainerFactory) {
@@ -96,7 +97,7 @@ public class DataSetCollectionFlywayMigration extends AbstractFlywayConfiguratio
             flywayMigration.setAfterMigrationTransformer(afterMigrationTransformer);
 
 
-            Path targetDataSetPath = targetPath.resolve(dataSetMatch.getPath());
+            Path targetDataSetPath = targetPathSupplier.getTarget(dataSetMatch.getPath());
             DataSetFile targetDataSetFile = sourceDataSetFile.withNewPath(targetDataSetPath);
 
             IDataSetConsumer targetDataSetFileConsumer = targetDataSetFile.createConsumer();

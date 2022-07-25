@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.migration;
 
-import com.link_intersystems.dbunit.stream.file.DataSetFile;
+import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
 import com.link_intersystems.io.PathMatch;
 import com.link_intersystems.io.PathMatches;
 import org.dbunit.dataset.DataSetException;

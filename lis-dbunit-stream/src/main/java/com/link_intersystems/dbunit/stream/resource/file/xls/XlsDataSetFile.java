@@ -1,6 +1,6 @@
-package com.link_intersystems.dbunit.stream.file.xml;
+package com.link_intersystems.dbunit.stream.resource.file.xls;
 
-import com.link_intersystems.dbunit.stream.file.AbstractDataSetFile;
+import com.link_intersystems.dbunit.stream.resource.file.AbstractDataSetFile;
 import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerSupport;
 import com.link_intersystems.dbunit.stream.producer.DataSetProducerSupport;
 
@@ -10,20 +10,20 @@ import java.io.IOException;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class XmlDataSetFile extends AbstractDataSetFile {
+public class XlsDataSetFile extends AbstractDataSetFile {
 
-    XmlDataSetFile(File file) {
+    XlsDataSetFile(File file) {
         super(file);
     }
 
     @Override
     protected void setProducer(DataSetProducerSupport producerSupport, File file) throws IOException {
-        producerSupport.setXmlProducer(file);
+        producerSupport.setXlsProducer(file);
     }
 
     @Override
     protected void setConsumer(DataSetConsumerSupport consumerSupport, File file) throws IOException {
-        consumerSupport.setXmlConsumer(file);
+        consumerSupport.setXlsConsumer(file);
     }
 
 }

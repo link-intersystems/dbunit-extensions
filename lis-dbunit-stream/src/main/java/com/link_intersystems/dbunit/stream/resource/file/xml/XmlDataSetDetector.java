@@ -1,8 +1,7 @@
-package com.link_intersystems.dbunit.stream.file.xml;
+package com.link_intersystems.dbunit.stream.resource.file.xml;
 
-import com.link_intersystems.dbunit.stream.file.DataSetFile;
+import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
 import com.link_intersystems.dbunit.stream.producer.DefaultDataSetProducerSupport;
-import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITableMetaData;
 
 import java.io.File;

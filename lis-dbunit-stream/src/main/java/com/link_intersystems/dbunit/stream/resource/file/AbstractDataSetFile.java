@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.stream.file;
+package com.link_intersystems.dbunit.stream.resource.file;
 
 import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerSupport;
 import com.link_intersystems.dbunit.stream.consumer.DefaultDataSetConsumerSupport;

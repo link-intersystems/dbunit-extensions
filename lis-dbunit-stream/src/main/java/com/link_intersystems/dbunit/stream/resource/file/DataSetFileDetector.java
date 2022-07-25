@@ -1,6 +1,4 @@
-package com.link_intersystems.dbunit.stream.file;
-
-import com.link_intersystems.dbunit.stream.file.DataSetFile;
+package com.link_intersystems.dbunit.stream.resource.file;
 
 import java.io.File;
 

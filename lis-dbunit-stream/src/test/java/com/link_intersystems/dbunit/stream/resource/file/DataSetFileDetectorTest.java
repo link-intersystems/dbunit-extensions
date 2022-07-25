@@ -1,9 +1,9 @@
-package com.link_intersystems.dbunit.stream.file;
+package com.link_intersystems.dbunit.stream.resource.file;
 
-import com.link_intersystems.dbunit.stream.file.csv.CsvDataSetFile;
-import com.link_intersystems.dbunit.stream.file.xls.XlsDataSetFile;
-import com.link_intersystems.dbunit.stream.file.xml.FlatXmlDataSetFile;
-import com.link_intersystems.dbunit.stream.file.xml.XmlDataSetFile;
+import com.link_intersystems.dbunit.stream.resource.file.csv.CsvDataSetFile;
+import com.link_intersystems.dbunit.stream.resource.file.xls.XlsDataSetFile;
+import com.link_intersystems.dbunit.stream.resource.file.xml.FlatXmlDataSetFile;
+import com.link_intersystems.dbunit.stream.resource.file.xml.XmlDataSetFile;
 import com.link_intersystems.io.Unzip;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.stream.file.csv;
+package com.link_intersystems.dbunit.stream.resource.file.csv;
 
 import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
 import com.link_intersystems.io.Unzip;
