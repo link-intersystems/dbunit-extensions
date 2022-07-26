@@ -2,7 +2,7 @@ package com.link_intersystems.dbunit.stream.producer;
 
 import com.link_intersystems.dbunit.stream.consumer.AbstractDataSetConsumerDelegate;
 import org.dbunit.dataset.DataSetException;
-import org.dbunit.dataset.ITableMetaData;
+import org.dbunit.dataset.stream.DefaultConsumer;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 import org.dbunit.dataset.stream.IDataSetProducer;
 import org.slf4j.Logger;
@@ -17,52 +17,12 @@ public class CloseableDataSetProducer implements AutoCloseable, IDataSetProducer
 
     private static class ConsumerExpectionInterceptor extends AbstractDataSetConsumerDelegate {
 
-        private IDataSetConsumer interceptionTarget;
+        private IDataSetConsumer interceptionTarget = new DefaultConsumer();
         private DataSetException e;
         private boolean endDataSet;
 
-        ConsumerExpectionInterceptor(IDataSetConsumer interceptionTarget) {
-            this.interceptionTarget = interceptionTarget;
-        }
-
-        @Override
-        public void startDataSet() throws DataSetException {
-            try {
-                super.startDataSet();
-            } catch (DataSetException e) {
-                this.e = e;
-                throw e;
-            }
-        }
-
-        @Override
-        public void startTable(ITableMetaData iTableMetaData) throws DataSetException {
-            try {
-                super.startTable(iTableMetaData);
-            } catch (DataSetException e) {
-                this.e = e;
-                throw e;
-            }
-        }
-
-        @Override
-        public void row(Object[] objects) throws DataSetException {
-            try {
-                super.row(objects);
-            } catch (DataSetException e) {
-                this.e = e;
-                throw e;
-            }
-        }
-
-        @Override
-        public void endTable() throws DataSetException {
-            try {
-                super.endTable();
-            } catch (DataSetException e) {
-                this.e = e;
-                throw e;
-            }
+        public void setInterceptionTarget(IDataSetConsumer interceptionTarget) {
+            this.interceptionTarget = requireNonNull(interceptionTarget);
         }
 
         @Override
@@ -76,8 +36,8 @@ public class CloseableDataSetProducer implements AutoCloseable, IDataSetProducer
             return interceptionTarget;
         }
 
-        public void produceFinished() throws DataSetException {
-            if (!endDataSet && e != null) {
+        public void ensureEndDataSetInvoked() throws DataSetException {
+            if (!endDataSet) {
                 endDataSet();
             }
         }
@@ -87,7 +47,7 @@ public class CloseableDataSetProducer implements AutoCloseable, IDataSetProducer
 
     private final IDataSetProducer dataSetProducer;
     private AutoCloseable autoCloseable;
-    private ConsumerExpectionInterceptor interceptor;
+    private ConsumerExpectionInterceptor interceptor = new ConsumerExpectionInterceptor();
 
     public CloseableDataSetProducer(IDataSetProducer dataSetProducer) {
         this(dataSetProducer, null);
@@ -104,7 +64,7 @@ public class CloseableDataSetProducer implements AutoCloseable, IDataSetProducer
 
     @Override
     public void setConsumer(IDataSetConsumer consumer) throws DataSetException {
-        interceptor = new ConsumerExpectionInterceptor(consumer);
+        interceptor.setInterceptionTarget(requireNonNull(consumer));
         dataSetProducer.setConsumer(interceptor);
     }
 
@@ -124,9 +84,9 @@ public class CloseableDataSetProducer implements AutoCloseable, IDataSetProducer
     @Override
     public void close() throws Exception {
         try {
-            interceptor.produceFinished();
+            interceptor.ensureEndDataSetInvoked();
         } catch (DataSetException e) {
-            getLogger().error("Unable to close resource", e);
+            getLogger().error("Unable to ensure that endDataSet has been invoked. Resources may not be closed.", e);
         }
 
         if (autoCloseable != null) {
