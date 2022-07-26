@@ -104,11 +104,4 @@ class CloseableDataSetConsumerTest extends AbstractDataSetConsumerDelegateTest {
         verify(logger, times(1)).error(ArgumentMatchers.any(String.class), ArgumentMatchers.eq(ioException));
     }
 
-
-    @Test
-    void close() throws Exception {
-        closeableDataSetConsumer.close();
-
-        verify(autoCloseable, times(1)).close();
-    }
 }
