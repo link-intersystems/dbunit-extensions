@@ -30,6 +30,10 @@ public class DatabaseContainerDataSource extends AbstractDataSource {
         this.autoCommit = autoCommit;
     }
 
+    public boolean isAutoCommit() {
+        return autoCommit;
+    }
+
     @Override
     public Connection getConnection() throws SQLException {
         if (sharedDefaultConnection == null) {

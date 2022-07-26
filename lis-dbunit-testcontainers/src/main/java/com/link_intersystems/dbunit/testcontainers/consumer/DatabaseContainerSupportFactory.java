@@ -1,6 +1,5 @@
 package com.link_intersystems.dbunit.testcontainers.consumer;
 
-import org.dbunit.database.DatabaseConfig;
 import org.dbunit.ext.mysql.MySqlDataTypeFactory;
 import org.dbunit.ext.mysql.MySqlMetadataHandler;
 import org.dbunit.ext.postgresql.PostgresqlDataTypeFactory;
@@ -18,6 +17,8 @@ import static org.dbunit.database.DatabaseConfig.PROPERTY_METADATA_HANDLER;
  */
 public class DatabaseContainerSupportFactory {
 
+    public static final DatabaseContainerSupportFactory INSTANCE = new DatabaseContainerSupportFactory();
+
     /**
      * Ensure that the testcontainers postgres library is on the classpath. E.g.
      * <pre>
@@ -30,15 +31,13 @@ public class DatabaseContainerSupportFactory {
      *
      * @param dockerImageName the docker image name, e.g. "postgres:latest".
      */
-    public static DatabaseContainerSupport forPostgres(String dockerImageName) {
+    public DatabaseContainerSupport createPostgres(String dockerImageName) {
         String containerClass = "org.testcontainers.containers.PostgreSQLContainer";
         DefaultDatabaseContainerSupport containerSupport = createContainerSupport(containerClass, dockerImageName);
         containerSupport.getDatabaseConfig().setProperty(PROPERTY_DATATYPE_FACTORY, new PostgresqlDataTypeFactory());
         return containerSupport;
 
     }
-
-
 
     /**
      * Ensure that the testcontainers mysql library is on the classpath as well as the mysql jdbc driver. E.g.
@@ -58,7 +57,7 @@ public class DatabaseContainerSupportFactory {
      *
      * @param dockerImageName the docker image name, e.g. "postgres:latest".
      */
-    public static DatabaseContainerSupport forMysql(String dockerImageName) {
+    public DatabaseContainerSupport createMysql(String dockerImageName) {
         String containerClass = "org.testcontainers.containers.MySQLContainer";
         DefaultDatabaseContainerSupport containerSupport = createContainerSupport(containerClass, dockerImageName);
         containerSupport.getDatabaseConfig().setProperty(PROPERTY_DATATYPE_FACTORY, new MySqlDataTypeFactory());
@@ -66,25 +65,61 @@ public class DatabaseContainerSupportFactory {
         return containerSupport;
     }
 
-    private static DefaultDatabaseContainerSupport createContainerSupport(String containerClass, String dockerImageName) {
+    protected DefaultDatabaseContainerSupport createContainerSupport(String containerClassName, String dockerImageName) {
         try {
-            Class<?> postgresContainerClass = Class.forName(containerClass);
-            Constructor<?> containerConstructor = postgresContainerClass.getDeclaredConstructor(String.class);
-            return new DefaultDatabaseContainerSupport(() -> {
-                try {
-                    return (JdbcDatabaseContainer<?>) containerConstructor.newInstance(dockerImageName);
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-        } catch (NoClassDefFoundError | ClassNotFoundException | NoSuchMethodException e) {
-            throw noContainerSuppportAvailable("postgres", e);
+            Class<?> containerClass = Class.forName(containerClassName);
+            try {
+                Constructor<?> containerConstructor = containerClass.getDeclaredConstructor(String.class);
+                return instantiateContainer(containerConstructor, dockerImageName);
+            } catch (NoSuchMethodException e) {
+                throw containerImplementationConstructorNotFound(containerClassName, e);
+            }
+        } catch (ClassNotFoundException e) {
+            throw noContainerImplementationFound(containerClassName, e);
         }
     }
 
-    private static IllegalStateException noContainerSuppportAvailable(String type, Throwable e) {
+    protected DefaultDatabaseContainerSupport instantiateContainer(Constructor<?> containerConstructor, Object dockerImageName) {
+        return new DefaultDatabaseContainerSupport(() -> {
+            try {
+                return (JdbcDatabaseContainer<?>) containerConstructor.newInstance(dockerImageName);
+            } catch (InvocationTargetException e) {
+                throw handleInvocationTargetException(e);
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+
+    protected RuntimeException handleInvocationTargetException(InvocationTargetException e) {
+        Throwable targetException = e.getTargetException();
+
+        if (targetException instanceof RuntimeException) {
+            return (RuntimeException) targetException;
+        }
+
+        return new RuntimeException(targetException);
+    }
+
+    private IllegalStateException noContainerImplementationFound(String containerClass, Throwable e) {
         String className = DatabaseContainerSupport.class.getSimpleName();
-        String msg = format("Can not create {0} of type {1}. Is the testcontainers {1} library on the classpath?", className, type);
+        String msg = format("Can not create {0}. Implementation class ''{1}'' not found. " +
+                        "Is the testcontainers library on the classpath? " +
+                        "Otherwise the testcontainers library is not compatible and you have to implement a custom {2}.",
+                className,
+                containerClass,
+                DatabaseContainerSupport.class
+        );
+        return new IllegalStateException(msg, e);
+    }
+
+    private IllegalStateException containerImplementationConstructorNotFound(String containerClass, Throwable e) {
+        String className = DatabaseContainerSupport.class.getSimpleName();
+        String msg = format("Can not create {0}. Missing constructor ''{1}(String)''.",
+                className,
+                containerClass
+        );
         return new IllegalStateException(msg, e);
     }
 }

@@ -1,6 +1,7 @@
 package com.link_intersystems.dbunit.testcontainers.consumer;
 
 import com.link_intersystems.dbunit.stream.consumer.DatabaseMigrationSupport;
+import com.link_intersystems.dbunit.stream.consumer.NullDatabaseMigrationSupport;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
@@ -25,8 +26,8 @@ public class TestContainersConsumer extends DefaultConsumer {
     private JdbcDatabaseContainer<?> jdbcDatabaseContainer;
     private DatabaseConnection databaseConnection;
 
-    private IDataSetConsumer resultConsumer;
-    private DatabaseMigrationSupport migrationSupport;
+    private IDataSetConsumer resultConsumer = new DefaultConsumer();
+    private DatabaseMigrationSupport migrationSupport = new NullDatabaseMigrationSupport();
     private DefaultTable currentTable;
     private DatabaseContainerSupport databaseContainerSupport;
     private DatabaseContainerDataSource dataSource;
@@ -36,11 +37,11 @@ public class TestContainersConsumer extends DefaultConsumer {
     }
 
     public void setResultConsumer(IDataSetConsumer resultConsumer) {
-        this.resultConsumer = resultConsumer;
+        this.resultConsumer = requireNonNull(resultConsumer);
     }
 
     public void setDatabaseMigrationSupport(DatabaseMigrationSupport migrationSupport) {
-        this.migrationSupport = migrationSupport;
+        this.migrationSupport = requireNonNull(migrationSupport);
     }
 
     @Override

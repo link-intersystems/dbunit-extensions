@@ -44,8 +44,8 @@ class DataSetFlywayMigrationTest {
 
     static Stream<DatabaseDefinition> databases() {
         return Arrays.asList(
-                        new DatabaseDefinition("postgres", DatabaseContainerSupportFactory.forPostgres("postgres:latest")),
-                        new DatabaseDefinition("mysql", DatabaseContainerSupportFactory.forMysql("mysql:latest")))
+                        new DatabaseDefinition("postgres", DatabaseContainerSupportFactory.INSTANCE.createPostgres("postgres:latest")),
+                        new DatabaseDefinition("mysql", DatabaseContainerSupportFactory.INSTANCE.createMysql("mysql:latest")))
                 .stream();
     }
 

@@ -24,7 +24,7 @@ At the moment only flyway migrations are supported.
 
 4. Tell the migration command which container should be used:
 
-       flywayMigrationCommand.setDatabaseContainerSupport(DatabaseContainerSupportFactory.forPostgres("postgres:latest"));
+       flywayMigrationCommand.setDatabaseContainerSupport(DatabaseContainerSupportFactory.INSTANCE.createPostgres("postgres:latest"));
 
 5. Tell the migration command on which flyway version the source data set is based.
 

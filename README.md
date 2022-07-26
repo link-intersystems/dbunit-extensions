@@ -28,7 +28,7 @@ A module that provides support for data set migration.
     
     flywayMigration.setFlatXmlConsumer("somepath/flat-v2.xml");
     
-    flywayMigration.setDatabaseContainerFactory(() -> new PostgreSQLContainer<>("postgres:latest")));
+    flywayMigration.setDatabaseContainerFactory(DatabaseContainerSupportFactory.INSTANCE.createPostgres("postgres:latest")));
     flywayMigration.setLocations("com/link_intersystems/dbunit/migration/postgres");
     
     flywayMigration.exec();

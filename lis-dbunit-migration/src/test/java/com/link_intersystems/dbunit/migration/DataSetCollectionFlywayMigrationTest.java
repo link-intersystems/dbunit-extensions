@@ -45,7 +45,7 @@ class DataSetCollectionFlywayMigrationTest {
         DataSetCollectionFlywayMigration dataSetCollectionMigration = new DataSetCollectionFlywayMigration(sourcePath);
 
         dataSetCollectionMigration.addDefaultFilePatterns();
-        dataSetCollectionMigration.setDatabaseContainerSupport(DatabaseContainerSupportFactory.forPostgres("postgres:latest"));
+        dataSetCollectionMigration.setDatabaseContainerSupport(DatabaseContainerSupportFactory.INSTANCE.createPostgres("postgres:latest"));
         dataSetCollectionMigration.setLocations("com/link_intersystems/dbunit/migration/postgres");
         dataSetCollectionMigration.setTargetPathSupplier(new BasepathTargetPathSupplier(targetPath));
         dataSetCollectionMigration.setSourceVersion("1");
