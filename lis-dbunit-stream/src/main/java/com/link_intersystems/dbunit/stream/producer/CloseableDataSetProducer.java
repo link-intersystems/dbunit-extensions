@@ -18,7 +18,6 @@ public class CloseableDataSetProducer implements AutoCloseable, IDataSetProducer
     private static class ConsumerExpectionInterceptor extends AbstractDataSetConsumerDelegate {
 
         private IDataSetConsumer interceptionTarget = new DefaultConsumer();
-        private DataSetException e;
         private boolean endDataSet;
 
         public void setInterceptionTarget(IDataSetConsumer interceptionTarget) {
