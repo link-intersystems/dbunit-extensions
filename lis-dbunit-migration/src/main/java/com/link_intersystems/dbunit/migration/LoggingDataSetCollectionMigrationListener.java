@@ -1,5 +1,6 @@
 package com.link_intersystems.dbunit.migration;
 
+import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
 import com.link_intersystems.io.FilePath;
 import org.dbunit.dataset.DataSetException;
 import org.slf4j.Logger;
@@ -7,44 +8,54 @@ import org.slf4j.LoggerFactory;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class DataSetCollectionFlywayMigrationLogger implements DataSetCollectionMigrationListener {
+public class LoggingDataSetCollectionMigrationListener implements DataSetCollectionMigrationListener {
 
-    private Logger logger = LoggerFactory.getLogger(DataSetCollectionFlywayMigration.class);
+    private Logger logger;
 
-    @Override
-    public void successfullyMigrated(Path path) {
-        String msg = "\u2714\ufe0e Migrated '{}'";
-        logger.info(msg, path);
+    public LoggingDataSetCollectionMigrationListener() {
+        this(LoggerFactory.getLogger(LoggingDataSetCollectionMigrationListener.class));
+
+    }
+
+    public LoggingDataSetCollectionMigrationListener(Logger logger) {
+        this.logger = requireNonNull(logger);
     }
 
     @Override
-    public void failedMigration(Path path, DataSetException e) {
+    public void successfullyMigrated(DataSetFile dataSetFile) {
+        String msg = "\u2714\ufe0e Migrated '{}'";
+        logger.info(msg, dataSetFile);
+    }
+
+    @Override
+    public void failedMigration(DataSetFile dataSetFile, DataSetException e) {
         String msg = "\u274c\ufe0e Unable to migrate '{}'";
         if (logger.isDebugEnabled()) {
-            logger.error(msg, path, e);
+            logger.error(msg, dataSetFile, e);
         } else {
-            logger.error(msg, path);
+            logger.error(msg, dataSetFile);
         }
     }
 
     @Override
-    public void skippedMigrationTypeNotDetectable(Path path) {
+    public void skippedMigrationTypeNotDetectable(FilePath path) {
         String msg = "\u26A1\ufe0e Not a dataset file '{}'";
         logger.error(msg, path);
     }
 
     @Override
-    public void startMigration(Path path) {
-        logger.info("\u267b\ufe0e Start migration '{}'", path);
+    public void startMigration(DataSetFile dataSetFile) {
+        logger.info("\u267b\ufe0e Start migration '{}'", dataSetFile);
     }
 
     @Override
@@ -59,7 +70,7 @@ public class DataSetCollectionFlywayMigrationLogger implements DataSetCollection
                 while (iterator.hasNext()) {
                     FilePath dataSetMatch = iterator.next();
                     pw.print("\t\u2022 ");
-                    pw.print(dataSetMatch.getAbsolutePath());
+                    pw.print(dataSetMatch.toAbsolutePath());
 
                     if (iterator.hasNext()) {
                         pw.println();
@@ -72,17 +83,17 @@ public class DataSetCollectionFlywayMigrationLogger implements DataSetCollection
     }
 
     @Override
-    public void dataSetCollectionMigrationFinished(Map<Path, Path> fromToPathMap) {
-        logger.info("Migrated {} files ", fromToPathMap.size());
+    public void dataSetCollectionMigrationFinished(Map<DataSetFile, DataSetFile> migratedDataSetFiles) {
+        logger.info("Migrated {} files ", migratedDataSetFiles.size());
         if (logger.isDebugEnabled()) {
             StringWriter sw = new StringWriter();
             try (PrintWriter pw = new PrintWriter(sw)) {
                 pw.println("Migrated files:");
 
-                Set<Map.Entry<Path, Path>> entries = fromToPathMap.entrySet();
-                Iterator<Map.Entry<Path, Path>> iterator = entries.iterator();
+                Set<Map.Entry<DataSetFile, DataSetFile>> entries = migratedDataSetFiles.entrySet();
+                Iterator<Map.Entry<DataSetFile, DataSetFile>> iterator = entries.iterator();
                 while (iterator.hasNext()) {
-                    Map.Entry<Path, Path> entry = iterator.next();
+                    Map.Entry<DataSetFile, DataSetFile> entry = iterator.next();
                     pw.print("\t\u2022 ");
                     pw.println(entry.getKey());
                     pw.print("\t\t\u2192 ");

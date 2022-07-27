@@ -2,6 +2,7 @@ package com.link_intersystems.dbunit.stream.resource.file.xml;
 
 import com.link_intersystems.dbunit.stream.producer.DefaultDataSetProducerSupport;
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
+import com.link_intersystems.io.FilePath;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITableMetaData;
 import org.dbunit.dataset.stream.DefaultConsumer;
@@ -22,10 +23,10 @@ public abstract class AbstractXmlTableMetaDataDataSetFileDetector extends Abstra
     private Logger logger = LoggerFactory.getLogger(AbstractXmlTableMetaDataDataSetFileDetector.class);
 
     @Override
-    protected DataSetFile detectXmlFile(File file) {
+    protected DataSetFile detectXmlFile(FilePath filePath) {
         DefaultDataSetProducerSupport producerSupport = new DefaultDataSetProducerSupport();
         try {
-            try (FileInputStream fileInputStream = new FileInputStream(file)) {
+            try (FileInputStream fileInputStream = new FileInputStream(filePath.toAbsoluteFile())) {
                 setProducer(producerSupport, fileInputStream);
                 IDataSetProducer dataSetProducer = producerSupport.getDataSetProducer();
 
@@ -52,7 +53,7 @@ public abstract class AbstractXmlTableMetaDataDataSetFileDetector extends Abstra
                 }
 
                 if (consumerDetector.seemsToBeAFlatXmlDataSet) {
-                    return dataSetFileDetectedSucessfully(file);
+                    return dataSetFileDetectedSucessfully(filePath);
                 }
             }
         } catch (IOException | DataSetException e) {
@@ -60,7 +61,7 @@ public abstract class AbstractXmlTableMetaDataDataSetFileDetector extends Abstra
         return null;
     }
 
-    protected abstract DataSetFile dataSetFileDetectedSucessfully(File file);
+    protected abstract DataSetFile dataSetFileDetectedSucessfully(FilePath filePath);
 
     protected abstract void setProducer(DefaultDataSetProducerSupport producerSupport, InputStream inputStream);
 

@@ -4,7 +4,6 @@ import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
 import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerPipeTransformerAdapter;
 import com.link_intersystems.dbunit.stream.consumer.ExternalSortTableConsumer;
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
-import com.link_intersystems.dbunit.stream.resource.file.DataSetFileDetection;
 import com.link_intersystems.dbunit.table.DefaultTableOrder;
 import com.link_intersystems.dbunit.table.TableOrder;
 import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseContainerSupportFactory;
@@ -37,7 +36,7 @@ class DataSetCollectionFlywayMigrationTest {
     @BeforeEach
     void setUp(@TempDir Path tmpDir) throws IOException {
         this.sourcePath = Paths.get(tmpDir.toString(), "source");
-        this.targetPath = Paths.get(tmpDir.toString(), "target");
+        this.targetPath = Paths.get(tmpDir.toString(), "target/someSubdir");
         Unzip.unzip(DataSetCollectionFlywayMigration.class.getResourceAsStream("/tiny-sakila-dataset-files.zip"), sourcePath);
     }
 
@@ -50,7 +49,7 @@ class DataSetCollectionFlywayMigrationTest {
 
         dataSetCollectionMigration.setDatabaseContainerSupport(DatabaseContainerSupportFactory.INSTANCE.createPostgres("postgres:latest"));
         dataSetCollectionMigration.setLocations("com/link_intersystems/dbunit/migration/postgres");
-        dataSetCollectionMigration.setTargetPathSupplier(new BasepathTargetPathSupplier(targetPath));
+        dataSetCollectionMigration.setTargetDataSetFileSupplier(new BasepathTargetPathSupplier(targetPath));
         dataSetCollectionMigration.setSourceVersion("1");
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("new_first_name_column_name", "firstname");
@@ -67,15 +66,12 @@ class DataSetCollectionFlywayMigrationTest {
     }
 
     private void assertDataSetsMigratedSuccessfully(DataSetCollectionFlywayMigration dataSetCollectionMigration, DataSetCollectionMigrationResult result) throws DataSetException {
-        Map<Path, Path> migratedPaths = result.getMigratedPaths();
+        Map<DataSetFile, DataSetFile> migratedDataSetFiles = result.getMigratedPaths();
 
-        assertEquals(3, migratedPaths.size(), "migrated paths");
+        assertEquals(3, migratedDataSetFiles.size(), "migrated paths");
 
-        for (Path migratedPath : migratedPaths.values()) {
-            DataSetFileDetection dataSetFileDetection = dataSetCollectionMigration.getDataSetFileDetection();
-            DataSetFile dataSetFile = dataSetFileDetection.detect(migratedPath);
-
-            IDataSetProducer producer = dataSetFile.createProducer();
+        for (DataSetFile migratedDataSetFile : migratedDataSetFiles.values()) {
+            IDataSetProducer producer = migratedDataSetFile.createProducer();
             CopyDataSetConsumer copyDataSetConsumer = new CopyDataSetConsumer();
             producer.setConsumer(copyDataSetConsumer);
             producer.produce();

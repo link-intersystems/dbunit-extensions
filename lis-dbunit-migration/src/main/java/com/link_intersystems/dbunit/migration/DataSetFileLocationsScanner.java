@@ -28,8 +28,7 @@ public class DataSetFileLocationsScanner implements DataSetFileLocations {
     }
 
     public void addDefaultFilePatterns() {
-        addFilePatterns("**/*.xml", "*.xml", "**/*.xls", "*.xls");
-        addDirectoryPatterns("**");
+        addFilePatterns("**/*.xml", "*.xml", "**/*.xls", "*.xls", "**/*.csv", "*.csv");
     }
 
 

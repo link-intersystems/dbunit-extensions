@@ -2,6 +2,7 @@ package com.link_intersystems.dbunit.stream.resource.file.xml;
 
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
 import com.link_intersystems.dbunit.stream.producer.DefaultDataSetProducerSupport;
+import com.link_intersystems.io.FilePath;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITableMetaData;
 
@@ -14,8 +15,8 @@ import java.io.InputStream;
 public class FlatXmlDataSetDetector extends AbstractXmlTableMetaDataDataSetFileDetector {
 
     @Override
-    protected DataSetFile dataSetFileDetectedSucessfully(File file) {
-        return new FlatXmlDataSetFile(file);
+    protected DataSetFile dataSetFileDetectedSucessfully(FilePath filePath) {
+        return new FlatXmlDataSetFile(filePath);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.link_intersystems.dbunit.stream.resource.file.xls;
 
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFileDetector;
+import com.link_intersystems.io.FilePath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,9 +33,9 @@ public class XlsDataSetDetector implements DataSetFileDetector {
     }
 
     @Override
-    public DataSetFile detect(File file) {
+    public DataSetFile detect(FilePath filePath) {
         if (implementor != null) {
-            return implementor.detect(file);
+            return implementor.detect(filePath);
         }
         return null;
     }

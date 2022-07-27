@@ -4,6 +4,7 @@ import com.link_intersystems.dbunit.stream.resource.file.csv.CsvDataSetFile;
 import com.link_intersystems.dbunit.stream.resource.file.xls.XlsDataSetFile;
 import com.link_intersystems.dbunit.stream.resource.file.xml.FlatXmlDataSetFile;
 import com.link_intersystems.dbunit.stream.resource.file.xml.XmlDataSetFile;
+import com.link_intersystems.io.FilePath;
 import com.link_intersystems.io.Unzip;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,7 @@ class DataSetFileDetectorTest {
 
     @Test
     void csv() {
-        File file = getFile("tiny-sakila-csv");
+        FilePath file = getFile("tiny-sakila-csv");
 
         DataSetFile dataSetFile = dataSetFileDetector.detect(file);
 
@@ -43,7 +44,7 @@ class DataSetFileDetectorTest {
 
     @Test
     void xls() {
-        File file = getFile("tiny-sakila.xls");
+        FilePath file = getFile("tiny-sakila.xls");
 
         DataSetFile dataSetFile = dataSetFileDetector.detect(file);
 
@@ -52,7 +53,7 @@ class DataSetFileDetectorTest {
 
     @Test
     void flatXml() {
-        File file = getFile("tiny-sakila-flat.xml");
+        FilePath file = getFile("tiny-sakila-flat.xml");
 
         DataSetFile dataSetFile = dataSetFileDetector.detect(file);
 
@@ -61,14 +62,14 @@ class DataSetFileDetectorTest {
 
     @Test
     void xml() {
-        File file = getFile("tiny-sakila.xml");
+        FilePath file = getFile("tiny-sakila.xml");
 
         DataSetFile dataSetFile = dataSetFileDetector.detect(file);
 
         assertEquals(XmlDataSetFile.class, dataSetFile.getClass());
     }
 
-    private File getFile(String filename) {
-        return Paths.get(tmpDir.toString(), filename).toFile();
+    private FilePath getFile(String filename) {
+        return new FilePath(tmpDir, Paths.get(filename));
     }
 }

@@ -1,6 +1,7 @@
 package com.link_intersystems.dbunit.stream.resource.file.csv;
 
 import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
+import com.link_intersystems.io.FilePath;
 import com.link_intersystems.io.Unzip;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
@@ -29,7 +30,7 @@ class CsvDataSetFileTest {
         this.tmpDir = tmpDir;
         Unzip.unzip(CsvDataSetFileTest.class.getResourceAsStream("/tiny-sakila-dataset-files.zip"), tmpDir);
 
-        csvDataSetFile = new CsvDataSetFile(Paths.get(tmpDir.toString(), "tiny-sakila-csv").toFile());
+        csvDataSetFile = new CsvDataSetFile(new FilePath(tmpDir, Paths.get("tiny-sakila-csv")));
     }
 
     @Test

@@ -1,11 +1,11 @@
 package com.link_intersystems.dbunit.stream.resource.file;
 
-import java.io.File;
+import com.link_intersystems.io.FilePath;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 public interface DataSetFileDetector {
 
-    DataSetFile detect(File file);
+    DataSetFile detect(FilePath filePath);
 }
