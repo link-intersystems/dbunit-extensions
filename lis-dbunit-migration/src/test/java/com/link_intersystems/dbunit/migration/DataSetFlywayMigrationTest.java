@@ -15,6 +15,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -52,10 +54,10 @@ class DataSetFlywayMigrationTest {
     @ParameterizedTest
     @MethodSource("databases")
     void migrate(DatabaseDefinition databaseDefinition) throws DataSetException, IOException {
-        DataSetFlywayMigration flywayMigrationCommand = new DataSetFlywayMigration();
+        DataSetFlywayMigration flywayMigration = new DataSetFlywayMigration();
 
         IDataSet sourceDataSet = TestDataSets.getTinySakilaDataSet();
-        flywayMigrationCommand.setDataSetProducer(sourceDataSet);
+        flywayMigration.setDataSetProducer(sourceDataSet);
 
         CopyDataSetConsumer copyDataSetConsumer = new CopyDataSetConsumer();
 
@@ -66,14 +68,18 @@ class DataSetFlywayMigrationTest {
         consumerSupport.setFlatXmlConsumer("target/flat.xml");
         IDataSetConsumer flatXmlConsumer = consumerSupport.getDataSetConsumer();
 
-        flywayMigrationCommand.setDataSetConsumers(copyDataSetConsumer, csvConsumer, flatXmlConsumer);
+        flywayMigration.setDataSetConsumers(copyDataSetConsumer, csvConsumer, flatXmlConsumer);
 
-        flywayMigrationCommand.setDatabaseContainerSupport(databaseDefinition.databaseContainerSupport);
+        flywayMigration.setDatabaseContainerSupport(databaseDefinition.databaseContainerSupport);
 
-        flywayMigrationCommand.setSourceVersion("1");
-        flywayMigrationCommand.setLocations("com/link_intersystems/dbunit/migration/" + databaseDefinition.containerName);
+        flywayMigration.setSourceVersion("1");
+        flywayMigration.setLocations("com/link_intersystems/dbunit/migration/" + databaseDefinition.containerName);
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("new_first_name_column_name", "firstname");
+        placeholders.put("new_last_name_column_name", "lastname");
+        flywayMigration.setPlaceholders(placeholders);
 
-        flywayMigrationCommand.exec();
+        flywayMigration.exec();
 
         IDataSet migratedDataSet = copyDataSetConsumer.getDataSet();
 

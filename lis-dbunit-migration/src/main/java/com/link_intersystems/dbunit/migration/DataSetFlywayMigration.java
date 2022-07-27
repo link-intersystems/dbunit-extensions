@@ -14,6 +14,8 @@ import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 
+import java.util.Map;
+
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
@@ -25,6 +27,7 @@ public class DataSetFlywayMigration extends AbstractFlywayConfigurationSupport i
     private boolean removeFlywayTables = true;
     private DataSetTransormer beforeMigrationTransformer;
     private DataSetTransormer afterMigrationTransformer;
+    private Map<String, String> placeholders;
 
     @Override
     public void setDataSetConsumer(IDataSetConsumer dataSetConsumer) {
@@ -107,6 +110,7 @@ public class DataSetFlywayMigration extends AbstractFlywayConfigurationSupport i
 
         return dataSetTransformerChain;
     }
+
 
 
 }

@@ -4,9 +4,7 @@ import org.flywaydb.core.api.ClassProvider;
 import org.flywaydb.core.api.MigrationVersion;
 import org.flywaydb.core.api.migration.JavaMigration;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static java.util.Collections.unmodifiableList;
 
@@ -20,6 +18,7 @@ public class AbstractFlywayConfigurationSupport implements FlywayConfigurationSu
     private ClassProvider<JavaMigration> javaMigrationClassProvider;
     private MigrationVersion sourceVersion;
     private MigrationVersion targetVersion;
+    private Map<String, String> placeholders = new HashMap<>();
 
     @Override
     public void setLocations(String... locations) {
@@ -92,5 +91,16 @@ public class AbstractFlywayConfigurationSupport implements FlywayConfigurationSu
     @Override
     public MigrationVersion getTargetVersion() {
         return targetVersion;
+    }
+
+    @Override
+    public void setPlaceholders(Map<String, String> placeholders) {
+        this.placeholders.clear();
+        this.placeholders.putAll(placeholders);
+    }
+
+    @Override
+    public Map<String, String> getPlaceholders() {
+        return Collections.unmodifiableMap(placeholders);
     }
 }

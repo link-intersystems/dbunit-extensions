@@ -5,17 +5,15 @@ import com.link_intersystems.dbunit.stream.consumer.DataSetTransormer;
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFileDetection;
 import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseContainerSupport;
-import com.link_intersystems.io.FileScanner;
-import com.link_intersystems.io.PathMatch;
-import com.link_intersystems.io.PathMatches;
+import com.link_intersystems.io.FilePath;
 import com.link_intersystems.util.concurrent.ProgressListener;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
@@ -29,22 +27,20 @@ public class DataSetCollectionFlywayMigration extends AbstractFlywayConfiguratio
 
     private DataSetFileDetection dataSetFileDetection = new DataSetFileDetection();
     private TargetPathSupplier targetPathSupplier = new BasepathTargetPathSupplier();
-    private FileScanner fileScanner;
+
+    private DataSetFileLocations dataSetFileLocations = new DataSetFileLocationsScanner();
+    ;
 
     private DatabaseContainerSupport databaseContainerSupport;
     private DataSetTransormer beforeMigrationTransformer;
     private DataSetTransormer afterMigrationTransformer;
 
-    public DataSetCollectionFlywayMigration(File basedir) {
-        this(basedir.toPath());
-    }
-
-    public DataSetCollectionFlywayMigration(Path basepath) {
-        fileScanner = new FileScanner(basepath);
-    }
-
     public void setMigrationListener(DataSetCollectionMigrationListener migrationListener) {
         this.migrationListener = requireNonNull(migrationListener);
+    }
+
+    public void setDataSetFileLocations(DataSetFileLocations dataSetFileLocations) {
+        this.dataSetFileLocations = requireNonNull(dataSetFileLocations);
     }
 
     public void setBeforeMigration(DataSetTransormer beforeMigrationTransformer) {
@@ -63,18 +59,6 @@ public class DataSetCollectionFlywayMigration extends AbstractFlywayConfiguratio
         return afterMigrationTransformer;
     }
 
-    public void addDefaultFilePatterns() {
-        addFilePatterns("**/*.xml", "*.xml", "**/*.xls", "*.xls");
-        addDirectoryPatterns("**");
-    }
-
-    public void addFilePatterns(String... globPattern) {
-        fileScanner.addFilePattern(globPattern);
-    }
-
-    public void addDirectoryPatterns(String... globPattern) {
-        fileScanner.addDirectoryPatterns(globPattern);
-    }
 
     public void setDataSetFileDetection(DataSetFileDetection dataSetFileDetection) {
         this.dataSetFileDetection = requireNonNull(dataSetFileDetection);
@@ -110,7 +94,7 @@ public class DataSetCollectionFlywayMigration extends AbstractFlywayConfiguratio
     public DataSetCollectionMigrationResult exec(ProgressListener progressListener) {
         DataSetCollectionMigrationResult result = DataSetCollectionMigrationResult.EMPTY_RESULT;
 
-        PathMatches dataSetMatches = fileScanner.scan();
+        List<FilePath> dataSetMatches = dataSetFileLocations.getPaths();
 
         migrationListener.pathScanned(dataSetMatches);
 
@@ -126,14 +110,14 @@ public class DataSetCollectionFlywayMigration extends AbstractFlywayConfiguratio
         return result;
     }
 
-    private DataSetCollectionMigrationResult migrate(ProgressListener progressListener, PathMatches dataSetMatches) {
+    private DataSetCollectionMigrationResult migrate(ProgressListener progressListener, List<FilePath> dataSetMatches) {
         if (getDatabaseContainerSupport() == null) {
             throw new IllegalStateException("datasetContainerSupport must be set");
         }
 
         Map<Path, Path> migratedPaths = new LinkedHashMap<>();
 
-        for (PathMatch dataSetMatch : dataSetMatches) {
+        for (FilePath dataSetMatch : dataSetMatches) {
             Path migratedPath = tryMigrate(dataSetMatch);
             if (migratedPath != null) {
                 Path sourcePathAbsolute = dataSetMatch.getAbsolutePath();
@@ -147,7 +131,7 @@ public class DataSetCollectionFlywayMigration extends AbstractFlywayConfiguratio
         return new DataSetCollectionMigrationResult(migratedPaths);
     }
 
-    protected Path tryMigrate(PathMatch dataSetMatch) {
+    protected Path tryMigrate(FilePath dataSetMatch) {
         try {
             Path sourcePathAbsolute = dataSetMatch.getAbsolutePath();
             DataSetFile sourceDataSetFile = getDataSetFileDetection().detect(sourcePathAbsolute);
@@ -173,7 +157,7 @@ public class DataSetCollectionFlywayMigration extends AbstractFlywayConfiguratio
         }
     }
 
-    protected Path migrate(PathMatch dataSetMatch, DataSetFile sourceDataSetFile) throws DataSetException {
+    protected Path migrate(FilePath dataSetMatch, DataSetFile sourceDataSetFile) throws DataSetException {
         DataSetFlywayMigration flywayMigration = createDataSetFlywayMigration(sourceDataSetFile);
         flywayMigration.setDatabaseContainerSupport(getDatabaseContainerSupport());
         flywayMigration.setBeforeMigrationTransformer(getBeforeMigrationTransformer());

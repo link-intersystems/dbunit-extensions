@@ -6,6 +6,7 @@ import org.flywaydb.core.api.migration.JavaMigration;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -26,4 +27,6 @@ public interface FlywayMigrationConfiguration {
     MigrationVersion getSourceVersion();
 
     MigrationVersion getTargetVersion();
+
+    Map<String, String> getPlaceholders();
 }

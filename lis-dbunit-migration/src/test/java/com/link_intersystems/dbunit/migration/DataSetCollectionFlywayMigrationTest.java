@@ -20,6 +20,7 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,13 +43,19 @@ class DataSetCollectionFlywayMigrationTest {
 
     @Test
     void migrateDataSetCollection() throws DataSetException {
-        DataSetCollectionFlywayMigration dataSetCollectionMigration = new DataSetCollectionFlywayMigration(sourcePath);
+        DataSetCollectionFlywayMigration dataSetCollectionMigration = new DataSetCollectionFlywayMigration();
+        DataSetFileLocationsScanner fileLocationsScanner = new DataSetFileLocationsScanner(sourcePath);
+        fileLocationsScanner.addDefaultFilePatterns();
+        dataSetCollectionMigration.setDataSetFileLocations(fileLocationsScanner);
 
-        dataSetCollectionMigration.addDefaultFilePatterns();
         dataSetCollectionMigration.setDatabaseContainerSupport(DatabaseContainerSupportFactory.INSTANCE.createPostgres("postgres:latest"));
         dataSetCollectionMigration.setLocations("com/link_intersystems/dbunit/migration/postgres");
         dataSetCollectionMigration.setTargetPathSupplier(new BasepathTargetPathSupplier(targetPath));
         dataSetCollectionMigration.setSourceVersion("1");
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("new_first_name_column_name", "firstname");
+        placeholders.put("new_last_name_column_name", "lastname");
+        dataSetCollectionMigration.setPlaceholders(placeholders);
         TableOrder tableOrder = new DefaultTableOrder("language", "film", "actor", "film_actor");
         ExternalSortTableConsumer externalSortTableConsumer = new ExternalSortTableConsumer(tableOrder);
         dataSetCollectionMigration.setBeforeMigration(new DataSetConsumerPipeTransformerAdapter(externalSortTableConsumer));

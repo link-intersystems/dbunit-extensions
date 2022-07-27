@@ -29,6 +29,7 @@ public class DefaultFlywayMigration extends AbstractFlywayConfigurationSupport i
         configuration.locations(getLocations().toArray(new String[0]));
         configuration.javaMigrations(getJavaMigrations().toArray(new JavaMigration[0]));
         configuration.javaMigrationClassProvider(getJavaMigrationClassProvider());
+        configuration.placeholders(getPlaceholders());
     }
 
     protected void execute(Flyway flyway) throws DataSetException {

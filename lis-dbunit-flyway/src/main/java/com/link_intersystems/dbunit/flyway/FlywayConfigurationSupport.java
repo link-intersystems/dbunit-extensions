@@ -5,6 +5,7 @@ import org.flywaydb.core.api.MigrationVersion;
 import org.flywaydb.core.api.migration.JavaMigration;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -30,6 +31,7 @@ public interface FlywayConfigurationSupport extends FlywayMigrationConfiguration
         setJavaMigrationClassProvider(migrationConfiguration.getJavaMigrationClassProvider());
         setSourceVersion(migrationConfiguration.getSourceVersion());
         setTargetVersion(migrationConfiguration.getTargetVersion());
+        setPlaceholders(migrationConfiguration.getPlaceholders());
     }
 
     void setSourceVersion(String sourceVersion);
@@ -39,4 +41,7 @@ public interface FlywayConfigurationSupport extends FlywayMigrationConfiguration
     void setTargetVersion(String targetVersion);
 
     void setTargetVersion(MigrationVersion targetVersion);
+
+    void setPlaceholders(Map<String, String> placeholders);
+
 }

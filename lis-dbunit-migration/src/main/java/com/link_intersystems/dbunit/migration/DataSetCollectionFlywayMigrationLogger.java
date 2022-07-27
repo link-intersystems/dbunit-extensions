@@ -1,7 +1,6 @@
 package com.link_intersystems.dbunit.migration;
 
-import com.link_intersystems.io.PathMatch;
-import com.link_intersystems.io.PathMatches;
+import com.link_intersystems.io.FilePath;
 import org.dbunit.dataset.DataSetException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +9,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Path;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -48,16 +48,16 @@ public class DataSetCollectionFlywayMigrationLogger implements DataSetCollection
     }
 
     @Override
-    public void pathScanned(PathMatches dataSetMatches) {
+    public void pathScanned(List<FilePath> dataSetMatches) {
         logger.info("Found {} files matching the file pattern", dataSetMatches.size());
         if (logger.isDebugEnabled()) {
             StringWriter sw = new StringWriter();
             try (PrintWriter pw = new PrintWriter(sw)) {
                 pw.println("Files matching:");
 
-                Iterator<PathMatch> iterator = dataSetMatches.iterator();
+                Iterator<FilePath> iterator = dataSetMatches.iterator();
                 while (iterator.hasNext()) {
-                    PathMatch dataSetMatch = iterator.next();
+                    FilePath dataSetMatch = iterator.next();
                     pw.print("\t\u2022 ");
                     pw.print(dataSetMatch.getAbsolutePath());
 

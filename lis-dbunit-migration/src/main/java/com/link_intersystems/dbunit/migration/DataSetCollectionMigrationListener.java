@@ -1,9 +1,10 @@
 package com.link_intersystems.dbunit.migration;
 
-import com.link_intersystems.io.PathMatches;
+import com.link_intersystems.io.FilePath;
 import org.dbunit.dataset.DataSetException;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,5 +21,5 @@ public interface DataSetCollectionMigrationListener {
 
     void startMigration(Path path);
 
-    void pathScanned(PathMatches pathMatches);
+    void pathScanned(List<FilePath> pathMatches);
 }
