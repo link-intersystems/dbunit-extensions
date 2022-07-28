@@ -2,21 +2,23 @@ package com.link_intersystems.dbunit.migration;
 
 import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
 import com.link_intersystems.dbunit.stream.consumer.DefaultDataSetConsumerSupport;
-import com.link_intersystems.dbunit.test.TestDataSets;
+import com.link_intersystems.dbunit.table.Row;
+import com.link_intersystems.dbunit.table.TableUtil;
+import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseContainerSupport;
 import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseContainerSupportFactory;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.DefaultTable;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.stream.IDataSetConsumer;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -24,33 +26,27 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-class DataSetFlywayMigrationTest {
+class DataSetFlywayMigrationColumnSensingTest {
 
-    static Stream<DatabaseDefinition> databases() {
-        return Arrays.asList(
-                        new DatabaseDefinition("postgres", DatabaseContainerSupportFactory.INSTANCE.createPostgres("postgres:latest")),
-                        new DatabaseDefinition("mysql", DatabaseContainerSupportFactory.INSTANCE.createMysql("mysql:latest")))
-                .stream();
-    }
+    @Test
+    void migrate() throws DataSetException, IOException {
+        DatabaseContainerSupport postgres = DatabaseContainerSupportFactory.INSTANCE.createPostgres("postgres:latest");
+        DatabaseDefinition databaseDefinition = new DatabaseDefinition("postgres", postgres);
 
-    @ParameterizedTest
-    @MethodSource("databases")
-    void migrate(DatabaseDefinition databaseDefinition) throws DataSetException, IOException {
         DataSetFlywayMigration flywayMigration = new DataSetFlywayMigration();
 
-        IDataSet sourceDataSet = TestDataSets.getTinySakilaDataSet();
+        InputStream resourceAsStream = DataSetFlywayMigrationColumnSensingTest.class.getResourceAsStream("/tiny-sakila-flat-column-sensing.xml");
+        FlatXmlDataSet sourceDataSet = new FlatXmlDataSetBuilder().setColumnSensing(true).build(resourceAsStream);
         flywayMigration.setDataSetProducer(sourceDataSet);
 
         CopyDataSetConsumer copyDataSetConsumer = new CopyDataSetConsumer();
 
         DefaultDataSetConsumerSupport consumerSupport = new DefaultDataSetConsumerSupport();
-        consumerSupport.setCsvConsumer("target/csv");
-        IDataSetConsumer csvConsumer = consumerSupport.getDataSetConsumer();
 
         consumerSupport.setFlatXmlConsumer("target/flat.xml");
         IDataSetConsumer flatXmlConsumer = consumerSupport.getDataSetConsumer();
 
-        flywayMigration.setDataSetConsumers(copyDataSetConsumer, csvConsumer, flatXmlConsumer);
+        flywayMigration.setDataSetConsumers(copyDataSetConsumer, flatXmlConsumer);
 
         flywayMigration.setDatabaseContainerSupport(databaseDefinition.databaseContainerSupport);
 
@@ -65,16 +61,13 @@ class DataSetFlywayMigrationTest {
 
         IDataSet migratedDataSet = copyDataSetConsumer.getDataSet();
 
-        ITable filmDescriptionTable = migratedDataSet.getTable("film_description");
-        assertNotNull(filmDescriptionTable);
+        ITable actorTable = migratedDataSet.getTable("actor");
+        assertNotNull(actorTable);
 
-        ITable film = sourceDataSet.getTable("film");
-        DefaultTable filmWithMetaData = new DefaultTable(filmDescriptionTable.getTableMetaData());
-        filmWithMetaData.addTableRows(film);
+        assertEquals(2, actorTable.getRowCount());
+        TableUtil actorUtil = new TableUtil(actorTable);
+        Row row = actorUtil.getRowById(2);
+        assertEquals("WAHLBERG", row.getValueByColumnName("lastname"));
 
-        for (int rowIndex = 0; rowIndex < filmDescriptionTable.getRowCount(); rowIndex++) {
-            assertEquals(filmWithMetaData.getValue(rowIndex, "film_id"), filmDescriptionTable.getValue(rowIndex, "film_id").toString());
-            assertEquals(filmWithMetaData.getValue(rowIndex, "description"), filmDescriptionTable.getValue(rowIndex, "description"));
-        }
     }
 }

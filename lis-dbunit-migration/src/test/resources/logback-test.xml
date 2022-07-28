@@ -9,7 +9,7 @@
 
     <logger name="com.link_intersystems.dbunit.migration" level="info"/>
 
-    <root level="off">
+    <root level="info">
         <appender-ref ref="CONSOLE"/>
     </root>
 

@@ -1,7 +1,7 @@
 create domain clob as text;
 create domain blob as bytea;
 
-create table actor (actor_id smallint not null, first_name varchar(45) not null, last_name varchar(45) not null, last_update timestamp default CURRENT_TIMESTAMP not null, constraint pk_actor primary key (actor_id));
+create table actor (actor_id smallint not null, first_name varchar(45) not null, last_name varchar(45), last_update timestamp default CURRENT_TIMESTAMP not null, constraint pk_actor primary key (actor_id));
 create index idx_actor_last_name on actor (last_name);
 create table actor_genre (actor_genre_id smallint not null, actor_id smallint not null, name varchar(20) not null, constraint pk_actor_genre primary key (actor_genre_id));
 create index actor_id on actor_genre (actor_id);
