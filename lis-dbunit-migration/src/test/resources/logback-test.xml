@@ -8,8 +8,9 @@
     </appender>
 
     <logger name="com.link_intersystems.dbunit.migration" level="info"/>
+    <logger name="org.dbunit" level="info"/>
 
-    <root level="info">
+    <root level="off">
         <appender-ref ref="CONSOLE"/>
     </root>
 

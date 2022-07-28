@@ -1,34 +1,39 @@
 package com.link_intersystems.dbunit.migration;
 
+import com.link_intersystems.dbunit.stream.resource.DataSetResource;
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
 import org.dbunit.dataset.DataSetException;
 
-import java.io.File;
 import java.nio.file.Path;
 
+import static java.text.MessageFormat.format;
 import static java.util.Objects.requireNonNull;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class BasepathTargetPathSupplier implements TargetDataSetFileSupplier {
+public class BasepathTargetPathSupplier implements TargetDataSetResourceSupplier {
 
-    private Path basepath;
+    private Path sourceBasepath;
+    private Path targetBasepath;
 
-    public BasepathTargetPathSupplier() {
-        this(new File(System.getProperty("user.dir")));
-    }
-
-    public BasepathTargetPathSupplier(File basedir) {
-        this(basedir.toPath());
-    }
-
-    public BasepathTargetPathSupplier(Path basepath) {
-        this.basepath = requireNonNull(basepath);
+    public BasepathTargetPathSupplier(Path sourceBasepath, Path targetBasepath) {
+        this.sourceBasepath = requireNonNull(sourceBasepath);
+        this.targetBasepath = requireNonNull(targetBasepath);
     }
 
     @Override
-    public DataSetFile getTarget(DataSetFile sourceDataSetFile) throws DataSetException {
-        return sourceDataSetFile.withNewPath(this.basepath);
+    public DataSetResource getTargetDataSetResource(DataSetResource sourceDataSetResource) throws DataSetException {
+        DataSetFile sourceDataSetFile = sourceDataSetResource.getAdapter(DataSetFile.class);
+        if (sourceDataSetFile != null) {
+            Path sourceDataSetPath = sourceDataSetFile.getPath();
+
+            Path relativized = sourceBasepath.relativize(sourceDataSetPath);
+            Path resolved = targetBasepath.resolve(relativized);
+
+            return sourceDataSetFile.withNewPath(resolved);
+        }
+        String mst = format("Unable to handle DataSetResource ''{0}''.", sourceDataSetResource);
+        throw new IllegalStateException(mst);
     }
 }

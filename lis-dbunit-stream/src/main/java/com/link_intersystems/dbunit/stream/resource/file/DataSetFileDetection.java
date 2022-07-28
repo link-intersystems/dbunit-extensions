@@ -30,9 +30,9 @@ public class DataSetFileDetection {
         return dataSetDetectors;
     }
 
-    public DataSetFile detect(FilePath filePath) {
+    public DataSetFile detect(Path path) {
         for (DataSetFileDetector detector : getDetectors()) {
-            DataSetFile dataSetFile = detector.detect(filePath);
+            DataSetFile dataSetFile = detector.detect(path);
             if (dataSetFile != null) {
                 return dataSetFile;
             }

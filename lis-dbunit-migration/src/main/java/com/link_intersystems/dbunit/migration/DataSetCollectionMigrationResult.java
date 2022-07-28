@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.migration;
 
-import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
+import com.link_intersystems.dbunit.stream.resource.DataSetResource;
 
 import java.util.Collections;
 import java.util.Map;
@@ -14,13 +14,13 @@ public class DataSetCollectionMigrationResult {
 
     public static final DataSetCollectionMigrationResult EMPTY_RESULT = new DataSetCollectionMigrationResult(Collections.emptyMap());
 
-    private Map<DataSetFile, DataSetFile> migratedDataSetFiles;
+    private Map<DataSetResource, DataSetResource> migratedDataSetResources;
 
-    DataSetCollectionMigrationResult(Map<DataSetFile, DataSetFile> migratedDataSetFiles) {
-        this.migratedDataSetFiles = requireNonNull(migratedDataSetFiles);
+    DataSetCollectionMigrationResult(Map<DataSetResource, DataSetResource> migratedDataSetResources) {
+        this.migratedDataSetResources = requireNonNull(migratedDataSetResources);
     }
 
-    public Map<DataSetFile, DataSetFile> getMigratedPaths() {
-        return Collections.unmodifiableMap(migratedDataSetFiles);
+    public Map<DataSetResource, DataSetResource> getMigratedDataSetResources() {
+        return Collections.unmodifiableMap(migratedDataSetResources);
     }
 }

@@ -7,14 +7,15 @@ import org.dbunit.dataset.ITableMetaData;
 
 import java.io.File;
 import java.io.InputStream;
+import java.nio.file.Path;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 public class XmlDataSetDetector extends AbstractXmlTableMetaDataDataSetFileDetector {
     @Override
-    protected DataSetFile dataSetFileDetectedSucessfully(FilePath filePath) {
-        return new XmlDataSetFile(filePath);
+    protected DataSetFile dataSetFileDetectedSucessfully(Path path) {
+        return new XmlDataSetFile(path);
     }
 
     @Override

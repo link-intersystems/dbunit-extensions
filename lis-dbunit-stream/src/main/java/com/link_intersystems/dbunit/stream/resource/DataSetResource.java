@@ -11,4 +11,11 @@ public interface DataSetResource {
     IDataSetProducer createProducer() throws DataSetException;
 
     IDataSetConsumer createConsumer() throws DataSetException;
+
+    default <T> T getAdapter(Class<T> adapterType) {
+        if (adapterType.isInstance(this)) {
+            return adapterType.cast(this);
+        }
+        return null;
+    }
 }

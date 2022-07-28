@@ -1,10 +1,9 @@
 package com.link_intersystems.dbunit.migration;
 
-import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
+import com.link_intersystems.dbunit.stream.resource.DataSetResource;
 import com.link_intersystems.io.FilePath;
 import org.dbunit.dataset.DataSetException;
 
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
@@ -12,15 +11,13 @@ import java.util.Map;
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 public interface DataSetCollectionMigrationListener {
-    void successfullyMigrated(DataSetFile dataSetFile);
+    void successfullyMigrated(DataSetResource dataSetResource);
 
-    void skippedMigrationTypeNotDetectable(FilePath path);
+    void dataSetCollectionMigrationFinished(Map<DataSetResource, DataSetResource> migratedDataSetResources);
 
-    void dataSetCollectionMigrationFinished(Map<DataSetFile, DataSetFile> fromToDataSetFileMap);
+    void failedMigration(DataSetResource dataSetResource, DataSetException e);
 
-    void failedMigration(DataSetFile dataSetFile, DataSetException e);
+    void startMigration(DataSetResource dataSetResource);
 
-    void startMigration(DataSetFile dataSetFile);
-
-    void pathScanned(List<FilePath> pathMatches);
+    void resourcesSupplied(List<DataSetResource> dataSetResources);
 }

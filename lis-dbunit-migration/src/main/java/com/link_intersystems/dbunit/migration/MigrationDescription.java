@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.migration;
 
-import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
+import com.link_intersystems.dbunit.stream.resource.DataSetResource;
 import com.link_intersystems.io.FilePath;
 
 /**
@@ -8,19 +8,14 @@ import com.link_intersystems.io.FilePath;
  */
 public class MigrationDescription {
 
-    private FilePath filePath;
-    private DataSetFile dataSetFile;
+    private DataSetResource dataSetResource;
 
-    public MigrationDescription(FilePath filePath, DataSetFile dataSetFile) {
-        this.filePath = filePath;
-        this.dataSetFile = dataSetFile;
+    public MigrationDescription(DataSetResource dataSetResource) {
+        this.dataSetResource = dataSetResource;
     }
 
-    public DataSetFile getDataSetFile() {
-        return dataSetFile;
+    public DataSetResource getDataSetResource() {
+        return dataSetResource;
     }
 
-    public FilePath getFilePath() {
-        return filePath;
-    }
 }

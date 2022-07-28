@@ -6,24 +6,25 @@ import com.link_intersystems.dbunit.stream.producer.DataSetProducerSupport;
 import com.link_intersystems.io.FilePath;
 
 import java.io.File;
+import java.nio.file.Path;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 public class CsvDataSetFile extends AbstractDataSetFile {
 
-    CsvDataSetFile(FilePath filePath) {
+    CsvDataSetFile(Path filePath) {
         super(filePath);
     }
 
     @Override
-    protected void setProducer(DataSetProducerSupport producerSupport, FilePath filePath) {
-        producerSupport.setCsvProducer(filePath.toAbsoluteFile());
+    protected void setProducer(DataSetProducerSupport producerSupport, File file) {
+        producerSupport.setCsvProducer(file);
     }
 
     @Override
-    protected void setConsumer(DataSetConsumerSupport consumerSupport, FilePath filePath) {
-        consumerSupport.setCsvConsumer(filePath.toAbsoluteFile());
+    protected void setConsumer(DataSetConsumerSupport consumerSupport, File file) {
+        consumerSupport.setCsvConsumer(file);
     }
 
 }

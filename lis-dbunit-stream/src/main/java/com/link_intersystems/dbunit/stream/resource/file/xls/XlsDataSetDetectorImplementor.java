@@ -12,6 +12,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.text.MessageFormat;
 
 /**
@@ -22,8 +23,8 @@ public class XlsDataSetDetectorImplementor implements DataSetFileDetector {
     private Logger logger = LoggerFactory.getLogger(XlsDataSetDetectorImplementor.class);
 
     @Override
-    public DataSetFile detect(FilePath filePath) {
-        File file = filePath.toAbsoluteFile();
+    public DataSetFile detect(Path path) {
+        File file = path.toFile();
         if (file.isDirectory()) {
             return null;
         }
@@ -32,7 +33,7 @@ public class XlsDataSetDetectorImplementor implements DataSetFileDetector {
             try (InputStream in = new BufferedInputStream(new FileInputStream(file))) {
                 Workbook workbook = WorkbookFactory.create(in);
                 workbook.close();
-                return new XlsDataSetFile(filePath);
+                return new XlsDataSetFile(path);
             } catch (Exception e) {
                 logFileNotReadable(file, e);
             }

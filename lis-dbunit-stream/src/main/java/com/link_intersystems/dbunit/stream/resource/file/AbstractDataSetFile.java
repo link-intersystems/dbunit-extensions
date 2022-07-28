@@ -4,7 +4,6 @@ import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerSupport;
 import com.link_intersystems.dbunit.stream.consumer.DefaultDataSetConsumerSupport;
 import com.link_intersystems.dbunit.stream.producer.DataSetProducerSupport;
 import com.link_intersystems.dbunit.stream.producer.DefaultDataSetProducerSupport;
-import com.link_intersystems.io.FilePath;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 import org.dbunit.dataset.stream.IDataSetProducer;
@@ -21,50 +20,54 @@ import java.util.Objects;
  */
 public abstract class AbstractDataSetFile implements DataSetFile {
 
-    private FilePath filePath;
+    private Path path;
 
-    public AbstractDataSetFile(FilePath filePath) {
-        this.filePath = filePath;
+    public AbstractDataSetFile(Path path) {
+        this.path = path;
+    }
+
+    @Override
+    public Path getPath() {
+        return path;
     }
 
     @Override
     public IDataSetProducer createProducer() throws DataSetException {
         DefaultDataSetProducerSupport producerSupport = new DefaultDataSetProducerSupport();
         try {
-            setProducer(producerSupport, filePath);
+            setProducer(producerSupport, path.toFile());
         } catch (IOException e) {
             throw new DataSetException(e);
         }
         return producerSupport.getDataSetProducer();
     }
 
-    protected abstract void setProducer(DataSetProducerSupport producerSupport, FilePath filePath) throws IOException;
+    protected abstract void setProducer(DataSetProducerSupport producerSupport, File file) throws IOException;
 
     @Override
     public IDataSetConsumer createConsumer() throws DataSetException {
         DefaultDataSetConsumerSupport consumerSupport = new DefaultDataSetConsumerSupport();
         try {
-            File absoluteFile = filePath.toAbsoluteFile();
+            File absoluteFile = path.toFile();
             File parentFile = absoluteFile.getParentFile();
             if (parentFile != null && !parentFile.exists()) {
                 parentFile.mkdirs();
             }
-            setConsumer(consumerSupport, filePath);
+            setConsumer(consumerSupport, absoluteFile);
         } catch (IOException e) {
             throw new DataSetException(e);
         }
         return consumerSupport.getDataSetConsumer();
     }
 
-    protected abstract void setConsumer(DataSetConsumerSupport consumerSupport, FilePath filePath) throws IOException;
+    protected abstract void setConsumer(DataSetConsumerSupport consumerSupport, File file) throws IOException;
 
     @Override
-    public DataSetFile withNewPath(Path newBasePath) throws DataSetException {
+    public DataSetFile withNewPath(Path newPath) throws DataSetException {
         try {
-            Constructor<? extends AbstractDataSetFile> constructor = getClass().getDeclaredConstructor(FilePath.class);
+            Constructor<? extends AbstractDataSetFile> constructor = getClass().getDeclaredConstructor(Path.class);
             constructor.setAccessible(true);
-            FilePath rebasedPath = filePath.rebase(newBasePath);
-            return constructor.newInstance(rebasedPath);
+            return constructor.newInstance(newPath);
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             throw new DataSetException(e);
         }
@@ -72,7 +75,7 @@ public abstract class AbstractDataSetFile implements DataSetFile {
 
     @Override
     public String toString() {
-        return filePath.toString();
+        return path.toString();
     }
 
     @Override
@@ -80,11 +83,11 @@ public abstract class AbstractDataSetFile implements DataSetFile {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AbstractDataSetFile that = (AbstractDataSetFile) o;
-        return Objects.equals(filePath, that.filePath);
+        return Objects.equals(path, that.path);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(filePath);
+        return Objects.hash(path);
     }
 }

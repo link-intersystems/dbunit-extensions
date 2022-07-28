@@ -10,10 +10,10 @@ import org.dbunit.dataset.stream.IDataSetProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -23,10 +23,10 @@ public abstract class AbstractXmlTableMetaDataDataSetFileDetector extends Abstra
     private Logger logger = LoggerFactory.getLogger(AbstractXmlTableMetaDataDataSetFileDetector.class);
 
     @Override
-    protected DataSetFile detectXmlFile(FilePath filePath) {
+    protected DataSetFile detectXmlFile(Path path) {
         DefaultDataSetProducerSupport producerSupport = new DefaultDataSetProducerSupport();
         try {
-            try (FileInputStream fileInputStream = new FileInputStream(filePath.toAbsoluteFile())) {
+            try (FileInputStream fileInputStream = new FileInputStream(path.toFile())) {
                 setProducer(producerSupport, fileInputStream);
                 IDataSetProducer dataSetProducer = producerSupport.getDataSetProducer();
 
@@ -53,7 +53,7 @@ public abstract class AbstractXmlTableMetaDataDataSetFileDetector extends Abstra
                 }
 
                 if (consumerDetector.seemsToBeAFlatXmlDataSet) {
-                    return dataSetFileDetectedSucessfully(filePath);
+                    return dataSetFileDetectedSucessfully(path);
                 }
             }
         } catch (IOException | DataSetException e) {
@@ -61,7 +61,7 @@ public abstract class AbstractXmlTableMetaDataDataSetFileDetector extends Abstra
         return null;
     }
 
-    protected abstract DataSetFile dataSetFileDetectedSucessfully(FilePath filePath);
+    protected abstract DataSetFile dataSetFileDetectedSucessfully(Path path);
 
     protected abstract void setProducer(DefaultDataSetProducerSupport producerSupport, InputStream inputStream);
 
