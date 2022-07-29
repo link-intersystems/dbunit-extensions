@@ -1,5 +1,6 @@
 package com.link_intersystems.dbunit.migration;
 
+import com.link_intersystems.dbunit.flyway.FlywayDataSetMigrationConfig;
 import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
 import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerPipeTransformerAdapter;
 import com.link_intersystems.dbunit.stream.consumer.ExternalSortTableConsumer;
@@ -13,6 +14,8 @@ import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.stream.IDataSetProducer;
+import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -54,17 +57,24 @@ class DataSetCollectionFlywayMigrationTest {
         fileLocationsScanner.addDefaultFilePatterns();
 
         dataSetCollectionMigration.setDatabaseContainerSupport(DatabaseContainerSupportFactory.INSTANCE.createPostgres("postgres:latest"));
-        dataSetCollectionMigration.setLocations("com/link_intersystems/dbunit/migration/postgres");
 
-        dataSetCollectionMigration.setSourceVersion("1");
+        FluentConfiguration configuration = Flyway.configure();
+        configuration.locations("com/link_intersystems/dbunit/migration/postgres");
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("new_first_name_column_name", "firstname");
         placeholders.put("new_last_name_column_name", "lastname");
-        dataSetCollectionMigration.setPlaceholders(placeholders);
+        configuration.placeholders(placeholders);
+
+        dataSetCollectionMigration.setFlywayConfiguration(configuration);
+
+
+        FlywayDataSetMigrationConfig migrationConfig = new FlywayDataSetMigrationConfig();
+        migrationConfig.setSourceVersion("1");
+        dataSetCollectionMigration.setMigrationConfig(migrationConfig);
+
         TableOrder tableOrder = new DefaultTableOrder("language", "film", "actor", "film_actor");
         ExternalSortTableConsumer externalSortTableConsumer = new ExternalSortTableConsumer(tableOrder);
         dataSetCollectionMigration.setBeforeMigration(new DataSetConsumerPipeTransformerAdapter(externalSortTableConsumer));
-
 
         DataSetCollectionMigrationResult result = dataSetCollectionMigration.exec();
 

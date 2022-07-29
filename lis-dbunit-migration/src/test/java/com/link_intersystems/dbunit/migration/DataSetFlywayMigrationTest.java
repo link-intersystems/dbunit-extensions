@@ -1,5 +1,6 @@
 package com.link_intersystems.dbunit.migration;
 
+import com.link_intersystems.dbunit.flyway.FlywayDataSetMigrationConfig;
 import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
 import com.link_intersystems.dbunit.stream.consumer.DefaultDataSetConsumerSupport;
 import com.link_intersystems.dbunit.test.TestDataSets;
@@ -9,6 +10,8 @@ import org.dbunit.dataset.DefaultTable;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.stream.IDataSetConsumer;
+import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -53,13 +56,18 @@ class DataSetFlywayMigrationTest {
         flywayMigration.setDataSetConsumers(copyDataSetConsumer, csvConsumer, flatXmlConsumer);
 
         flywayMigration.setDatabaseContainerSupport(databaseDefinition.databaseContainerSupport);
+        FlywayDataSetMigrationConfig migrationConfig = new FlywayDataSetMigrationConfig();
+        migrationConfig.setSourceVersion("1");
+        flywayMigration.setMigrationConfig(migrationConfig);
 
-        flywayMigration.setSourceVersion("1");
-        flywayMigration.setLocations("com/link_intersystems/dbunit/migration/" + databaseDefinition.containerName);
+        FluentConfiguration flywayConfiguration = Flyway.configure();
+
+        flywayConfiguration.locations("com/link_intersystems/dbunit/migration/" + databaseDefinition.containerName);
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("new_first_name_column_name", "firstname");
         placeholders.put("new_last_name_column_name", "lastname");
-        flywayMigration.setPlaceholders(placeholders);
+        flywayConfiguration.placeholders(placeholders);
+        flywayMigration.setFlywayConfiguration(flywayConfiguration);
 
         flywayMigration.exec();
 

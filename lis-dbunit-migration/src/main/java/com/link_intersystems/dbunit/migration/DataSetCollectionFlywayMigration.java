@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.migration;
 
-import com.link_intersystems.dbunit.flyway.AbstractFlywayConfigurationSupport;
+import com.link_intersystems.dbunit.flyway.FlywayDataSetMigrationConfig;
 import com.link_intersystems.dbunit.stream.consumer.DataSetTransormer;
 import com.link_intersystems.dbunit.stream.resource.DataSetResource;
 import com.link_intersystems.dbunit.stream.resource.DataSetResourcesSupplier;
@@ -9,6 +9,7 @@ import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupportFacto
 import com.link_intersystems.util.concurrent.ProgressListener;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.stream.IDataSetConsumer;
+import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashMap;
@@ -20,7 +21,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class DataSetCollectionFlywayMigration extends AbstractFlywayConfigurationSupport {
+public class DataSetCollectionFlywayMigration {
 
     private DataSetCollectionMigrationListener migrationListener = new LoggingDataSetCollectionMigrationListener();
 
@@ -30,6 +31,24 @@ public class DataSetCollectionFlywayMigration extends AbstractFlywayConfiguratio
     private DatabaseContainerSupport databaseContainerSupport;
     private DataSetTransormer beforeMigrationTransformer;
     private DataSetTransormer afterMigrationTransformer;
+    private FluentConfiguration configuration;
+    private FlywayDataSetMigrationConfig migrationConfig;
+
+    public void setMigrationConfig(FlywayDataSetMigrationConfig migrationConfig) {
+        this.migrationConfig = migrationConfig;
+    }
+
+    public FlywayDataSetMigrationConfig getMigrationConfig() {
+        return migrationConfig;
+    }
+
+    public void setFlywayConfiguration(FluentConfiguration configuration) {
+        this.configuration = configuration;
+    }
+
+    public FluentConfiguration getFlywayConfiguration() {
+        return configuration;
+    }
 
     public void setDataSetResourcesSupplier(DataSetResourcesSupplier dataSetResourcesSupplier) {
         this.dataSetResourcesSupplier = dataSetResourcesSupplier;
@@ -161,9 +180,9 @@ public class DataSetCollectionFlywayMigration extends AbstractFlywayConfiguratio
     @NotNull
     protected DataSetFlywayMigration createDataSetFlywayMigration(DataSetResource sourceDataSetResource) throws DataSetException {
         DataSetFlywayMigration flywayMigration = new DataSetFlywayMigration();
+        flywayMigration.setFlywayConfiguration(getFlywayConfiguration());
+        flywayMigration.setMigrationConfig(getMigrationConfig());
         flywayMigration.setDataSetProducer(sourceDataSetResource.createProducer());
-        flywayMigration.apply(this);
         return flywayMigration;
     }
-
 }

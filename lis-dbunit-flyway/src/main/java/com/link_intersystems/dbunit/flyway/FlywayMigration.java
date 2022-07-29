@@ -8,6 +8,6 @@ import javax.sql.DataSource;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public interface FlywayMigration extends FlywayConfigurationSupport {
+public interface FlywayMigration {
     void execute(DataSource dataSource, MigrationVersion targetVersion) throws DataSetException;
 }

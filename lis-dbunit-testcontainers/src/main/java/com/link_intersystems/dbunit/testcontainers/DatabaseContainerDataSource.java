@@ -1,7 +1,6 @@
 package com.link_intersystems.dbunit.testcontainers;
 
 import com.link_intersystems.security.HashedCredentials;
-import org.jetbrains.annotations.NotNull;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import java.security.NoSuchAlgorithmException;
@@ -62,7 +61,6 @@ public class DatabaseContainerDataSource extends AbstractDataSource {
         return ReusableConnectionProxy.createProxy(connection);
     }
 
-    @NotNull
     private HashedCredentials createHashedCredentials(String username, String password) {
         try {
             return new HashedCredentials(username.toCharArray(), password.toCharArray());
