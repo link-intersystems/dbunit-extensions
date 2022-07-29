@@ -2,6 +2,7 @@ package com.link_intersystems.dbunit.testcontainers.consumer;
 
 import com.link_intersystems.dbunit.stream.consumer.DataSetTransormer;
 import com.link_intersystems.dbunit.stream.consumer.DatabaseMigrationSupport;
+import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 
 /**

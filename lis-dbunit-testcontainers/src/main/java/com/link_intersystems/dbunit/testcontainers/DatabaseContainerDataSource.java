@@ -1,7 +1,10 @@
-package com.link_intersystems.dbunit.testcontainers.consumer;
+package com.link_intersystems.dbunit.testcontainers;
 
+import com.link_intersystems.security.HashedCredentials;
+import org.jetbrains.annotations.NotNull;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -48,7 +51,7 @@ public class DatabaseContainerDataSource extends AbstractDataSource {
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        HashedCredentials hashedCredentials = new HashedCredentials(username, password);
+        HashedCredentials hashedCredentials = createHashedCredentials(username, password);
 
         Connection connection = customConnections.get(hashedCredentials);
         if (connection == null) {
@@ -57,6 +60,15 @@ public class DatabaseContainerDataSource extends AbstractDataSource {
         }
 
         return ReusableConnectionProxy.createProxy(connection);
+    }
+
+    @NotNull
+    private HashedCredentials createHashedCredentials(String username, String password) {
+        try {
+            return new HashedCredentials(username.toCharArray(), password.toCharArray());
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Connection createConnection(String username, String password) throws SQLException {

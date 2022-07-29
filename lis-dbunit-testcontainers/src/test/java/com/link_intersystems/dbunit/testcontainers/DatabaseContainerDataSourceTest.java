@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.testcontainers.consumer;
+package com.link_intersystems.dbunit.testcontainers;
 
 import org.junit.jupiter.api.*;
 import org.testcontainers.containers.JdbcDatabaseContainer;

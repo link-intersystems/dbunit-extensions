@@ -7,7 +7,7 @@ import com.link_intersystems.dbunit.stream.resource.DataSetResource;
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFileDetection;
 import com.link_intersystems.dbunit.table.DefaultTableOrder;
 import com.link_intersystems.dbunit.table.TableOrder;
-import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseContainerSupportFactory;
+import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupportFactory;
 import com.link_intersystems.io.Unzip;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;

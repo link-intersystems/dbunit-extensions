@@ -1,17 +1,12 @@
-package com.link_intersystems.dbunit.testcontainers.consumer;
+package com.link_intersystems.dbunit.testcontainers;
 
+import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
 import org.dbunit.database.DatabaseConfig;
-import org.dbunit.ext.postgresql.PostgresqlDataTypeFactory;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.text.MessageFormat;
 import java.util.function.Supplier;
 
-import static java.text.MessageFormat.format;
 import static java.util.Objects.requireNonNull;
-import static org.dbunit.database.DatabaseConfig.PROPERTY_DATATYPE_FACTORY;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}

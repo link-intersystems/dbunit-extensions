@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.migration;
 
-import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseContainerSupport;
+import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}

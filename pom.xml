@@ -166,6 +166,11 @@
                 <artifactId>lis-commons-io</artifactId>
                 <version>${lis-commons.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.link-intersystems.commons</groupId>
+                <artifactId>lis-commons-security</artifactId>
+                <version>${lis-commons.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.dbunit</groupId>

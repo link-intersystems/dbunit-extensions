@@ -27,6 +27,12 @@
             <groupId>com.link-intersystems.dbunit</groupId>
             <artifactId>lis-dbunit-stream</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.link-intersystems.commons</groupId>
+            <artifactId>lis-commons-security</artifactId>
+            <version>1.6.2-SNAPSHOT</version>
+        </dependency>
+
 
         <!-- OPTIONAL DEPENDENCIES -->
         <dependency>

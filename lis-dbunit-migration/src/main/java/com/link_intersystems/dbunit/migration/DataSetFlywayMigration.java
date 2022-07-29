@@ -8,7 +8,7 @@ import com.link_intersystems.dbunit.stream.consumer.DataSetTransformerChain;
 import com.link_intersystems.dbunit.stream.consumer.DataSetTransormer;
 import com.link_intersystems.dbunit.stream.producer.DataSetSource;
 import com.link_intersystems.dbunit.stream.producer.DataSetSourceSupport;
-import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseContainerSupport;
+import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
 import com.link_intersystems.dbunit.testcontainers.consumer.TestContainersDataSetTransformer;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
