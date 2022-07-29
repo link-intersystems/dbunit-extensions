@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.migration;
+package com.link_intersystems.dbunit.migration.resources;
 
 import org.junit.jupiter.api.Test;
 

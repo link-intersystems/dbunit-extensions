@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.migration;
+package com.link_intersystems.dbunit.migration.collection;
 
 import com.link_intersystems.dbunit.stream.resource.DataSetResource;
 
@@ -11,8 +11,6 @@ import static java.util.Objects.requireNonNull;
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 public class DataSetCollectionMigrationResult {
-
-    public static final DataSetCollectionMigrationResult EMPTY_RESULT = new DataSetCollectionMigrationResult(Collections.emptyMap());
 
     private Map<DataSetResource, DataSetResource> migratedDataSetResources;
 

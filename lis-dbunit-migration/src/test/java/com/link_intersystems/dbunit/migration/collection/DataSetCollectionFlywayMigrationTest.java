@@ -1,6 +1,10 @@
-package com.link_intersystems.dbunit.migration;
+package com.link_intersystems.dbunit.migration.collection;
 
 import com.link_intersystems.dbunit.flyway.FlywayMigrationConfig;
+import com.link_intersystems.dbunit.migration.FlywayConfigurationConfigFixture;
+import com.link_intersystems.dbunit.migration.resources.BasepathTargetPathSupplier;
+import com.link_intersystems.dbunit.migration.resources.DataSetFileLocationsScanner;
+import com.link_intersystems.dbunit.migration.resources.DefaultDataSetResourcesSupplier;
 import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
 import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerPipeTransformerAdapter;
 import com.link_intersystems.dbunit.stream.consumer.ExternalSortTableConsumer;

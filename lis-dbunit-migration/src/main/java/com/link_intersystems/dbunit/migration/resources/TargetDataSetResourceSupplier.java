@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.migration;
+package com.link_intersystems.dbunit.migration.resources;
 
 import com.link_intersystems.dbunit.stream.resource.DataSetResource;
 import org.dbunit.dataset.DataSetException;

@@ -1,7 +1,6 @@
-package com.link_intersystems.dbunit.migration;
+package com.link_intersystems.dbunit.migration.collection;
 
 import com.link_intersystems.dbunit.stream.resource.DataSetResource;
-import com.link_intersystems.io.FilePath;
 import org.dbunit.dataset.DataSetException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

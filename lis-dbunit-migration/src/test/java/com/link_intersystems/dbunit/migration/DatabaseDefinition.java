@@ -5,9 +5,9 @@ import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-class DatabaseDefinition {
-    DatabaseContainerSupport databaseContainerSupport;
-    String containerName;
+public class DatabaseDefinition {
+    public final DatabaseContainerSupport databaseContainerSupport;
+    public final String containerName;
 
 
     public DatabaseDefinition(String containerName, DatabaseContainerSupport databaseContainerSupport) {

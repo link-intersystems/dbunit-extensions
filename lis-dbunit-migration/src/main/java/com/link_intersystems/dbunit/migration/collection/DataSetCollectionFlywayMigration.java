@@ -1,6 +1,8 @@
-package com.link_intersystems.dbunit.migration;
+package com.link_intersystems.dbunit.migration.collection;
 
 import com.link_intersystems.dbunit.flyway.FlywayMigrationConfig;
+import com.link_intersystems.dbunit.migration.DataSetFlywayMigration;
+import com.link_intersystems.dbunit.migration.resources.TargetDataSetResourceSupplier;
 import com.link_intersystems.dbunit.stream.consumer.DataSetTransormer;
 import com.link_intersystems.dbunit.stream.resource.DataSetResource;
 import com.link_intersystems.dbunit.stream.resource.DataSetResourcesSupplier;

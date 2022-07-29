@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.migration;
+package com.link_intersystems.dbunit.migration.collection;
 
 import com.link_intersystems.util.concurrent.ProgressListener;
 
