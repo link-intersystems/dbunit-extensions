@@ -10,15 +10,11 @@ import org.dbunit.dataset.DefaultTable;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.stream.IDataSetConsumer;
-import org.flywaydb.core.Flyway;
-import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,10 +26,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class DataSetFlywayMigrationTest {
 
     static Stream<DatabaseDefinition> databases() {
-        return Arrays.asList(
+        return Stream.of(
                         new DatabaseDefinition("postgres", DatabaseContainerSupportFactory.INSTANCE.createPostgres("postgres:latest")),
-                        new DatabaseDefinition("mysql", DatabaseContainerSupportFactory.INSTANCE.createMysql("mysql:latest")))
-                .stream();
+                        new DatabaseDefinition("mysql", DatabaseContainerSupportFactory.INSTANCE.createMysql("mysql:latest"))
+        );
     }
 
     @ParameterizedTest
@@ -56,18 +52,9 @@ class DataSetFlywayMigrationTest {
         flywayMigration.setDataSetConsumers(copyDataSetConsumer, csvConsumer, flatXmlConsumer);
 
         flywayMigration.setDatabaseContainerSupport(databaseDefinition.databaseContainerSupport);
-        FlywayMigrationConfig migrationConfig = new FlywayMigrationConfig();
-        migrationConfig.setSourceVersion("1");
+
+        FlywayMigrationConfig migrationConfig = FlywayConfigurationConfigFixture.createConfig(databaseDefinition.containerName);
         flywayMigration.setMigrationConfig(migrationConfig);
-
-        FluentConfiguration flywayConfiguration = Flyway.configure();
-
-        flywayConfiguration.locations("com/link_intersystems/dbunit/migration/" + databaseDefinition.containerName);
-        Map<String, String> placeholders = new HashMap<>();
-        placeholders.put("new_first_name_column_name", "firstname");
-        placeholders.put("new_last_name_column_name", "lastname");
-        flywayConfiguration.placeholders(placeholders);
-        migrationConfig.setFlywayConfiguration(flywayConfiguration);
 
         flywayMigration.exec();
 
