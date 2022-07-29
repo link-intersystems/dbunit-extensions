@@ -119,11 +119,11 @@ public interface DataSetConsumerSupport {
     //
 
     default public void setDataSetConsumers(IDataSetConsumer... dataSetConsumers) {
-        setDataSetConsumer(new BroadcastingDataSetConsumer(dataSetConsumers));
+        setDataSetConsumer(new CompositeDataSetConsumer(dataSetConsumers));
     }
 
     default public void setDataSetConsumers(List<IDataSetConsumer> dataSetConsumers) {
-        setDataSetConsumer(new BroadcastingDataSetConsumer(dataSetConsumers));
+        setDataSetConsumer(new CompositeDataSetConsumer(dataSetConsumers));
     }
 
     public void setDataSetConsumer(IDataSetConsumer dataSetConsumer);

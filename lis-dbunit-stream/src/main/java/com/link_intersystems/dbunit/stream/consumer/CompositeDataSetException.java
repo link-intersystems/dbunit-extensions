@@ -8,11 +8,11 @@ import java.util.List;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class MultipleDataSetException extends DataSetException {
+public class CompositeDataSetException extends DataSetException {
 
     private List<DataSetException> dataSetExceptions = new ArrayList<>();
 
-    public MultipleDataSetException(List<DataSetException> dataSetExceptions) {
+    public CompositeDataSetException(List<DataSetException> dataSetExceptions) {
         this.dataSetExceptions.addAll(dataSetExceptions);
     }
 

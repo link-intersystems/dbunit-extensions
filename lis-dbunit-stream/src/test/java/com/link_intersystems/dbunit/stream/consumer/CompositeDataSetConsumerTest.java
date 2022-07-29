@@ -1,11 +1,17 @@
 package com.link_intersystems.dbunit.stream.consumer;
 
+import com.link_intersystems.dbunit.test.DBUnitAssertions;
+import com.link_intersystems.dbunit.test.TestDataSets;
 import org.dbunit.dataset.DataSetException;
+import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITableMetaData;
+import org.dbunit.dataset.stream.DataSetProducerAdapter;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -92,5 +98,21 @@ class CompositeDataSetConsumerTest {
         compositeDataSetConsumer.remove(dataSetConsumer2);
 
         assertTrue(compositeDataSetConsumer.isEmpty());
+    }
+
+    @Test
+    void copyRealDataSet() throws DataSetException, IOException {
+        CopyDataSetConsumer copyDataSetConsumer1 = new CopyDataSetConsumer();
+        CopyDataSetConsumer copyDataSetConsumer2 = new CopyDataSetConsumer();
+
+        CompositeDataSetConsumer compositeDataSetConsumer = new CompositeDataSetConsumer(copyDataSetConsumer1, copyDataSetConsumer2);
+
+        IDataSet tinySakilaDataSet = TestDataSets.getTinySakilaDataSet();
+        DataSetProducerAdapter dataSetProducerAdapter = new DataSetProducerAdapter(tinySakilaDataSet);
+        dataSetProducerAdapter.setConsumer(compositeDataSetConsumer);
+        dataSetProducerAdapter.produce();
+
+        DBUnitAssertions.STRICT.assertDataSetEquals(tinySakilaDataSet, copyDataSetConsumer1.getDataSet());
+        DBUnitAssertions.STRICT.assertDataSetEquals(tinySakilaDataSet, copyDataSetConsumer2.getDataSet());
     }
 }
