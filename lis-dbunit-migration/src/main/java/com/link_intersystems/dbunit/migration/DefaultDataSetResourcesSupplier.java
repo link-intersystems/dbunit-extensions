@@ -5,7 +5,6 @@ import com.link_intersystems.dbunit.stream.resource.DataSetResourcesSupplier;
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFileDetection;
 import com.link_intersystems.io.FilePath;
-import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -35,7 +34,6 @@ public class DefaultDataSetResourcesSupplier implements DataSetResourcesSupplier
         return resolveDataSetMigrations(dataSetMatches);
     }
 
-    @NotNull
     private List<DataSetResource> resolveDataSetMigrations(List<FilePath> dataSetMatches) {
         List<DataSetFile> sourceDataSetFiles = new ArrayList<>();
         Set<DataSetFile> uniqueDataSetFiles = new HashSet<>();

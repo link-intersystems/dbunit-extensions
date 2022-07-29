@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.migration;
 
-import com.link_intersystems.dbunit.flyway.FlywayDataSetMigrationConfig;
+import com.link_intersystems.dbunit.flyway.FlywayMigrationConfig;
 import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
 import com.link_intersystems.dbunit.stream.consumer.DefaultDataSetConsumerSupport;
 import com.link_intersystems.dbunit.test.TestDataSets;
@@ -56,7 +56,7 @@ class DataSetFlywayMigrationTest {
         flywayMigration.setDataSetConsumers(copyDataSetConsumer, csvConsumer, flatXmlConsumer);
 
         flywayMigration.setDatabaseContainerSupport(databaseDefinition.databaseContainerSupport);
-        FlywayDataSetMigrationConfig migrationConfig = new FlywayDataSetMigrationConfig();
+        FlywayMigrationConfig migrationConfig = new FlywayMigrationConfig();
         migrationConfig.setSourceVersion("1");
         flywayMigration.setMigrationConfig(migrationConfig);
 
@@ -67,7 +67,7 @@ class DataSetFlywayMigrationTest {
         placeholders.put("new_first_name_column_name", "firstname");
         placeholders.put("new_last_name_column_name", "lastname");
         flywayConfiguration.placeholders(placeholders);
-        flywayMigration.setFlywayConfiguration(flywayConfiguration);
+        migrationConfig.setFlywayConfiguration(flywayConfiguration);
 
         flywayMigration.exec();
 

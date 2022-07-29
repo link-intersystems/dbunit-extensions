@@ -1,12 +1,8 @@
 package com.link_intersystems.dbunit.migration;
 
-import com.link_intersystems.dbunit.flyway.DefaultFlywayMigration;
-import com.link_intersystems.dbunit.flyway.FlywayDataSetMigrationConfig;
 import com.link_intersystems.dbunit.flyway.FlywayDatabaseMigrationSupport;
-import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerSupport;
-import com.link_intersystems.dbunit.stream.consumer.DataSetTransformExecutor;
-import com.link_intersystems.dbunit.stream.consumer.DataSetTransformerChain;
-import com.link_intersystems.dbunit.stream.consumer.DataSetTransormer;
+import com.link_intersystems.dbunit.flyway.FlywayMigrationConfig;
+import com.link_intersystems.dbunit.stream.consumer.*;
 import com.link_intersystems.dbunit.stream.producer.DataSetSource;
 import com.link_intersystems.dbunit.stream.producer.DataSetSourceSupport;
 import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
@@ -14,8 +10,6 @@ import com.link_intersystems.dbunit.testcontainers.consumer.TestContainersDataSe
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.stream.IDataSetConsumer;
-import org.flywaydb.core.Flyway;
-import org.flywaydb.core.api.configuration.FluentConfiguration;
 
 import static java.util.Objects.requireNonNull;
 
@@ -27,25 +21,15 @@ public class DataSetFlywayMigration implements DataSetSourceSupport, DataSetCons
     private DataSetSource sourceDataSet;
     private IDataSetConsumer targetConsumer;
     private DatabaseContainerSupport databaseContainerSupport;
-    private boolean removeFlywayTables = true;
     private DataSetTransormer beforeMigrationTransformer;
     private DataSetTransormer afterMigrationTransformer;
-    private FlywayDataSetMigrationConfig migrationConfig = new FlywayDataSetMigrationConfig();
-    private FluentConfiguration flywayConfiguration = Flyway.configure();
+    private FlywayMigrationConfig migrationConfig = new FlywayMigrationConfig();
 
-    public void setFlywayConfiguration(FluentConfiguration flywayConfiguration) {
-        this.flywayConfiguration = requireNonNull(flywayConfiguration);
-    }
-
-    public FluentConfiguration getFlywayConfiguration() {
-        return flywayConfiguration;
-    }
-
-    public void setMigrationConfig(FlywayDataSetMigrationConfig migrationConfig) {
+    public void setMigrationConfig(FlywayMigrationConfig migrationConfig) {
         this.migrationConfig = requireNonNull(migrationConfig);
     }
 
-    public FlywayDataSetMigrationConfig getMigrationConfig() {
+    public FlywayMigrationConfig getMigrationConfig() {
         return migrationConfig;
     }
 
@@ -61,10 +45,6 @@ public class DataSetFlywayMigration implements DataSetSourceSupport, DataSetCons
 
     public void setDatabaseContainerSupport(DatabaseContainerSupport databaseContainerSupport) {
         this.databaseContainerSupport = databaseContainerSupport;
-    }
-
-    public void setRemoveFlywayTables(boolean removeFlywayTables) {
-        this.removeFlywayTables = removeFlywayTables;
     }
 
     public void setBeforeMigrationTransformer(DataSetTransormer beforeMigrationTransformer) {
@@ -107,29 +87,13 @@ public class DataSetFlywayMigration implements DataSetSourceSupport, DataSetCons
     }
 
     protected TestContainersDataSetTransformer createMigrationTransformer() {
-        TestContainersDataSetTransformer transformer = new TestContainersDataSetTransformer(databaseContainerSupport);
-        FlywayDatabaseMigrationSupport flywaySupport = new FlywayDatabaseMigrationSupport();
-        flywaySupport.setMigrationConfig(getMigrationConfig());
-        DefaultFlywayMigration flywayMigration = new DefaultFlywayMigration();
-        flywayMigration.setFlywayConfigurationSupplier(this::getFlywayConfigurationCopy);
-        flywaySupport.setFlywayMigration(flywayMigration);
-        flywaySupport.setRemoveFlywayTables(removeFlywayTables);
-        transformer.setDatabaseMigrationSupport(flywaySupport);
-        return transformer;
+        DatabaseMigrationSupport flywaySupport = createFlywayMigrationSupport();
+
+        return new TestContainersDataSetTransformer(databaseContainerSupport, flywaySupport);
     }
 
-    protected FluentConfiguration getFlywayConfigurationCopy() {
-        FluentConfiguration configure = Flyway.configure();
-
-        configure.placeholders(getFlywayConfiguration().getPlaceholders());
-        configure.locations(getFlywayConfiguration().getLocations());
-        configure.javaMigrations(getFlywayConfiguration().getJavaMigrations());
-        configure.javaMigrationClassProvider(getFlywayConfiguration().getJavaMigrationClassProvider());
-        configure.callbacks(getFlywayConfiguration().getCallbacks());
-        configure.encoding(getFlywayConfiguration().getEncoding());
-        configure.defaultSchema(getFlywayConfiguration().getDefaultSchema());
-
-        return configure;
+    protected FlywayDatabaseMigrationSupport createFlywayMigrationSupport() {
+        return new FlywayDatabaseMigrationSupport(getMigrationConfig());
     }
 
     protected DataSetTransormer applyBeforeAndAfterTransformers(TestContainersDataSetTransformer transformer) {

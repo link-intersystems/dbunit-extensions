@@ -1,8 +1,6 @@
 package com.link_intersystems.dbunit.stream.consumer;
 
-import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.DataSetException;
-import org.dbunit.dataset.IDataSet;
 
 import javax.sql.DataSource;
 
@@ -14,7 +12,4 @@ public interface DatabaseMigrationSupport {
 
     void migrateDataSource(DataSource dataSource) throws DataSetException;
 
-    default IDataSet decorateResultDataSet(IDatabaseConnection databaseConnection, IDataSet resultDataSet) throws DataSetException {
-        return resultDataSet;
-    }
 }

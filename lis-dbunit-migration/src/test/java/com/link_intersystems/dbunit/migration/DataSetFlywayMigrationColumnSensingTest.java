@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.migration;
 
-import com.link_intersystems.dbunit.flyway.FlywayDataSetMigrationConfig;
+import com.link_intersystems.dbunit.flyway.FlywayMigrationConfig;
 import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
 import com.link_intersystems.dbunit.stream.consumer.DefaultDataSetConsumerSupport;
 import com.link_intersystems.dbunit.table.Row;
@@ -13,14 +13,10 @@ import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
-import org.flywaydb.core.Flyway;
-import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -52,18 +48,8 @@ class DataSetFlywayMigrationColumnSensingTest {
 
         flywayMigration.setDatabaseContainerSupport(databaseDefinition.databaseContainerSupport);
 
-        FlywayDataSetMigrationConfig migrationConfig = new FlywayDataSetMigrationConfig();
-        migrationConfig.setSourceVersion("1");
+        FlywayMigrationConfig migrationConfig = FlywayConfigurationConfigFixture.createPostgresConfig();
         flywayMigration.setMigrationConfig(migrationConfig);
-
-        FluentConfiguration flywayConfiguration = Flyway.configure();
-        flywayConfiguration.locations("com/link_intersystems/dbunit/migration/" + databaseDefinition.containerName);
-        Map<String, String> placeholders = new HashMap<>();
-        placeholders.put("new_first_name_column_name", "firstname");
-        placeholders.put("new_last_name_column_name", "lastname");
-        flywayConfiguration.placeholders(placeholders);
-
-        flywayMigration.setFlywayConfiguration(flywayConfiguration);
 
         flywayMigration.exec();
 

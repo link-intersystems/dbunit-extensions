@@ -9,48 +9,39 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 public class FlywayDatabaseMigrationSupport implements DatabaseMigrationSupport {
 
+
     private static final Collection<String> FLYWAY_TABLES = Arrays.asList("flyway_schema_history");
 
-    private boolean removeFlywayTables = true;
+    private FlywayMigrationConfig migrationConfig;
 
-    private FlywayMigration flywayMigration = new DefaultFlywayMigration();
-    private FlywayDataSetMigrationConfig migrationConfig = new FlywayDataSetMigrationConfig();
-
-    public void setRemoveFlywayTables(boolean removeFlywayTables) {
-        this.removeFlywayTables = removeFlywayTables;
+    public FlywayDatabaseMigrationSupport(FlywayMigrationConfig migrationConfig) {
+        this.migrationConfig = requireNonNull(migrationConfig);
     }
 
-    public void setFlywayMigration(FlywayMigration flywayMigration) {
-        this.flywayMigration = Objects.requireNonNull(flywayMigration);
-    }
-
-    public void setMigrationConfig(FlywayDataSetMigrationConfig migrationConfig) {
-        this.migrationConfig = migrationConfig;
-    }
-
-    public FlywayDataSetMigrationConfig getMigrationConfig() {
+    public FlywayMigrationConfig getMigrationConfig() {
         return migrationConfig;
     }
 
     @Override
     public void prepareDataSource(DataSource dataSource) throws DataSetException {
-        FlywayMigration flywayMigration = getFlywayMigration();
-        FlywayDataSetMigrationConfig migrationConfig = getMigrationConfig();
+        FlywayMigration flywayMigration = createFlywayMigration();
+        FlywayMigrationConfig migrationConfig = getMigrationConfig();
 
         flywayMigration.execute(dataSource, migrationConfig.getSourceVersion());
     }
 
     @Override
     public void migrateDataSource(DataSource dataSource) throws DataSetException {
-        FlywayMigration flywayMigration = getFlywayMigration();
-        FlywayDataSetMigrationConfig migrationConfig = getMigrationConfig();
+        FlywayMigration flywayMigration = createFlywayMigration();
+        FlywayMigrationConfig migrationConfig = getMigrationConfig();
 
         flywayMigration.execute(dataSource, migrationConfig.getTargetVersion());
 
@@ -58,7 +49,7 @@ public class FlywayDatabaseMigrationSupport implements DatabaseMigrationSupport 
     }
 
     protected void afterMigrate(DataSource dataSource) throws DataSetException {
-        if (removeFlywayTables) {
+        if (getMigrationConfig().isRemoveFlywayTables()) {
             try (Connection connection = dataSource.getConnection()) {
                 try (Statement statement = connection.createStatement()) {
                     for (String flywayTable : getFlywayTables()) {
@@ -71,8 +62,8 @@ public class FlywayDatabaseMigrationSupport implements DatabaseMigrationSupport 
         }
     }
 
-    public FlywayMigration getFlywayMigration() {
-        return flywayMigration;
+    protected FlywayMigration createFlywayMigration() {
+        return new FlywayMigration(migrationConfig.getFlywayConfiguration());
     }
 
     protected Collection<String> getFlywayTables() {

@@ -12,17 +12,14 @@ public class TestContainersDataSetTransformer implements DataSetTransormer {
 
     private TestContainersConsumer testContainersConsumer;
 
-    public TestContainersDataSetTransformer(DatabaseContainerSupport databaseContainerSupport) {
+    public TestContainersDataSetTransformer(DatabaseContainerSupport databaseContainerSupport, DatabaseMigrationSupport databaseMigrationSupport) {
         testContainersConsumer = new TestContainersConsumer(databaseContainerSupport);
+        testContainersConsumer.setDatabaseMigrationSupport(databaseMigrationSupport);
     }
 
     @Override
     public IDataSetConsumer getInputConsumer() {
         return testContainersConsumer;
-    }
-
-    public void setDatabaseMigrationSupport(DatabaseMigrationSupport databaseMigrationSupport) {
-        testContainersConsumer.setDatabaseMigrationSupport(databaseMigrationSupport);
     }
 
     @Override

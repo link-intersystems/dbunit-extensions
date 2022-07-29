@@ -26,8 +26,7 @@ class TestContainersDataSetTransformerTest {
 
     @Test
     void transformer() throws DataSetException, IOException {
-        TestContainersDataSetTransformer transformer = new TestContainersDataSetTransformer(containerSupport);
-        transformer.setDatabaseMigrationSupport(new SakilaMigrationSupport());
+        TestContainersDataSetTransformer transformer = new TestContainersDataSetTransformer(containerSupport, new SakilaMigrationSupport());
 
         IDataSet tinySakilaDataSet = TestDataSets.getTinySakilaDataSet();
         DataSetProducerAdapter dataSetProducerAdapter = new DataSetProducerAdapter(tinySakilaDataSet);

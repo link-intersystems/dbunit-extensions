@@ -8,7 +8,10 @@ import com.link_intersystems.dbunit.testcontainers.RunningContainer;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseDataSet;
 import org.dbunit.database.IDatabaseConnection;
-import org.dbunit.dataset.*;
+import org.dbunit.dataset.DataSetException;
+import org.dbunit.dataset.DefaultDataSet;
+import org.dbunit.dataset.DefaultTable;
+import org.dbunit.dataset.ITableMetaData;
 import org.dbunit.dataset.stream.DataSetProducerAdapter;
 import org.dbunit.dataset.stream.DefaultConsumer;
 import org.dbunit.dataset.stream.IDataSetConsumer;
@@ -98,8 +101,7 @@ public class TestContainersConsumer extends DefaultConsumer {
 
     protected void processResult(IDatabaseConnection databaseConnection, IDataSetConsumer resultConsumer) throws SQLException, DataSetException {
         DatabaseDataSet databaseDataSet = createDataSet(databaseConnection);
-        IDataSet decorateResultDataSet = migrationSupport.decorateResultDataSet(databaseConnection, databaseDataSet);
-        DataSetProducerAdapter dataSetProducerAdapter = new DataSetProducerAdapter(decorateResultDataSet);
+        DataSetProducerAdapter dataSetProducerAdapter = new DataSetProducerAdapter(databaseDataSet);
         dataSetProducerAdapter.setConsumer(resultConsumer);
         dataSetProducerAdapter.produce();
     }
