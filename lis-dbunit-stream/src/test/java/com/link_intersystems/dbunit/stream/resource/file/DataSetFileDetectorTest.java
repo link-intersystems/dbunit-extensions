@@ -4,12 +4,11 @@ import com.link_intersystems.dbunit.stream.resource.file.csv.CsvDataSetFile;
 import com.link_intersystems.dbunit.stream.resource.file.xls.XlsDataSetFile;
 import com.link_intersystems.dbunit.stream.resource.file.xml.FlatXmlDataSetFile;
 import com.link_intersystems.dbunit.stream.resource.file.xml.XmlDataSetFile;
-import com.link_intersystems.io.Unzip;
+import com.link_intersystems.dbunit.test.TinySakilaDataSetFiles;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.IOException;
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,20 +18,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 class DataSetFileDetectorTest {
 
-    private Path tmpDir;
     private DataSetFileDetection dataSetFileDetector;
+    private TinySakilaDataSetFiles dataSetFiles;
 
     @BeforeEach
-    void setUp(@TempDir Path tmpDir) throws IOException {
-        this.tmpDir = tmpDir;
-        Unzip.unzip(DataSetFileDetectorTest.class.getResourceAsStream("/tiny-sakila-dataset-files.zip"), tmpDir);
-
+    void setUp(@TempDir Path tmpDir) {
+        dataSetFiles = TinySakilaDataSetFiles.create(tmpDir);
         dataSetFileDetector = new DataSetFileDetection();
     }
 
     @Test
     void csv() {
-        Path file = getFile("tiny-sakila-csv");
+        Path file = dataSetFiles.getCsvDataSetDir();
 
         DataSetFile dataSetFile = dataSetFileDetector.detect(file);
 
@@ -41,7 +38,7 @@ class DataSetFileDetectorTest {
 
     @Test
     void xls() {
-        Path file = getFile("tiny-sakila.xls");
+        Path file = dataSetFiles.getXlsDataSetFile();
 
         DataSetFile dataSetFile = dataSetFileDetector.detect(file);
 
@@ -50,7 +47,7 @@ class DataSetFileDetectorTest {
 
     @Test
     void flatXml() {
-        Path file = getFile("tiny-sakila-flat.xml");
+        Path file = dataSetFiles.getFlatXmlDataSetPath();
 
         DataSetFile dataSetFile = dataSetFileDetector.detect(file);
 
@@ -59,14 +56,10 @@ class DataSetFileDetectorTest {
 
     @Test
     void xml() {
-        Path file = getFile("tiny-sakila.xml");
+        Path file = dataSetFiles.getXmlDataSetPath();
 
         DataSetFile dataSetFile = dataSetFileDetector.detect(file);
 
         assertEquals(XmlDataSetFile.class, dataSetFile.getClass());
-    }
-
-    private Path getFile(String filename) {
-        return tmpDir.resolve(filename);
     }
 }

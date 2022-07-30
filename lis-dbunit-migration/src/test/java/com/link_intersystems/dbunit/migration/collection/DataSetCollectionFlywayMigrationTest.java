@@ -12,8 +12,8 @@ import com.link_intersystems.dbunit.stream.resource.DataSetResource;
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFileDetection;
 import com.link_intersystems.dbunit.table.DefaultTableOrder;
 import com.link_intersystems.dbunit.table.TableOrder;
+import com.link_intersystems.dbunit.test.TinySakilaDataSetFiles;
 import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupportFactory;
-import com.link_intersystems.io.Unzip;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
@@ -22,7 +22,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
@@ -42,10 +41,10 @@ class DataSetCollectionFlywayMigrationTest {
     private DataSetFileLocationsScanner fileLocationsScanner;
 
     @BeforeEach
-    void setUp(@TempDir Path tmpDir) throws IOException {
+    void setUp(@TempDir Path tmpDir) {
         this.sourcePath = Paths.get(tmpDir.toString(), "source");
         this.targetPath = Paths.get(tmpDir.toString(), "target/someSubdir");
-        Unzip.unzip(DataSetCollectionFlywayMigration.class.getResourceAsStream("/tiny-sakila-dataset-files.zip"), sourcePath);
+        TinySakilaDataSetFiles.create(sourcePath);
         BasepathTargetPathSupplier basepathTargetPathSupplier = new BasepathTargetPathSupplier(sourcePath, targetPath);
         dataSetCollectionMigration = new DataSetCollectionFlywayMigration();
         dataSetCollectionMigration.setTargetDataSetFileSupplier(basepathTargetPathSupplier);
@@ -69,11 +68,11 @@ class DataSetCollectionFlywayMigrationTest {
 
         DataSetCollectionMigrationResult result = dataSetCollectionMigration.exec();
 
-        assertDataSetsMigratedSuccessfully(dataSetCollectionMigration, result);
+        assertDataSetsMigratedSuccessfully(result);
     }
 
 
-    private void assertDataSetsMigratedSuccessfully(DataSetCollectionFlywayMigration dataSetCollectionMigration, DataSetCollectionMigrationResult result) throws DataSetException {
+    private void assertDataSetsMigratedSuccessfully(DataSetCollectionMigrationResult result) throws DataSetException {
         Map<DataSetResource, DataSetResource> migratedDataSetResources = result.getMigratedDataSetResources();
 
         assertEquals(3, migratedDataSetResources.size(), "migrated paths");

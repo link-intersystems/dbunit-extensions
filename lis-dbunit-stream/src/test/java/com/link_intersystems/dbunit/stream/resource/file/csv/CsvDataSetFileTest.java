@@ -1,7 +1,7 @@
 package com.link_intersystems.dbunit.stream.resource.file.csv;
 
 import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
-import com.link_intersystems.io.Unzip;
+import com.link_intersystems.dbunit.test.TinySakilaDataSetFiles;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
@@ -12,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.IOException;
 import java.nio.file.Path;
 
 /**
@@ -23,9 +22,9 @@ class CsvDataSetFileTest {
     private CsvDataSetFile csvDataSetFile;
 
     @BeforeEach
-    void setUp(@TempDir Path tmpDir) throws IOException {
-        Unzip.unzip(CsvDataSetFileTest.class.getResourceAsStream("/tiny-sakila-dataset-files.zip"), tmpDir);
-        csvDataSetFile = new CsvDataSetFile(tmpDir.resolve("tiny-sakila-csv"));
+    void setUp(@TempDir Path tmpDir) {
+        TinySakilaDataSetFiles dataSetFiles = TinySakilaDataSetFiles.create(tmpDir);
+        csvDataSetFile =  new CsvDataSetFile(dataSetFiles.getCsvDataSetDir());
     }
 
     @Test

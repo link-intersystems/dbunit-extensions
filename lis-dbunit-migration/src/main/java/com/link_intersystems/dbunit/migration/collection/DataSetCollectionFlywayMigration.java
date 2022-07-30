@@ -135,6 +135,9 @@ public class DataSetCollectionFlywayMigration {
         if (getTargetDataSetFileSupplier() == null) {
             throw new IllegalStateException("targetDataSetFileSupplier must be set");
         }
+        if(getMigrationConfig() == null){
+            throw new IllegalStateException("migrationConfig must be set");
+        }
     }
 
     protected DataSetResource tryMigrate(DataSetResource sourceDataSetResource) {
