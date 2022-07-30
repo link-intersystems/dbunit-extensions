@@ -7,7 +7,6 @@ import com.link_intersystems.dbunit.stream.consumer.DataSetTransormer;
 import com.link_intersystems.dbunit.stream.resource.DataSetResource;
 import com.link_intersystems.dbunit.stream.resource.DataSetResourcesSupplier;
 import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
-import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupportFactory;
 import com.link_intersystems.util.concurrent.ProgressListener;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.stream.IDataSetConsumer;
@@ -78,7 +77,7 @@ public class DataSetCollectionFlywayMigration {
     }
 
     /**
-     * @see DatabaseContainerSupportFactory
+     * @see DatabaseContainerSupport#getDatabaseContainerSupport(String) 
      */
     public void setDatabaseContainerSupport(DatabaseContainerSupport databaseContainerSupport) {
         this.databaseContainerSupport = databaseContainerSupport;

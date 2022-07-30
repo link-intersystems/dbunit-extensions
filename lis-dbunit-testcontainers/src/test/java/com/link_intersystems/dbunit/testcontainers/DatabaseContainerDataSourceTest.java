@@ -21,7 +21,7 @@ class DatabaseContainerDataSourceTest {
 
     @BeforeAll
     static void beforeAll() {
-        DatabaseContainerSupport postgres = DatabaseContainerSupportFactory.INSTANCE.createPostgres("postgres:latest");
+        DatabaseContainerSupport postgres = DatabaseContainerSupport.getDatabaseContainerSupport("postgres:latest");
         databaseContainer = postgres.create();
         databaseContainer.withUsername("user").withPassword("pass");
 

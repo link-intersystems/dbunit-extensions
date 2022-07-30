@@ -76,16 +76,14 @@
                 <artifactId>jdbc</artifactId>
                 <version>${org.testcontainers.version}</version>
             </dependency>
-
-            <!-- OPTIONAL DEPENDENCIES -->
             <dependency>
                 <groupId>org.testcontainers</groupId>
-                <artifactId>mysql</artifactId>
+                <artifactId>postgresql</artifactId>
                 <version>${org.testcontainers.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.testcontainers</groupId>
-                <artifactId>postgresql</artifactId>
+                <artifactId>mysql</artifactId>
                 <version>${org.testcontainers.version}</version>
             </dependency>
         </dependencies>

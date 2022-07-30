@@ -6,7 +6,6 @@ import com.link_intersystems.dbunit.stream.consumer.DefaultDataSetConsumerSuppor
 import com.link_intersystems.dbunit.table.Row;
 import com.link_intersystems.dbunit.table.TableUtil;
 import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
-import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupportFactory;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
@@ -28,7 +27,7 @@ class DataSetFlywayMigrationColumnSensingTest {
 
     @Test
     void migrate() throws DataSetException, IOException {
-        DatabaseContainerSupport postgres = DatabaseContainerSupportFactory.INSTANCE.createPostgres("postgres:latest");
+        DatabaseContainerSupport postgres = DatabaseContainerSupport.getDatabaseContainerSupport("postgres:latest");
         DatabaseDefinition databaseDefinition = new DatabaseDefinition("postgres", postgres);
 
         DataSetFlywayMigration flywayMigration = new DataSetFlywayMigration();

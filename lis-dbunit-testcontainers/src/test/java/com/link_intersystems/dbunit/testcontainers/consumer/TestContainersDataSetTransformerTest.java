@@ -2,7 +2,6 @@ package com.link_intersystems.dbunit.testcontainers.consumer;
 
 import com.link_intersystems.dbunit.test.TestDataSets;
 import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
-import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupportFactory;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.stream.DataSetProducerAdapter;
@@ -20,7 +19,7 @@ class TestContainersDataSetTransformerTest {
 
     @BeforeEach
     void setUp() {
-        containerSupport = DatabaseContainerSupportFactory.INSTANCE.createPostgres("postgres:latest");
+        containerSupport = DatabaseContainerSupport.getDatabaseContainerSupport("postgres:latest");
 
     }
 

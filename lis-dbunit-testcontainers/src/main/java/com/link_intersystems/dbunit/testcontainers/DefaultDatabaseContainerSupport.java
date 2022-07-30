@@ -1,6 +1,5 @@
 package com.link_intersystems.dbunit.testcontainers;
 
-import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
 import org.dbunit.database.DatabaseConfig;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
@@ -11,7 +10,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class DefaultDatabaseContainerSupport implements DatabaseContainerSupport {
+public class DefaultDatabaseContainerSupport extends DatabaseContainerSupport {
 
     private DatabaseConfig databaseConfig = new DatabaseConfig();
 

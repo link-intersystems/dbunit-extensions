@@ -13,7 +13,7 @@ import com.link_intersystems.dbunit.stream.resource.file.DataSetFileDetection;
 import com.link_intersystems.dbunit.table.DefaultTableOrder;
 import com.link_intersystems.dbunit.table.TableOrder;
 import com.link_intersystems.dbunit.test.TinySakilaDataSetFiles;
-import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupportFactory;
+import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
@@ -54,7 +54,7 @@ class DataSetCollectionFlywayMigrationTest {
 
     @Test
     void migrateDataSetCollection() throws DataSetException {
-        dataSetCollectionMigration.setDatabaseContainerSupport(DatabaseContainerSupportFactory.INSTANCE.createPostgres("postgres:latest"));
+        dataSetCollectionMigration.setDatabaseContainerSupport(DatabaseContainerSupport.getDatabaseContainerSupport("postgres:latest"));
 
         FlywayMigrationConfig migrationConfig = FlywayConfigurationConfigFixture.createPostgresConfig();
 

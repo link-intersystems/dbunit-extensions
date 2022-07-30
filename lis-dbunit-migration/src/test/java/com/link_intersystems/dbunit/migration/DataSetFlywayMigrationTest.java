@@ -4,7 +4,7 @@ import com.link_intersystems.dbunit.flyway.FlywayMigrationConfig;
 import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
 import com.link_intersystems.dbunit.stream.consumer.DefaultDataSetConsumerSupport;
 import com.link_intersystems.dbunit.test.TestDataSets;
-import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupportFactory;
+import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.DefaultTable;
 import org.dbunit.dataset.IDataSet;
@@ -26,8 +26,8 @@ class DataSetFlywayMigrationTest {
 
     static Stream<DatabaseDefinition> databases() {
         return Stream.of(
-                        new DatabaseDefinition("postgres", DatabaseContainerSupportFactory.INSTANCE.createPostgres("postgres:latest")),
-                        new DatabaseDefinition("mysql", DatabaseContainerSupportFactory.INSTANCE.createMysql("mysql:latest"))
+                        new DatabaseDefinition("postgres", DatabaseContainerSupport.getDatabaseContainerSupport("postgres:latest")),
+                        new DatabaseDefinition("mysql", DatabaseContainerSupport.getDatabaseContainerSupport("mysql:latest"))
         );
     }
 
