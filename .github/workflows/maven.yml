@@ -22,7 +22,10 @@ jobs:
         java-version: '8'
         distribution: 'temurin'
         cache: maven
+    - uses: s4u/maven-settings-action@v2.6.0
+      with:
+        servers: '[{"id": "ossrh", "username": "${{secrets.SONATYPE_USER}}", "password": "${{secrets.SONATYPE_PASS}}"}]'
     - name: Build with Maven
       env:
         COVERALLS_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
-      run: mvn -P ci -B deploy jacoco:report coveralls:report --file pom.xml
+      run: mvn -P ci -B -DdeployAtEnd=true deploy jacoco:report coveralls:report --file pom.xml
