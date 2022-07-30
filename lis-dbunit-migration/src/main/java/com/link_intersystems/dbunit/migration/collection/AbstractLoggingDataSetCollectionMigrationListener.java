@@ -43,11 +43,11 @@ public abstract class AbstractLoggingDataSetCollectionMigrationListener implemen
 
     @Override
     public void resourcesSupplied(List<DataSetResource> dataSetResources) {
-        String msg = format("Found {0} data set resources to migrate", dataSetResources.size());
+        String msg = format("Detected {0} data set resources to migrate", dataSetResources.size());
         logResourcesSupplied(msg, () -> {
             StringWriter sw = new StringWriter();
             try (PrintWriter pw = new PrintWriter(sw)) {
-                pw.println("Files matching:");
+                pw.println("Matching data sets:");
 
                 Iterator<DataSetResource> iterator = dataSetResources.iterator();
                 while (iterator.hasNext()) {
@@ -68,11 +68,11 @@ public abstract class AbstractLoggingDataSetCollectionMigrationListener implemen
 
     @Override
     public void dataSetCollectionMigrationFinished(Map<DataSetResource, DataSetResource> migratedDataSetResources) {
-        String msg = format("Migrated {0} files ", migratedDataSetResources.size());
+        String msg = format("Migrated {0} data set resources ", migratedDataSetResources.size());
         logDataSetCollectionMigrationFinished(msg, () -> {
             StringWriter sw = new StringWriter();
             try (PrintWriter pw = new PrintWriter(sw)) {
-                pw.println("Migrated files:");
+                pw.println("Migrated data set resources:");
 
                 Set<Map.Entry<DataSetResource, DataSetResource>> entries = migratedDataSetResources.entrySet();
                 Iterator<Map.Entry<DataSetResource, DataSetResource>> iterator = entries.iterator();
