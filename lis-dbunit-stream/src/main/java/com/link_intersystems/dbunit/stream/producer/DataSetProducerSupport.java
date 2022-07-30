@@ -81,7 +81,16 @@ public interface DataSetProducerSupport {
     }
 
     default public void setFlatXmlProducer(File file) throws IOException {
-        setFlatXmlProducer(new FileInputStream(file));
+        setFlatXmlProducer(file, StandardCharsets.UTF_8);
+    }
+
+    default public void setFlatXmlProducer(File file, Charset charset) throws IOException {
+        FileInputStream inputStream = new FileInputStream(file);
+        InputStreamReader characterStream = new InputStreamReader(new BufferedInputStream(inputStream), charset);
+        InputSource xmlSource = new InputSource(characterStream);
+        FlatXmlProducer dataSetProducer = new FlatXmlProducer(xmlSource);
+        CloseableDataSetProducer closeableDataSetProducer = new CloseableDataSetProducer(dataSetProducer, inputStream);
+        setDataSetProducer(closeableDataSetProducer);
     }
 
     default public void setFlatXmlProducer(InputStream inputStream) {

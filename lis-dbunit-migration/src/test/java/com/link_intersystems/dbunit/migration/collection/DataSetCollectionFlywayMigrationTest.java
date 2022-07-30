@@ -47,15 +47,13 @@ class DataSetCollectionFlywayMigrationTest {
         TinySakilaDataSetFiles.create(sourcePath);
         BasepathTargetPathSupplier basepathTargetPathSupplier = new BasepathTargetPathSupplier(sourcePath, targetPath);
         dataSetCollectionMigration = new DataSetCollectionFlywayMigration();
-        dataSetCollectionMigration.setTargetDataSetFileSupplier(basepathTargetPathSupplier);
+        dataSetCollectionMigration.setTargetDataSetResourceSupplier(basepathTargetPathSupplier);
         fileLocationsScanner = new DataSetFileLocationsScanner(sourcePath);
         dataSetCollectionMigration.setDataSetResourcesSupplier(new DefaultDataSetResourcesSupplier(fileLocationsScanner, new DataSetFileDetection()));
     }
 
     @Test
     void migrateDataSetCollection() throws DataSetException {
-        fileLocationsScanner.addDefaultFilePatterns();
-
         dataSetCollectionMigration.setDatabaseContainerSupport(DatabaseContainerSupportFactory.INSTANCE.createPostgres("postgres:latest"));
 
         FlywayMigrationConfig migrationConfig = FlywayConfigurationConfigFixture.createPostgresConfig();

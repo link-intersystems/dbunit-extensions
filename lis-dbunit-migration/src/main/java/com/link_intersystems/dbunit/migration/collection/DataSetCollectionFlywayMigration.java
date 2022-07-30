@@ -25,7 +25,7 @@ public class DataSetCollectionFlywayMigration {
 
     private DataSetCollectionMigrationListener migrationListener = new LoggingDataSetCollectionMigrationListener();
 
-    private TargetDataSetResourceSupplier targetDataSetFileSupplier;
+    private TargetDataSetResourceSupplier targetDataSetResourceSupplier;
 
     private DataSetResourcesSupplier dataSetResourcesSupplier;
     private DatabaseContainerSupport databaseContainerSupport;
@@ -69,12 +69,12 @@ public class DataSetCollectionFlywayMigration {
         return afterMigrationTransformer;
     }
 
-    public void setTargetDataSetFileSupplier(TargetDataSetResourceSupplier targetDataSetFileSupplier) {
-        this.targetDataSetFileSupplier = requireNonNull(targetDataSetFileSupplier);
+    public void setTargetDataSetResourceSupplier(TargetDataSetResourceSupplier targetDataSetResourceSupplier) {
+        this.targetDataSetResourceSupplier = requireNonNull(targetDataSetResourceSupplier);
     }
 
-    public TargetDataSetResourceSupplier getTargetDataSetFileSupplier() {
-        return targetDataSetFileSupplier;
+    public TargetDataSetResourceSupplier getTargetDataSetResourceSupplier() {
+        return targetDataSetResourceSupplier;
     }
 
     /**
@@ -132,7 +132,7 @@ public class DataSetCollectionFlywayMigration {
         if (getDatabaseContainerSupport() == null) {
             throw new IllegalStateException("datasetContainerSupport must be set");
         }
-        if (getTargetDataSetFileSupplier() == null) {
+        if (getTargetDataSetResourceSupplier() == null) {
             throw new IllegalStateException("targetDataSetFileSupplier must be set");
         }
         if(getMigrationConfig() == null){
@@ -158,7 +158,7 @@ public class DataSetCollectionFlywayMigration {
         flywayMigration.setBeforeMigrationTransformer(getBeforeMigrationTransformer());
         flywayMigration.setAfterMigrationTransformer(getAfterMigrationTransformer());
 
-        TargetDataSetResourceSupplier targetDataSetFileSupplier = getTargetDataSetFileSupplier();
+        TargetDataSetResourceSupplier targetDataSetFileSupplier = getTargetDataSetResourceSupplier();
         DataSetResource targetDataSetResource = targetDataSetFileSupplier.getTargetDataSetResource(sourceDataSetResource);
         IDataSetConsumer targetDataSetFileConsumer = targetDataSetResource.createConsumer();
         flywayMigration.setDataSetConsumer(targetDataSetFileConsumer);
