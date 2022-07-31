@@ -1,7 +1,8 @@
 package com.link_intersystems.dbunit.stream.resource.file;
 
-import com.link_intersystems.dbunit.stream.producer.CloseableDataSetProducer;
+import com.link_intersystems.dbunit.stream.producer.AutocloseDataSetProducer;
 import com.link_intersystems.dbunit.stream.producer.DataSetProducerSupport;
+import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.stream.IDataSetProducer;
 
 import java.io.*;
@@ -29,10 +30,18 @@ public abstract class AbstractTextDataSetFile extends AbstractDataSetFile {
     @Override
     protected final void setProducer(DataSetProducerSupport producerSupport, File file) throws IOException {
         FileInputStream inputStream = new FileInputStream(file);
-        InputStreamReader characterStream = new InputStreamReader(new BufferedInputStream(inputStream), getCharset());
+        Charset charset = getCharset();
+        InputStreamReader characterStream = new InputStreamReader(new BufferedInputStream(inputStream), charset);
         IDataSetProducer dataSetProducer = createProducer(characterStream);
-        CloseableDataSetProducer closeableDataSetProducer = new CloseableDataSetProducer(dataSetProducer, characterStream);
-        producerSupport.setDataSetProducer(closeableDataSetProducer);
+        AutocloseDataSetProducer autocloseDataSetProducer = new AutocloseDataSetProducer(dataSetProducer, inputStream);
+        producerSupport.setDataSetProducer(autocloseDataSetProducer);
+    }
+
+    @Override
+    public DataSetFile withNewFile(File newFile) throws DataSetException {
+        AbstractTextDataSetFile dataSetFile = (AbstractTextDataSetFile) super.withNewFile(newFile);
+        dataSetFile.setCharset(getCharset());
+        return dataSetFile;
     }
 
     protected abstract IDataSetProducer createProducer(Reader reader);

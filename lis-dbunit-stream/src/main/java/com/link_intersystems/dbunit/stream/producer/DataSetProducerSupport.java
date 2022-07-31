@@ -24,7 +24,7 @@ public interface DataSetProducerSupport {
 
     default public void setCsvProducer(File inputDirectory) {
         CsvProducer dataSetProducer = new CsvProducer(inputDirectory);
-        CloseableDataSetProducer closeableDataSetProducer = new CloseableDataSetProducer(dataSetProducer);
+        AutocloseDataSetProducer closeableDataSetProducer = new AutocloseDataSetProducer(dataSetProducer);
         setDataSetProducer(closeableDataSetProducer);
     }
 
@@ -38,7 +38,7 @@ public interface DataSetProducerSupport {
     default public void setXlsProducer(File file) throws IOException {
         FileInputStream inputStream = new FileInputStream(file);
         XlsDataSetProducer dataSetProducer = new XlsDataSetProducer(new BufferedInputStream(inputStream));
-        setDataSetProducer(new CloseableDataSetProducer(dataSetProducer, inputStream));
+        setDataSetProducer(new AutocloseDataSetProducer(dataSetProducer, inputStream));
     }
 
     default public void setXlsProducer(InputStream inputStream) throws IOException {
@@ -63,7 +63,7 @@ public interface DataSetProducerSupport {
         InputStreamReader reader = new InputStreamReader(bufferedInputStream, charset);
         InputSource inputSource = new InputSource(reader);
         XmlProducer xmlProducer = new XmlProducer(inputSource);
-        setDataSetProducer(new CloseableDataSetProducer(xmlProducer, inputStream));
+        setDataSetProducer(new AutocloseDataSetProducer(xmlProducer, inputStream));
     }
 
     default public void setXmlProducer(InputStream inputStream) {
@@ -71,7 +71,11 @@ public interface DataSetProducerSupport {
     }
 
     default public void setXmlProducer(InputStream inputStream, Charset charset) {
-        setDataSetProducer(new XmlProducer(new InputSource(new InputStreamReader(new BufferedInputStream(inputStream), charset))));
+        BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+        InputStreamReader reader = new InputStreamReader(bufferedInputStream, charset);
+        InputSource inputSource = new InputSource(reader);
+        XmlProducer xmlProducer = new XmlProducer(inputSource);
+        setDataSetProducer(new AutocloseDataSetProducer(xmlProducer, inputStream));
     }
 
     // FlatXmlProducer
@@ -89,7 +93,7 @@ public interface DataSetProducerSupport {
         InputStreamReader characterStream = new InputStreamReader(new BufferedInputStream(inputStream), charset);
         InputSource xmlSource = new InputSource(characterStream);
         FlatXmlProducer dataSetProducer = new FlatXmlProducer(xmlSource);
-        CloseableDataSetProducer closeableDataSetProducer = new CloseableDataSetProducer(dataSetProducer, inputStream);
+        AutocloseDataSetProducer closeableDataSetProducer = new AutocloseDataSetProducer(dataSetProducer, inputStream);
         setDataSetProducer(closeableDataSetProducer);
     }
 
@@ -98,7 +102,11 @@ public interface DataSetProducerSupport {
     }
 
     default public void setFlatXmlProducer(InputStream inputStream, Charset charset) {
-        setDataSetProducer(new FlatXmlProducer(new InputSource(new InputStreamReader(new BufferedInputStream(inputStream), charset))));
+        InputStreamReader characterStream = new InputStreamReader(new BufferedInputStream(inputStream), charset);
+        InputSource xmlSource = new InputSource(characterStream);
+        FlatXmlProducer dataSetProducer = new FlatXmlProducer(xmlSource);
+        AutocloseDataSetProducer autocloseDataSetProducer = new AutocloseDataSetProducer(dataSetProducer, inputStream);
+        setDataSetProducer(autocloseDataSetProducer);
     }
 
     //

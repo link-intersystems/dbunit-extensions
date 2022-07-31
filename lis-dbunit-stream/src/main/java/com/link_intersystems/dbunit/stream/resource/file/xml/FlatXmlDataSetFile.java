@@ -2,6 +2,8 @@ package com.link_intersystems.dbunit.stream.resource.file.xml;
 
 import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerSupport;
 import com.link_intersystems.dbunit.stream.resource.file.AbstractTextDataSetFile;
+import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
+import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.stream.IDataSetProducer;
 import org.dbunit.dataset.xml.FlatXmlProducer;
 import org.xml.sax.InputSource;
@@ -25,7 +27,7 @@ public class FlatXmlDataSetFile extends AbstractTextDataSetFile {
     protected IDataSetProducer createProducer(Reader reader) {
         InputSource xmlSource = new InputSource(reader);
         FlatXmlProducer dataSetProducer = new FlatXmlProducer(xmlSource);
-        dataSetProducer.setColumnSensing(columnSensing);
+        dataSetProducer.setColumnSensing(isColumnSensing());
         return dataSetProducer;
     }
 
@@ -36,5 +38,16 @@ public class FlatXmlDataSetFile extends AbstractTextDataSetFile {
 
     public void setColumnSensing(boolean columnSensing) {
         this.columnSensing = columnSensing;
+    }
+
+    public boolean isColumnSensing() {
+        return columnSensing;
+    }
+
+    @Override
+    public DataSetFile withNewFile(File newFile) throws DataSetException {
+        FlatXmlDataSetFile flatXmlDataSetFile = (FlatXmlDataSetFile) super.withNewFile(newFile);
+        flatXmlDataSetFile.setColumnSensing(isColumnSensing());
+        return flatXmlDataSetFile;
     }
 }

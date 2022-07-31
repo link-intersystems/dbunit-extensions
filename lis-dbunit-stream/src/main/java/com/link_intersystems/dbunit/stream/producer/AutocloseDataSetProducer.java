@@ -13,7 +13,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class CloseableDataSetProducer implements AutoCloseable, IDataSetProducer {
+public class AutocloseDataSetProducer implements AutoCloseable, IDataSetProducer {
 
     private static class ConsumerExpectionInterceptor extends AbstractDataSetConsumerDelegate {
 
@@ -42,17 +42,17 @@ public class CloseableDataSetProducer implements AutoCloseable, IDataSetProducer
         }
     }
 
-    private Logger logger = LoggerFactory.getLogger(CloseableDataSetProducer.class);
+    private Logger logger = LoggerFactory.getLogger(AutocloseDataSetProducer.class);
 
     private final IDataSetProducer dataSetProducer;
     private AutoCloseable autoCloseable;
     private ConsumerExpectionInterceptor interceptor = new ConsumerExpectionInterceptor();
 
-    public CloseableDataSetProducer(IDataSetProducer dataSetProducer) {
+    public AutocloseDataSetProducer(IDataSetProducer dataSetProducer) {
         this(dataSetProducer, null);
     }
 
-    public CloseableDataSetProducer(IDataSetProducer dataSetProducer, AutoCloseable autoCloseable) {
+    public AutocloseDataSetProducer(IDataSetProducer dataSetProducer, AutoCloseable autoCloseable) {
         this.dataSetProducer = requireNonNull(dataSetProducer);
         this.autoCloseable = autoCloseable;
     }

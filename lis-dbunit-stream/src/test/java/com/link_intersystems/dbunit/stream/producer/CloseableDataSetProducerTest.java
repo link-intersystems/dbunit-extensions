@@ -7,7 +7,6 @@ import org.dbunit.dataset.stream.IDataSetConsumer;
 import org.dbunit.dataset.stream.IDataSetProducer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -20,7 +19,7 @@ import static org.mockito.Mockito.*;
 class CloseableDataSetProducerTest {
 
     private IDataSetConsumer consumer;
-    private CloseableDataSetProducer closeableDataSetProducer;
+    private AutocloseDataSetProducer closeableDataSetProducer;
     private AutoCloseable closeable;
 
     @BeforeEach
@@ -48,7 +47,7 @@ class CloseableDataSetProducerTest {
         consumer = mock(IDataSetConsumer.class);
         closeable = mock(AutoCloseable.class);
         dataSetProducer.setConsumer(consumer);
-        closeableDataSetProducer = new CloseableDataSetProducer(dataSetProducer, closeable);
+        closeableDataSetProducer = new AutocloseDataSetProducer(dataSetProducer, closeable);
         closeableDataSetProducer.setConsumer(consumer);
     }
 
