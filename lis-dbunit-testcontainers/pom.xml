@@ -30,7 +30,6 @@
         <dependency>
             <groupId>com.link-intersystems.commons</groupId>
             <artifactId>lis-commons-security</artifactId>
-            <version>1.6.2-SNAPSHOT</version>
         </dependency>
 
 
