@@ -2,6 +2,7 @@ package com.link_intersystems.dbunit.stream.resource.file.xml;
 
 import com.link_intersystems.dbunit.stream.producer.DefaultDataSetProducerSupport;
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
+import com.link_intersystems.dbunit.stream.resource.file.DataSetFileConfig;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITableMetaData;
 import org.dbunit.dataset.stream.DefaultConsumer;
@@ -20,6 +21,7 @@ import java.io.InputStream;
 public abstract class AbstractXmlTableMetaDataDataSetFileDetector extends AbstractXmlDataSetFileDetector {
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
+    private DataSetFileConfig detectionConfig;
 
     @Override
     protected DataSetFile detectXmlFile(File file) {

@@ -1,25 +1,28 @@
 package com.link_intersystems.dbunit.stream.resource.file.xml;
 
 import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerSupport;
-import com.link_intersystems.dbunit.stream.producer.DataSetProducerSupport;
-import com.link_intersystems.dbunit.stream.resource.file.AbstractDataSetFile;
+import com.link_intersystems.dbunit.stream.resource.file.AbstractTextDataSetFile;
+import org.dbunit.dataset.stream.IDataSetProducer;
+import org.dbunit.dataset.xml.XmlProducer;
+import org.xml.sax.InputSource;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
+import java.io.Reader;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class XmlDataSetFile extends AbstractDataSetFile {
+public class XmlDataSetFile extends AbstractTextDataSetFile {
 
     XmlDataSetFile(File file) {
         super(file);
     }
 
     @Override
-    protected void setProducer(DataSetProducerSupport producerSupport, File file) throws IOException {
-        producerSupport.setXmlProducer(file);
+    protected IDataSetProducer createProducer(Reader reader) {
+        InputSource inputSource = new InputSource(reader);
+        return new XmlProducer(inputSource);
     }
 
     @Override
