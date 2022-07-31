@@ -28,7 +28,7 @@ public class DefaultDataSetResourcesSupplier implements DataSetResourcesSupplier
 
     @Override
     public List<DataSetResource> getDataSetResources() {
-        List<File> dataSetMatches = fileLocations.getPaths();
+        List<File> dataSetMatches = fileLocations.getFiles();
 
         return resolveDataSetMigrations(dataSetMatches);
     }

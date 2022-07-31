@@ -9,5 +9,5 @@ import java.util.List;
  */
 public interface DataSetFileLocations {
 
-    public List<File> getPaths();
+    public List<File> getFiles();
 }

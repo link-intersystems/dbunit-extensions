@@ -10,35 +10,35 @@ import java.util.List;
  */
 public class DefaultDataSetFileLocations extends AbstractList<File> implements DataSetFileLocations {
 
-    private List<File> paths = new ArrayList<>();
+    private List<File> files = new ArrayList<>();
 
     @Override
-    public List<File> getPaths() {
+    public List<File> getFiles() {
         return this;
     }
 
     @Override
     public void add(int index, File element) {
-        paths.add(index, element);
+        files.add(index, element);
     }
 
     @Override
     public File set(int index, File element) {
-        return paths.set(index, element);
+        return files.set(index, element);
     }
 
     @Override
     public File remove(int index) {
-        return paths.remove(index);
+        return files.remove(index);
     }
 
     @Override
     public File get(int index) {
-        return paths.get(index);
+        return files.get(index);
     }
 
     @Override
     public int size() {
-        return paths.size();
+        return files.size();
     }
 }

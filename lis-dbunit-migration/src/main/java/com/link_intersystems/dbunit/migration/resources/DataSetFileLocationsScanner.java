@@ -37,7 +37,7 @@ public class DataSetFileLocationsScanner implements DataSetFileLocations {
     }
 
     @Override
-    public List<File> getPaths() {
+    public List<File> getFiles() {
         return fileScanner.scan(basepath);
     }
 }
