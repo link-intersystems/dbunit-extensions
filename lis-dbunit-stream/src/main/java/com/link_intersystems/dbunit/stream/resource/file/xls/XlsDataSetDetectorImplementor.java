@@ -2,7 +2,6 @@ package com.link_intersystems.dbunit.stream.resource.file.xls;
 
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFileDetector;
-import com.link_intersystems.io.FilePath;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
@@ -12,7 +11,6 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.nio.file.Path;
 import java.text.MessageFormat;
 
 /**
@@ -23,8 +21,7 @@ public class XlsDataSetDetectorImplementor implements DataSetFileDetector {
     private Logger logger = LoggerFactory.getLogger(XlsDataSetDetectorImplementor.class);
 
     @Override
-    public DataSetFile detect(Path path) {
-        File file = path.toFile();
+    public DataSetFile detect(File file) {
         if (file.isDirectory()) {
             return null;
         }
@@ -33,7 +30,7 @@ public class XlsDataSetDetectorImplementor implements DataSetFileDetector {
             try (InputStream in = new BufferedInputStream(new FileInputStream(file))) {
                 Workbook workbook = WorkbookFactory.create(in);
                 workbook.close();
-                return new XlsDataSetFile(path);
+                return new XlsDataSetFile(file);
             } catch (Exception e) {
                 logFileNotReadable(file, e);
             }

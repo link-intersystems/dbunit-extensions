@@ -2,10 +2,8 @@ package com.link_intersystems.dbunit.stream.resource.file.csv;
 
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFileDetector;
-import com.link_intersystems.io.FilePath;
 
 import java.io.File;
-import java.nio.file.Path;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -16,21 +14,18 @@ public class CsvDataSetDetector implements DataSetFileDetector {
     public static final String CSV_EXTENSION = ".csv";
 
     @Override
-    public DataSetFile detect(Path path) {
-        Path effectivePath = path;
+    public DataSetFile detect(File file) {
 
-        File file = path.toFile();
         if (file.isFile()) {
             if (isCsvDataSetFile(file)) {
-                effectivePath = path.getParent();
+                file = file.getParentFile();
             } else {
                 return null;
             }
         }
 
-        File effectiveDir = effectivePath.toFile();
-        if (isTableOrderingTxtExistent(effectiveDir) && hasCsvFiles(effectiveDir)) {
-            return new CsvDataSetFile(effectivePath);
+        if (isTableOrderingTxtExistent(file) && hasCsvFiles(file)) {
+            return new CsvDataSetFile(file);
         }
 
         return null;

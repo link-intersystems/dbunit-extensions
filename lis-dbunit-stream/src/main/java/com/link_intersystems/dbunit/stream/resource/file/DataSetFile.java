@@ -11,7 +11,7 @@ import java.nio.file.Path;
  */
 public interface DataSetFile extends DataSetResource {
 
-    DataSetFile withNewPath(Path path) throws DataSetException;
+    DataSetFile withNewFile(File file) throws DataSetException;
 
-    Path getPath();
+    File getFile();
 }

@@ -1,9 +1,6 @@
 package com.link_intersystems.dbunit.stream.resource.file;
 
-import com.link_intersystems.io.FilePath;
-
 import java.io.File;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
@@ -30,9 +27,9 @@ public class DataSetFileDetection {
         return dataSetDetectors;
     }
 
-    public DataSetFile detect(Path path) {
+    public DataSetFile detect(File file) {
         for (DataSetFileDetector detector : getDetectors()) {
-            DataSetFile dataSetFile = detector.detect(path);
+            DataSetFile dataSetFile = detector.detect(file);
             if (dataSetFile != null) {
                 return dataSetFile;
             }

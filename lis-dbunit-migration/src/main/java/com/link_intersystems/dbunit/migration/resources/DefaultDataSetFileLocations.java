@@ -1,7 +1,6 @@
 package com.link_intersystems.dbunit.migration.resources;
 
-import com.link_intersystems.io.FilePath;
-
+import java.io.File;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,32 +8,32 @@ import java.util.List;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class DefaultDataSetFileLocations extends AbstractList<FilePath> implements DataSetFileLocations {
+public class DefaultDataSetFileLocations extends AbstractList<File> implements DataSetFileLocations {
 
-    private List<FilePath> paths = new ArrayList<>();
+    private List<File> paths = new ArrayList<>();
 
     @Override
-    public List<FilePath> getPaths() {
+    public List<File> getPaths() {
         return this;
     }
 
     @Override
-    public void add(int index, FilePath element) {
+    public void add(int index, File element) {
         paths.add(index, element);
     }
 
     @Override
-    public FilePath set(int index, FilePath element) {
+    public File set(int index, File element) {
         return paths.set(index, element);
     }
 
     @Override
-    public FilePath remove(int index) {
+    public File remove(int index) {
         return paths.remove(index);
     }
 
     @Override
-    public FilePath get(int index) {
+    public File get(int index) {
         return paths.get(index);
     }
 

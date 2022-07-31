@@ -20,22 +20,22 @@ import java.util.Objects;
  */
 public abstract class AbstractDataSetFile implements DataSetFile {
 
-    private Path path;
+    private File file;
 
-    public AbstractDataSetFile(Path path) {
-        this.path = path;
+    public AbstractDataSetFile(File file) {
+        this.file = file;
     }
 
     @Override
-    public Path getPath() {
-        return path;
+    public File getFile() {
+        return file;
     }
 
     @Override
     public IDataSetProducer createProducer() throws DataSetException {
         DefaultDataSetProducerSupport producerSupport = new DefaultDataSetProducerSupport();
         try {
-            setProducer(producerSupport, path.toFile());
+            setProducer(producerSupport, file);
         } catch (IOException e) {
             throw new DataSetException(e);
         }
@@ -48,12 +48,11 @@ public abstract class AbstractDataSetFile implements DataSetFile {
     public IDataSetConsumer createConsumer() throws DataSetException {
         DefaultDataSetConsumerSupport consumerSupport = new DefaultDataSetConsumerSupport();
         try {
-            File absoluteFile = path.toFile();
-            File parentFile = absoluteFile.getParentFile();
+            File parentFile = file.getParentFile();
             if (parentFile != null && !parentFile.exists()) {
                 parentFile.mkdirs();
             }
-            setConsumer(consumerSupport, absoluteFile);
+            setConsumer(consumerSupport, file);
         } catch (IOException e) {
             throw new DataSetException(e);
         }
@@ -63,11 +62,11 @@ public abstract class AbstractDataSetFile implements DataSetFile {
     protected abstract void setConsumer(DataSetConsumerSupport consumerSupport, File file) throws IOException;
 
     @Override
-    public DataSetFile withNewPath(Path newPath) throws DataSetException {
+    public DataSetFile withNewFile(File newFile) throws DataSetException {
         try {
-            Constructor<? extends AbstractDataSetFile> constructor = getClass().getDeclaredConstructor(Path.class);
+            Constructor<? extends AbstractDataSetFile> constructor = getClass().getDeclaredConstructor(File.class);
             constructor.setAccessible(true);
-            return constructor.newInstance(newPath);
+            return constructor.newInstance(newFile);
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             throw new DataSetException(e);
         }
@@ -75,7 +74,7 @@ public abstract class AbstractDataSetFile implements DataSetFile {
 
     @Override
     public String toString() {
-        return path.toString();
+        return file.toString();
     }
 
     @Override
@@ -83,11 +82,11 @@ public abstract class AbstractDataSetFile implements DataSetFile {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AbstractDataSetFile that = (AbstractDataSetFile) o;
-        return Objects.equals(path, that.path);
+        return Objects.equals(file, that.file);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(path);
+        return Objects.hash(file);
     }
 }

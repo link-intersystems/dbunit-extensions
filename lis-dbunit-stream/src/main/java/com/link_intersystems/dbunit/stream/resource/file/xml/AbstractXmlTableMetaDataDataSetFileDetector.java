@@ -2,7 +2,6 @@ package com.link_intersystems.dbunit.stream.resource.file.xml;
 
 import com.link_intersystems.dbunit.stream.producer.DefaultDataSetProducerSupport;
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
-import com.link_intersystems.io.FilePath;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITableMetaData;
 import org.dbunit.dataset.stream.DefaultConsumer;
@@ -10,23 +9,23 @@ import org.dbunit.dataset.stream.IDataSetProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 public abstract class AbstractXmlTableMetaDataDataSetFileDetector extends AbstractXmlDataSetFileDetector {
 
-    private Logger logger = LoggerFactory.getLogger(AbstractXmlTableMetaDataDataSetFileDetector.class);
+    protected Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
-    protected DataSetFile detectXmlFile(Path path) {
+    protected DataSetFile detectXmlFile(File file) {
         DefaultDataSetProducerSupport producerSupport = new DefaultDataSetProducerSupport();
         try {
-            try (FileInputStream fileInputStream = new FileInputStream(path.toFile())) {
+            try (FileInputStream fileInputStream = new FileInputStream(file)) {
                 setProducer(producerSupport, fileInputStream);
                 IDataSetProducer dataSetProducer = producerSupport.getDataSetProducer();
 
@@ -53,15 +52,18 @@ public abstract class AbstractXmlTableMetaDataDataSetFileDetector extends Abstra
                 }
 
                 if (consumerDetector.seemsToBeAFlatXmlDataSet) {
-                    return dataSetFileDetectedSucessfully(path);
+                    return dataSetFileDetectedSucessfully(file);
                 }
             }
         } catch (IOException | DataSetException e) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("DataSet type can not be detected.", e);
+            }
         }
         return null;
     }
 
-    protected abstract DataSetFile dataSetFileDetectedSucessfully(Path path);
+    protected abstract DataSetFile dataSetFileDetectedSucessfully(File file);
 
     protected abstract void setProducer(DefaultDataSetProducerSupport producerSupport, InputStream inputStream);
 

@@ -13,8 +13,8 @@ import java.nio.file.Path;
  */
 public class XmlDataSetFile extends AbstractDataSetFile {
 
-    XmlDataSetFile(Path path) {
-        super(path);
+    XmlDataSetFile(File file) {
+        super(file);
     }
 
     @Override

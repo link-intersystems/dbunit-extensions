@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import java.io.File;
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,7 +30,7 @@ class DataSetFileDetectorTest {
 
     @Test
     void csv() {
-        Path file = dataSetFiles.getCsvDataSetDir();
+        File file = dataSetFiles.getCsvDataSetDir().toFile();
 
         DataSetFile dataSetFile = dataSetFileDetector.detect(file);
 
@@ -38,7 +39,7 @@ class DataSetFileDetectorTest {
 
     @Test
     void xls() {
-        Path file = dataSetFiles.getXlsDataSetFile();
+        File file = dataSetFiles.getXlsDataSetFile().toFile();
 
         DataSetFile dataSetFile = dataSetFileDetector.detect(file);
 
@@ -47,7 +48,7 @@ class DataSetFileDetectorTest {
 
     @Test
     void flatXml() {
-        Path file = dataSetFiles.getFlatXmlDataSetPath();
+        File file = dataSetFiles.getFlatXmlDataSetPath().toFile();
 
         DataSetFile dataSetFile = dataSetFileDetector.detect(file);
 
@@ -56,7 +57,7 @@ class DataSetFileDetectorTest {
 
     @Test
     void xml() {
-        Path file = dataSetFiles.getXmlDataSetPath();
+        File file = dataSetFiles.getXmlDataSetPath().toFile();
 
         DataSetFile dataSetFile = dataSetFileDetector.detect(file);
 

@@ -6,15 +6,14 @@ import com.link_intersystems.dbunit.stream.resource.file.AbstractDataSetFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 public class FlatXmlDataSetFile extends AbstractDataSetFile {
 
-    FlatXmlDataSetFile(Path path) {
-        super(path);
+    FlatXmlDataSetFile(File file) {
+        super(file);
     }
 
     @Override

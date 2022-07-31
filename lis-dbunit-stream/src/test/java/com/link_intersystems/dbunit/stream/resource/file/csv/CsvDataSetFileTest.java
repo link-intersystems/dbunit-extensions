@@ -24,7 +24,7 @@ class CsvDataSetFileTest {
     @BeforeEach
     void setUp(@TempDir Path tmpDir) {
         TinySakilaDataSetFiles dataSetFiles = TinySakilaDataSetFiles.create(tmpDir);
-        csvDataSetFile =  new CsvDataSetFile(dataSetFiles.getCsvDataSetDir());
+        csvDataSetFile =  new CsvDataSetFile(dataSetFiles.getCsvDataSetDir().toFile());
     }
 
     @Test

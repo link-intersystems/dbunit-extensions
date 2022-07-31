@@ -1,7 +1,7 @@
 package com.link_intersystems.dbunit.migration.resources;
 
-import com.link_intersystems.io.FilePath;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -9,5 +9,5 @@ import java.util.List;
  */
 public interface DataSetFileLocations {
 
-    public List<FilePath> getPaths();
+    public List<File> getPaths();
 }

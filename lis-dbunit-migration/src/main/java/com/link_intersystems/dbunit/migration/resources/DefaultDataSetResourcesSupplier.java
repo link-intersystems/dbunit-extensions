@@ -4,9 +4,8 @@ import com.link_intersystems.dbunit.stream.resource.DataSetResource;
 import com.link_intersystems.dbunit.stream.resource.DataSetResourcesSupplier;
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFileDetection;
-import com.link_intersystems.io.FilePath;
 
-import java.nio.file.Path;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -29,18 +28,17 @@ public class DefaultDataSetResourcesSupplier implements DataSetResourcesSupplier
 
     @Override
     public List<DataSetResource> getDataSetResources() {
-        List<FilePath> dataSetMatches = fileLocations.getPaths();
+        List<File> dataSetMatches = fileLocations.getPaths();
 
         return resolveDataSetMigrations(dataSetMatches);
     }
 
-    private List<DataSetResource> resolveDataSetMigrations(List<FilePath> dataSetMatches) {
+    private List<DataSetResource> resolveDataSetMigrations(List<File> dataSetMatches) {
         List<DataSetFile> sourceDataSetFiles = new ArrayList<>();
         Set<DataSetFile> uniqueDataSetFiles = new HashSet<>();
 
-        for (FilePath filePath : dataSetMatches) {
-            Path absolutePath = filePath.toAbsolutePath();
-            DataSetFile dataSetFile = fileDetection.detect(absolutePath);
+        for (File dataSetMatch : dataSetMatches) {
+            DataSetFile dataSetFile = fileDetection.detect(dataSetMatch);
             if (dataSetFile != null) {
                 if (uniqueDataSetFiles.add(dataSetFile)) {
                     sourceDataSetFiles.add(dataSetFile);
