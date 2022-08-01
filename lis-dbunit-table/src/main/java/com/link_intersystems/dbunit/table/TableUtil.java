@@ -6,17 +6,14 @@ import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.ITableMetaData;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Convenience methods for table related queries.
  *
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class TableUtil {
+public class TableUtil implements Iterable<Row> {
 
     private ITable table;
 
@@ -129,5 +126,30 @@ public class TableUtil {
         }
 
         return spittedTables;
+    }
+
+    @Override
+    public Iterator<Row> iterator() {
+        return new Iterator<Row>() {
+            private int rowIndex = 0;
+
+            @Override
+            public boolean hasNext() {
+                return rowIndex < table.getRowCount();
+            }
+
+            @Override
+            public Row next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+
+                try {
+                    return getRow(rowIndex++);
+                } catch (DataSetException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
     }
 }

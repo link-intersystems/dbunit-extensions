@@ -10,6 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -52,5 +54,21 @@ class TableUtilTest {
 
         assertEquals("PENELOPE", partitionedTables[0].getValue(0, "first_name"));
         assertEquals("NICK", partitionedTables[1].getValue(0, "first_name"));
+    }
+
+    @Test
+    void iterator() {
+        Iterator<Row> iterator = actorUtil.iterator();
+        assertTrue(iterator.hasNext());
+        Row row = iterator.next();
+        assertEquals("PENELOPE", row.getValueByColumnName("first_name"));
+
+        assertTrue(iterator.hasNext());
+        row = iterator.next();
+        assertEquals("NICK", row.getValueByColumnName("first_name"));
+
+
+        assertFalse(iterator.hasNext());
+        assertThrows(NoSuchElementException.class, iterator::next);
     }
 }
