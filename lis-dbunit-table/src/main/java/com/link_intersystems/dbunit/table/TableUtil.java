@@ -8,6 +8,8 @@ import org.dbunit.dataset.ITableMetaData;
 import java.text.MessageFormat;
 import java.util.*;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Convenience methods for table related queries.
  *
@@ -18,15 +20,20 @@ public class TableUtil implements Iterable<Row> {
     private ITable table;
 
     public TableUtil(ITable table) {
-        this.table = table;
+        this.table = requireNonNull(table);
+    }
+
+    public ITable getTable() {
+        return table;
     }
 
     public RowList getRows() throws DataSetException {
-        int rowCount = table.getRowCount();
+        int rowCount = getTable().getRowCount();
         return getRows(0, rowCount);
     }
 
     public RowList getRows(ColumnValue[] columnValues) throws DataSetException {
+        ITable table = getTable();
         RowList rows = new RowList(table.getTableMetaData());
 
         nextRow:
@@ -59,6 +66,7 @@ public class TableUtil implements Iterable<Row> {
     }
 
     public Row getRowById(Object... idValues) throws DataSetException {
+        ITable table = getTable();
         ITableMetaData tableMetaData = table.getTableMetaData();
         Column[] primaryKeys = tableMetaData.getPrimaryKeys();
         if (primaryKeys.length != idValues.length) {
@@ -70,7 +78,7 @@ public class TableUtil implements Iterable<Row> {
         for (int i = 0; i < table.getRowCount(); i++) {
             for (int j = 0; j < primaryKeys.length; j++) {
                 Column primaryKeyColumn = primaryKeys[j];
-                Object columnValue = table.getValue(i, primaryKeyColumn.getColumnName());
+                Object columnValue = this.table.getValue(i, primaryKeyColumn.getColumnName());
                 if (!Objects.equals(idValues[j], columnValue)) {
                     continue nextRow;
                 }
@@ -82,6 +90,7 @@ public class TableUtil implements Iterable<Row> {
     }
 
     public Row getRow(int row) throws DataSetException {
+        ITable table = getTable();
         ITableMetaData tableMetaData = table.getTableMetaData();
         Column[] columns = tableMetaData.getColumns();
         List<Object> rowObj = new ArrayList<>();
@@ -97,6 +106,7 @@ public class TableUtil implements Iterable<Row> {
     }
 
     public RowList getRows(int startIndexInclusive, int endIndexExclusive) throws DataSetException {
+        ITable table = getTable();
         RowList rows = new RowList(table.getTableMetaData());
 
         int rowCount = table.getRowCount();
@@ -116,6 +126,7 @@ public class TableUtil implements Iterable<Row> {
             throw new IllegalArgumentException("partitionSize must be 1 or greater");
         }
 
+        ITable table = getTable();
         int rowCount = table.getRowCount();
         ITable[] spittedTables = new ITable[(int) Math.ceil(rowCount / (double) partitionSize)];
 
@@ -135,6 +146,7 @@ public class TableUtil implements Iterable<Row> {
 
             @Override
             public boolean hasNext() {
+                ITable table = getTable();
                 return rowIndex < table.getRowCount();
             }
 
