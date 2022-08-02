@@ -60,7 +60,7 @@ class DataSetFlywayMigrationColumnSensingTest {
         assertEquals(2, actorTable.getRowCount());
         TableUtil actorUtil = new TableUtil(actorTable);
         Row row = actorUtil.getRowById(2);
-        assertEquals("WAHLBERG", row.getValueByColumnName("lastname"));
+        assertEquals("WAHLBERG", row.getValue("lastname"));
 
     }
 }

@@ -3,7 +3,6 @@ package com.link_intersystems.dbunit.table;
 import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimTestDBExtension;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.dataset.Column;
-import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,8 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.sql.Connection;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -37,11 +35,8 @@ class RowTest {
     }
 
     @Test
-    void columnLengthDoesNotMatchValuesLength() throws DataSetException {
-        ITable languageTable = sakilaDBFixture.getTable("language");
-        Column[] columns = languageTable.getTableMetaData().getColumns();
-
-        assertThrows(IllegalArgumentException.class, () -> new Row(columns, row));
+    void nullCells() {
+        assertThrows(NullPointerException.class, () -> new Row(null));
     }
 
     @Test
@@ -77,5 +72,14 @@ class RowTest {
         assertEquals("first_name", columns[1].getColumnName());
         assertEquals("last_name", columns[2].getColumnName());
         assertEquals("last_update", columns[3].getColumnName());
+    }
+
+    @Test
+    void ignoreCase() {
+        assertEquals("NICK", row.getValue("first_name"));
+
+        assertThrows(IllegalArgumentException.class, () -> row.getValue("FIRST_NAME"));
+
+         assertEquals("NICK", row.ignoreCase().getValue("FIRST_NAME"));
     }
 }

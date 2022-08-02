@@ -2,10 +2,8 @@ package com.link_intersystems.dbunit.table;
 
 import com.link_intersystems.dbunit.test.TestDataSets;
 import org.dbunit.dataset.DataSetException;
-import org.dbunit.dataset.DefaultTable;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +33,7 @@ class TableUtilTest {
         assertEquals(2, rows.size());
 
         Row row = rows.get(0);
-        assertEquals("PENELOPE", row.getValueByColumnName("first_name"));
+        assertEquals("PENELOPE", row.getValue("first_name"));
     }
 
     @Test
@@ -44,7 +42,7 @@ class TableUtilTest {
         assertEquals(1, rows.size());
 
         Row row = rows.get(0);
-        assertEquals("PENELOPE", row.getValueByColumnName("first_name"));
+        assertEquals("PENELOPE", row.getValue("first_name"));
     }
 
     @Test
@@ -61,11 +59,11 @@ class TableUtilTest {
         Iterator<Row> iterator = actorUtil.iterator();
         assertTrue(iterator.hasNext());
         Row row = iterator.next();
-        assertEquals("PENELOPE", row.getValueByColumnName("first_name"));
+        assertEquals("PENELOPE", row.getValue("first_name"));
 
         assertTrue(iterator.hasNext());
         row = iterator.next();
-        assertEquals("NICK", row.getValueByColumnName("first_name"));
+        assertEquals("NICK", row.getValue("first_name"));
 
 
         assertFalse(iterator.hasNext());
