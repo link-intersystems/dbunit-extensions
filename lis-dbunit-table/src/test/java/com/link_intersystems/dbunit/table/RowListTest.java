@@ -72,6 +72,47 @@ class RowListTest {
     }
 
     @Test
+    void indexOf() throws DataSetException {
+        ITable actorTable = sakilaDBFixture.getTable("actor");
+        TableUtil actorUtil = new TableUtil(actorTable);
+        Row row1 = actorUtil.getRow(1);
+        RowList rows = actorUtil.getRows();
+
+        assertEquals(1, rows.indexOf(row1));
+    }
+
+    @Test
+    void indexOfLastElement() throws DataSetException {
+        ITable actorTable = sakilaDBFixture.getTable("actor");
+        TableUtil actorUtil = new TableUtil(actorTable);
+        int lastElementIndex = actorTable.getRowCount() - 1;
+        Row lastRow = actorUtil.getRow(lastElementIndex);
+        RowList rows = actorUtil.getRows();
+
+        assertEquals(lastElementIndex, rows.indexOf(lastRow));
+    }
+
+    @Test
+    void indexOfFirstElement() throws DataSetException {
+        ITable actorTable = sakilaDBFixture.getTable("actor");
+        TableUtil actorUtil = new TableUtil(actorTable);
+        Row firstRow = actorUtil.getRow(0);
+        RowList rows = actorUtil.getRows();
+
+        assertEquals(0, rows.indexOf(firstRow));
+    }
+
+
+    @Test
+    void indexOfUnknownElement() throws DataSetException {
+        ITable actorTable = sakilaDBFixture.getTable("actor");
+        TableUtil actorUtil = new TableUtil(actorTable);
+        RowList rows = actorUtil.getRows();
+
+        assertEquals(-1, rows.indexOf("row1"));
+    }
+
+    @Test
     void addIncompatibleRow() throws DataSetException {
         ITable languageTable = sakilaDBFixture.getTable("language");
         TableUtil languageTableUtil = new TableUtil(languageTable);

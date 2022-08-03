@@ -3,13 +3,11 @@ package com.link_intersystems.dbunit.table;
 import org.dbunit.dataset.*;
 
 import java.text.MessageFormat;
-import java.util.AbstractList;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * A
+ *
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 public class RowList extends AbstractList<Row> {
@@ -17,6 +15,7 @@ public class RowList extends AbstractList<Row> {
     private final Column[] columns;
     private ITableMetaData tableMetaData;
     private List<Row> rows = new ArrayList<>();
+    private Map<Row, Integer> indexMap;
 
     public RowList(ITableMetaData tableMetaData) throws DataSetException {
         this.tableMetaData = tableMetaData;
@@ -28,15 +27,38 @@ public class RowList extends AbstractList<Row> {
     }
 
     @Override
+    public int indexOf(Object o) {
+        Map<Row, Integer> indexMap = getIndexMap();
+        Integer index = indexMap.get(o);
+        return index == null ? -1 : index;
+    }
+
+    private Map<Row, Integer> getIndexMap() {
+        if (indexMap == null) {
+            indexMap = new HashMap<>();
+            int index = size() - 1;
+            while (index > -1) {
+                Row row = get(index);
+                indexMap.put(row, index);
+                index--;
+            }
+        }
+        return indexMap;
+    }
+
+    @Override
     public void add(int index, Row element) {
         checkRow(element);
         rows.add(index, element);
+        indexMap = null;
     }
 
     @Override
     public Row set(int index, Row element) {
         checkRow(element);
-        return rows.set(index, element);
+        Row previousElement = rows.set(index, element);
+        indexMap = null;
+        return previousElement;
     }
 
     private void checkRow(Row row) {
@@ -48,7 +70,11 @@ public class RowList extends AbstractList<Row> {
 
     @Override
     public Row remove(int index) {
-        return rows.remove(index);
+        Row previousElement = rows.remove(index);
+        if (indexMap != null) {
+            indexMap.values().remove(index);
+        }
+        return previousElement;
     }
 
     @Override
