@@ -1,5 +1,6 @@
 package com.link_intersystems.dbunit.migration;
 
+import com.link_intersystems.dbunit.flyway.FlywayDatabaseMigrationSupport;
 import com.link_intersystems.dbunit.flyway.FlywayMigrationConfig;
 import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
 import com.link_intersystems.dbunit.stream.consumer.DefaultDataSetConsumerSupport;
@@ -26,18 +27,18 @@ class DataSetFlywayMigrationTest {
 
     static Stream<DatabaseDefinition> databases() {
         return Stream.of(
-                        new DatabaseDefinition("postgres", DatabaseContainerSupport.getDatabaseContainerSupport("postgres:latest")),
-                        new DatabaseDefinition("mysql", DatabaseContainerSupport.getDatabaseContainerSupport("mysql:latest"))
+                new DatabaseDefinition("postgres", DatabaseContainerSupport.getDatabaseContainerSupport("postgres:latest")),
+                new DatabaseDefinition("mysql", DatabaseContainerSupport.getDatabaseContainerSupport("mysql:latest"))
         );
     }
 
     @ParameterizedTest
     @MethodSource("databases")
     void migrate(DatabaseDefinition databaseDefinition) throws DataSetException, IOException {
-        DataSetFlywayMigration flywayMigration = new DataSetFlywayMigration();
+        DataSetMigration dataSetMigration = new DataSetMigration();
 
         IDataSet sourceDataSet = TestDataSets.getTinySakilaDataSet();
-        flywayMigration.setDataSetProducer(sourceDataSet);
+        dataSetMigration.setDataSetProducer(sourceDataSet);
 
         CopyDataSetConsumer copyDataSetConsumer = new CopyDataSetConsumer();
 
@@ -48,14 +49,14 @@ class DataSetFlywayMigrationTest {
         consumerSupport.setFlatXmlConsumer("target/flat.xml");
         IDataSetConsumer flatXmlConsumer = consumerSupport.getDataSetConsumer();
 
-        flywayMigration.setDataSetConsumers(copyDataSetConsumer, csvConsumer, flatXmlConsumer);
+        dataSetMigration.setDataSetConsumers(copyDataSetConsumer, csvConsumer, flatXmlConsumer);
 
-        flywayMigration.setDatabaseContainerSupport(databaseDefinition.databaseContainerSupport);
+        dataSetMigration.setDatabaseContainerSupport(databaseDefinition.databaseContainerSupport);
 
         FlywayMigrationConfig migrationConfig = FlywayConfigurationConfigFixture.createConfig(databaseDefinition.containerName);
-        flywayMigration.setMigrationConfig(migrationConfig);
+        dataSetMigration.setDatabaseMigrationSupport(new FlywayDatabaseMigrationSupport(migrationConfig));
 
-        flywayMigration.exec();
+        dataSetMigration.exec();
 
         IDataSet migratedDataSet = copyDataSetConsumer.getDataSet();
 

@@ -1,5 +1,6 @@
 package com.link_intersystems.dbunit.migration;
 
+import com.link_intersystems.dbunit.flyway.FlywayDatabaseMigrationSupport;
 import com.link_intersystems.dbunit.flyway.FlywayMigrationConfig;
 import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
 import com.link_intersystems.dbunit.stream.consumer.DefaultDataSetConsumerSupport;
@@ -30,7 +31,7 @@ class DataSetFlywayMigrationColumnSensingTest {
         DatabaseContainerSupport postgres = DatabaseContainerSupport.getDatabaseContainerSupport("postgres:latest");
         DatabaseDefinition databaseDefinition = new DatabaseDefinition("postgres", postgres);
 
-        DataSetFlywayMigration flywayMigration = new DataSetFlywayMigration();
+        DataSetMigration flywayMigration = new DataSetMigration();
 
         InputStream resourceAsStream = DataSetFlywayMigrationColumnSensingTest.class.getResourceAsStream("/tiny-sakila-flat-column-sensing.xml");
         FlatXmlDataSet sourceDataSet = new FlatXmlDataSetBuilder().setColumnSensing(true).build(resourceAsStream);
@@ -48,7 +49,7 @@ class DataSetFlywayMigrationColumnSensingTest {
         flywayMigration.setDatabaseContainerSupport(databaseDefinition.databaseContainerSupport);
 
         FlywayMigrationConfig migrationConfig = FlywayConfigurationConfigFixture.createPostgresConfig();
-        flywayMigration.setMigrationConfig(migrationConfig);
+        flywayMigration.setDatabaseMigrationSupport(new FlywayDatabaseMigrationSupport(migrationConfig));
 
         flywayMigration.exec();
 

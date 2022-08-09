@@ -1,5 +1,6 @@
 package com.link_intersystems.dbunit.migration.collection;
 
+import com.link_intersystems.dbunit.flyway.FlywayDatabaseMigrationSupport;
 import com.link_intersystems.dbunit.flyway.FlywayMigrationConfig;
 import com.link_intersystems.dbunit.migration.FlywayConfigurationConfigFixture;
 import com.link_intersystems.dbunit.migration.resources.BasepathTargetPathSupplier;
@@ -36,7 +37,7 @@ class DataSetCollectionFlywayMigrationTest {
     private Path sourcePath;
     private Path targetPath;
 
-    private DataSetCollectionFlywayMigration dataSetCollectionMigration;
+    private DataSetsMigrations dataSetCollectionMigration;
     private DataSetFileLocationsScanner fileLocationsScanner;
 
     @BeforeEach
@@ -45,7 +46,7 @@ class DataSetCollectionFlywayMigrationTest {
         this.targetPath = Paths.get(tmpDir.toString(), "target/someSubdir");
         TinySakilaDataSetFiles.create(sourcePath);
         BasepathTargetPathSupplier basepathTargetPathSupplier = new BasepathTargetPathSupplier(sourcePath, targetPath);
-        dataSetCollectionMigration = new DataSetCollectionFlywayMigration();
+        dataSetCollectionMigration = new DataSetsMigrations();
         dataSetCollectionMigration.setTargetDataSetResourceSupplier(basepathTargetPathSupplier);
         fileLocationsScanner = new DataSetFileLocationsScanner(sourcePath);
         dataSetCollectionMigration.setDataSetResourcesSupplier(new DefaultDataSetResourcesSupplier(fileLocationsScanner, new DataSetFileDetection()));
@@ -57,7 +58,7 @@ class DataSetCollectionFlywayMigrationTest {
 
         FlywayMigrationConfig migrationConfig = FlywayConfigurationConfigFixture.createPostgresConfig();
 
-        dataSetCollectionMigration.setMigrationConfig(migrationConfig);
+        dataSetCollectionMigration.setDatabaseMigrationSupport(new FlywayDatabaseMigrationSupport(migrationConfig));
 
         TableOrder tableOrder = new DefaultTableOrder("language", "film", "actor", "film_actor");
         ExternalSortTableConsumer externalSortTableConsumer = new ExternalSortTableConsumer(tableOrder);

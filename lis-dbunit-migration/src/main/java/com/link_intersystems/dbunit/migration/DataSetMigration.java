@@ -1,7 +1,5 @@
 package com.link_intersystems.dbunit.migration;
 
-import com.link_intersystems.dbunit.flyway.FlywayDatabaseMigrationSupport;
-import com.link_intersystems.dbunit.flyway.FlywayMigrationConfig;
 import com.link_intersystems.dbunit.stream.consumer.*;
 import com.link_intersystems.dbunit.stream.producer.DataSetSource;
 import com.link_intersystems.dbunit.stream.producer.DataSetSourceSupport;
@@ -11,26 +9,24 @@ import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class DataSetFlywayMigration implements DataSetSourceSupport, DataSetConsumerSupport {
+public class DataSetMigration implements DataSetSourceSupport, DataSetConsumerSupport {
 
     private DataSetSource sourceDataSet;
     private IDataSetConsumer targetConsumer;
     private DatabaseContainerSupport databaseContainerSupport;
     private DataSetTransormer beforeMigrationTransformer;
     private DataSetTransormer afterMigrationTransformer;
-    private FlywayMigrationConfig migrationConfig = new FlywayMigrationConfig();
+    private DatabaseMigrationSupport databaseMigrationSupport;
 
-    public void setMigrationConfig(FlywayMigrationConfig migrationConfig) {
-        this.migrationConfig = requireNonNull(migrationConfig);
+    public void setDatabaseMigrationSupport(DatabaseMigrationSupport databaseMigrationSupport) {
+        this.databaseMigrationSupport = databaseMigrationSupport;
     }
 
-    public FlywayMigrationConfig getMigrationConfig() {
-        return migrationConfig;
+    public DatabaseMigrationSupport getDatabaseMigrationSupport() {
+        return databaseMigrationSupport;
     }
 
     @Override
@@ -87,13 +83,7 @@ public class DataSetFlywayMigration implements DataSetSourceSupport, DataSetCons
     }
 
     protected TestContainersDataSetTransformer createMigrationTransformer() {
-        DatabaseMigrationSupport flywaySupport = createFlywayMigrationSupport();
-
-        return new TestContainersDataSetTransformer(databaseContainerSupport, flywaySupport);
-    }
-
-    protected FlywayDatabaseMigrationSupport createFlywayMigrationSupport() {
-        return new FlywayDatabaseMigrationSupport(getMigrationConfig());
+        return new TestContainersDataSetTransformer(databaseContainerSupport, getDatabaseMigrationSupport());
     }
 
     protected DataSetTransormer applyBeforeAndAfterTransformers(TestContainersDataSetTransformer transformer) {
