@@ -24,6 +24,7 @@
         <module>lis-dbunit-testcontainers</module>
         <module>lis-dbunit-flyway</module>
         <module>lis-dbunit-migration</module>
+        <module>lis-dbunit-migration-integration-tests</module>
     </modules>
 
     <properties>
