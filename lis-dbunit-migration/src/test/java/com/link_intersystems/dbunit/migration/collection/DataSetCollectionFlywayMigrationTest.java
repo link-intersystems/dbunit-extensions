@@ -24,7 +24,6 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -64,18 +63,16 @@ class DataSetCollectionFlywayMigrationTest {
         ExternalSortTableConsumer externalSortTableConsumer = new ExternalSortTableConsumer(tableOrder);
         dataSetCollectionMigration.setBeforeMigration(new DataSetConsumerPipeTransformerAdapter(externalSortTableConsumer));
 
-        DataSetCollectionMigrationResult result = dataSetCollectionMigration.exec();
+        MigrationsResult result = dataSetCollectionMigration.exec();
 
         assertDataSetsMigratedSuccessfully(result);
     }
 
 
-    private void assertDataSetsMigratedSuccessfully(DataSetCollectionMigrationResult result) throws DataSetException {
-        Map<DataSetResource, DataSetResource> migratedDataSetResources = result.getMigratedDataSetResources();
+    private void assertDataSetsMigratedSuccessfully(MigrationsResult result) throws DataSetException {
+        assertEquals(3, result.size(), "migrated paths");
 
-        assertEquals(3, migratedDataSetResources.size(), "migrated paths");
-
-        for (DataSetResource migratedDataSetResource : migratedDataSetResources.values()) {
+        for (DataSetResource migratedDataSetResource : result.values()) {
             IDataSetProducer producer = migratedDataSetResource.createProducer();
             CopyDataSetConsumer copyDataSetConsumer = new CopyDataSetConsumer();
             producer.setConsumer(copyDataSetConsumer);

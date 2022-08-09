@@ -4,19 +4,22 @@ import com.link_intersystems.dbunit.stream.resource.DataSetResource;
 import org.dbunit.dataset.DataSetException;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public interface DataSetCollectionMigrationListener {
+public interface DataSetsMigrationListener {
     void resourcesSupplied(List<DataSetResource> dataSetResources);
+
+    default boolean migrationsAboutToStart(List<DataSetResource> sourceDataSetResources) {
+        return true;
+    }
 
     void startMigration(DataSetResource dataSetResource);
 
-    void successfullyMigrated(DataSetResource dataSetResource);
+    void migrationSuccessful(DataSetResource dataSetResource);
 
-    void failedMigration(DataSetResource dataSetResource, DataSetException e);
+    void migrationFailed(DataSetResource dataSetResource, DataSetException e);
 
-    void dataSetCollectionMigrationFinished(Map<DataSetResource, DataSetResource> migratedDataSetResources);
+    void migrationsFinished(MigrationsResult migrationResult);
 }

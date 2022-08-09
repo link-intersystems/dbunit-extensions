@@ -16,22 +16,22 @@ import static java.text.MessageFormat.format;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public abstract class AbstractLoggingDataSetCollectionMigrationListener implements DataSetCollectionMigrationListener {
+public abstract class AbstractLoggingDataSetsMigrationListener implements DataSetsMigrationListener {
     @Override
-    public void successfullyMigrated(DataSetResource dataSetResource) {
+    public void migrationSuccessful(DataSetResource dataSetResource) {
         String msg = format("\u2714\ufe0e Migrated ''{0}''", dataSetResource);
-        logSucessfullyMigrated(msg);
+        logMigrationSuccessful(msg);
     }
 
-    protected abstract void logSucessfullyMigrated(String msg);
+    protected abstract void logMigrationSuccessful(String msg);
 
     @Override
-    public void failedMigration(DataSetResource dataSetResource, DataSetException e) {
+    public void migrationFailed(DataSetResource dataSetResource, DataSetException e) {
         String msg = format("\u274c\ufe0e Unable to migrate ''{0}''", dataSetResource);
-        logFailedMigration(e, msg);
+        logMigrationFailed(e, msg);
     }
 
-    protected abstract void logFailedMigration(DataSetException e, String msg);
+    protected abstract void logMigrationFailed(DataSetException e, String msg);
 
     @Override
     public void startMigration(DataSetResource dataSetResource) {
@@ -67,14 +67,14 @@ public abstract class AbstractLoggingDataSetCollectionMigrationListener implemen
     protected abstract void logResourcesSupplied(String msg, Supplier<String> details);
 
     @Override
-    public void dataSetCollectionMigrationFinished(Map<DataSetResource, DataSetResource> migratedDataSetResources) {
-        String msg = format("Migrated {0} data set resources ", migratedDataSetResources.size());
-        logDataSetCollectionMigrationFinished(msg, () -> {
+    public void migrationsFinished(MigrationsResult migrationsResult) {
+        String msg = format("Migrated {0} data set resources ", migrationsResult.size());
+        logMigrationsFinished(msg, () -> {
             StringWriter sw = new StringWriter();
             try (PrintWriter pw = new PrintWriter(sw)) {
                 pw.println("Migrated data set resources:");
 
-                Set<Map.Entry<DataSetResource, DataSetResource>> entries = migratedDataSetResources.entrySet();
+                Set<Map.Entry<DataSetResource, DataSetResource>> entries = migrationsResult.entrySet();
                 Iterator<Map.Entry<DataSetResource, DataSetResource>> iterator = entries.iterator();
                 while (iterator.hasNext()) {
                     Map.Entry<DataSetResource, DataSetResource> entry = iterator.next();
@@ -93,5 +93,5 @@ public abstract class AbstractLoggingDataSetCollectionMigrationListener implemen
 
     }
 
-    protected abstract void logDataSetCollectionMigrationFinished(String msg, Supplier<String> details);
+    protected abstract void logMigrationsFinished(String msg, Supplier<String> details);
 }

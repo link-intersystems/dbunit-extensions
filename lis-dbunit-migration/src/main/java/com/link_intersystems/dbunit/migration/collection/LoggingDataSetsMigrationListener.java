@@ -11,26 +11,26 @@ import static java.util.Objects.requireNonNull;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class LoggingDataSetCollectionMigrationListener extends AbstractLoggingDataSetCollectionMigrationListener {
+public class LoggingDataSetsMigrationListener extends AbstractLoggingDataSetsMigrationListener {
 
     private Logger logger;
 
-    public LoggingDataSetCollectionMigrationListener() {
-        this(LoggerFactory.getLogger(LoggingDataSetCollectionMigrationListener.class));
+    public LoggingDataSetsMigrationListener() {
+        this(LoggerFactory.getLogger(LoggingDataSetsMigrationListener.class));
 
     }
 
-    public LoggingDataSetCollectionMigrationListener(Logger logger) {
+    public LoggingDataSetsMigrationListener(Logger logger) {
         this.logger = requireNonNull(logger);
     }
 
     @Override
-    protected void logSucessfullyMigrated(String msg) {
+    protected void logMigrationSuccessful(String msg) {
         logger.info(msg);
     }
 
     @Override
-    protected void logFailedMigration(DataSetException e, String msg) {
+    protected void logMigrationFailed(DataSetException e, String msg) {
         if (logger.isDebugEnabled()) {
             logger.error(msg, e);
         } else {
@@ -52,7 +52,7 @@ public class LoggingDataSetCollectionMigrationListener extends AbstractLoggingDa
     }
 
     @Override
-    protected void logDataSetCollectionMigrationFinished(String msg, Supplier<String> details) {
+    protected void logMigrationsFinished(String msg, Supplier<String> details) {
         logger.info(msg);
         if (logger.isDebugEnabled()) {
             logger.debug(details.get());
