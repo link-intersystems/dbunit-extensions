@@ -1,6 +1,39 @@
-A high level api for migrating data sets.
+The lis-dbunit-migration-modules contain modules that support automatic data set migration using plugins for the
+Database provider (at the moment testcontainers) and for the migration implementor (at the moment flyway).
 
-At the moment only flyway migrations are supported.
+To use the `lis-dbunit-migration` module you need 3 dependencies.
+
+      <properties>
+         <!-- set to the release version you want to use -->
+         <lis-dbunit-migration.version>RELEASE</lis-dbunit-migration.version>
+      </properties>
+
+      <dependency>
+         <groupId>com.link-intersystems.dbunit</groupId>
+         <artifactId>lis-dbunit-migration</artifactId>
+         <version>${lis-dbunit-migration.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>com.link-intersystems.dbunit</groupId>
+         <artifactId>lis-dbunit-migration-flyway</artifactId>
+         <version>${lis-dbunit-migration.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>com.link-intersystems.dbunit</groupId>
+         <artifactId>lis-dbunit-migration-testcontainers</artifactId>
+         <version>${lis-dbunit-migration.version}</version>
+      </dependency>
+
+Note: Before version 1.0.5 you only need the 
+
+      <dependency>
+         <groupId>com.link-intersystems.dbunit</groupId>
+         <artifactId>lis-dbunit-migration</artifactId>
+         <version>${lis-dbunit-migration.version}</version>
+      </dependency>
+
+because the project was restructured in 1.0.5.
+
 
 # Migrate a data set flat xml file to another database version using flyway 
 
