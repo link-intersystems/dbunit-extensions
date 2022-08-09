@@ -1,12 +1,12 @@
 package com.link_intersystems.dbunit.migration.collection;
 
 import com.link_intersystems.dbunit.migration.DataSetMigration;
+import com.link_intersystems.dbunit.migration.MigrationDataSetTransformerFactory;
 import com.link_intersystems.dbunit.migration.resources.TargetDataSetResourceSupplier;
 import com.link_intersystems.dbunit.stream.consumer.DataSetTransormer;
 import com.link_intersystems.dbunit.stream.consumer.DatabaseMigrationSupport;
 import com.link_intersystems.dbunit.stream.resource.DataSetResource;
 import com.link_intersystems.dbunit.stream.resource.DataSetResourcesSupplier;
-import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
 import com.link_intersystems.util.concurrent.ProgressListener;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.stream.IDataSetConsumer;
@@ -28,7 +28,7 @@ public class DataSetsMigrations {
     private TargetDataSetResourceSupplier targetDataSetResourceSupplier;
 
     private DataSetResourcesSupplier dataSetResourcesSupplier;
-    private DatabaseContainerSupport databaseContainerSupport;
+    private MigrationDataSetTransformerFactory migrationDataSetTransformerFactory;
     private DataSetTransormer beforeMigrationTransformer;
     private DataSetTransormer afterMigrationTransformer;
     private DatabaseMigrationSupport databaseMigrationSupport;
@@ -77,15 +77,12 @@ public class DataSetsMigrations {
         return targetDataSetResourceSupplier;
     }
 
-    /**
-     * @see DatabaseContainerSupport#getDatabaseContainerSupport(String)
-     */
-    public void setDatabaseContainerSupport(DatabaseContainerSupport databaseContainerSupport) {
-        this.databaseContainerSupport = databaseContainerSupport;
+    public void setMigrationDataSetTransformerFactory(MigrationDataSetTransformerFactory migrationDataSetTransformerFactory) {
+        this.migrationDataSetTransformerFactory = migrationDataSetTransformerFactory;
     }
 
-    public DatabaseContainerSupport getDatabaseContainerSupport() {
-        return databaseContainerSupport;
+    public MigrationDataSetTransformerFactory getMigrationDataSetTransformerFactory() {
+        return migrationDataSetTransformerFactory;
     }
 
     public MigrationsResult exec() {
@@ -134,8 +131,8 @@ public class DataSetsMigrations {
     }
 
     private void checkMigrationPreconditions() {
-        if (getDatabaseContainerSupport() == null) {
-            throw new IllegalStateException("datasetContainerSupport must be set");
+        if (getMigrationDataSetTransformerFactory() == null) {
+            throw new IllegalStateException("migrationDataSetTransformerFactory must be set");
         }
         if (getTargetDataSetResourceSupplier() == null) {
             throw new IllegalStateException("targetDataSetFileSupplier must be set");
@@ -159,7 +156,7 @@ public class DataSetsMigrations {
 
     protected DataSetResource migrate(DataSetResource sourceDataSetResource) throws DataSetException {
         DataSetMigration dataSetMigration = createDataSetFlywayMigration(sourceDataSetResource);
-        dataSetMigration.setDatabaseContainerSupport(getDatabaseContainerSupport());
+        dataSetMigration.setMigrationDataSetTransformerFactory(getMigrationDataSetTransformerFactory());
         dataSetMigration.setBeforeMigrationTransformer(getBeforeMigrationTransformer());
         dataSetMigration.setAfterMigrationTransformer(getAfterMigrationTransformer());
 

@@ -3,8 +3,6 @@ package com.link_intersystems.dbunit.migration;
 import com.link_intersystems.dbunit.stream.consumer.*;
 import com.link_intersystems.dbunit.stream.producer.DataSetSource;
 import com.link_intersystems.dbunit.stream.producer.DataSetSourceSupport;
-import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
-import com.link_intersystems.dbunit.testcontainers.consumer.TestContainersDataSetTransformer;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.stream.IDataSetConsumer;
@@ -16,7 +14,7 @@ public class DataSetMigration implements DataSetSourceSupport, DataSetConsumerSu
 
     private DataSetSource sourceDataSet;
     private IDataSetConsumer targetConsumer;
-    private DatabaseContainerSupport databaseContainerSupport;
+    private MigrationDataSetTransformerFactory migrationDataSetTransformerFactory;
     private DataSetTransormer beforeMigrationTransformer;
     private DataSetTransormer afterMigrationTransformer;
     private DatabaseMigrationSupport databaseMigrationSupport;
@@ -29,6 +27,14 @@ public class DataSetMigration implements DataSetSourceSupport, DataSetConsumerSu
         return databaseMigrationSupport;
     }
 
+    public void setMigrationDataSetTransformerFactory(MigrationDataSetTransformerFactory migrationDataSetTransformerFactory) {
+        this.migrationDataSetTransformerFactory = migrationDataSetTransformerFactory;
+    }
+
+    public MigrationDataSetTransformerFactory getMigrationDataSetTransformerFactory() {
+        return migrationDataSetTransformerFactory;
+    }
+
     @Override
     public void setDataSetConsumer(IDataSetConsumer dataSetConsumer) {
         targetConsumer = dataSetConsumer;
@@ -37,10 +43,6 @@ public class DataSetMigration implements DataSetSourceSupport, DataSetConsumerSu
     @Override
     public void setDataSetSource(DataSetSource dataSetSource) {
         this.sourceDataSet = dataSetSource;
-    }
-
-    public void setDatabaseContainerSupport(DatabaseContainerSupport databaseContainerSupport) {
-        this.databaseContainerSupport = databaseContainerSupport;
     }
 
     public void setBeforeMigrationTransformer(DataSetTransormer beforeMigrationTransformer) {
@@ -60,12 +62,7 @@ public class DataSetMigration implements DataSetSourceSupport, DataSetConsumerSu
     }
 
     public void exec() throws DataSetException {
-        if (sourceDataSet == null) {
-            throw new IllegalStateException("source dataset must be set");
-        }
-        if (targetConsumer == null) {
-            throw new IllegalStateException("target consumer must be set");
-        }
+        checkConfiguredProperly();
 
         DataSetTransformExecutor transformExecutor = new DataSetTransformExecutor();
 
@@ -74,7 +71,8 @@ public class DataSetMigration implements DataSetSourceSupport, DataSetConsumerSu
 
         transformExecutor.setDataSetConsumer(targetConsumer);
 
-        TestContainersDataSetTransformer migrationTransformer = createMigrationTransformer();
+        MigrationDataSetTransformerFactory transformerFactory = getMigrationDataSetTransformerFactory();
+        DataSetTransormer migrationTransformer = transformerFactory.createTransformer(getDatabaseMigrationSupport());
 
         DataSetTransormer dataSetTransormer = applyBeforeAndAfterTransformers(migrationTransformer);
         transformExecutor.setDataSetTransformer(dataSetTransormer);
@@ -82,11 +80,22 @@ public class DataSetMigration implements DataSetSourceSupport, DataSetConsumerSu
         transformExecutor.exec();
     }
 
-    protected TestContainersDataSetTransformer createMigrationTransformer() {
-        return new TestContainersDataSetTransformer(databaseContainerSupport, getDatabaseMigrationSupport());
+    private void checkConfiguredProperly() {
+        if (sourceDataSet == null) {
+            throw new IllegalStateException("source dataset must be set");
+        }
+        if (targetConsumer == null) {
+            throw new IllegalStateException("target consumer must be set");
+        }
+        if(getDatabaseMigrationSupport() == null){
+            throw new IllegalStateException("databaseMigrationSupport must be set");
+        }
+        if(getMigrationDataSetTransformerFactory() == null){
+            throw new IllegalStateException("migrationDataSetTransformerFactory must be set");
+        }
     }
 
-    protected DataSetTransormer applyBeforeAndAfterTransformers(TestContainersDataSetTransformer transformer) {
+    protected DataSetTransormer applyBeforeAndAfterTransformers(DataSetTransormer transformer) {
         DataSetTransformerChain dataSetTransformerChain = new DataSetTransformerChain();
 
         if (getBeforeMigrationTransformer() != null) {

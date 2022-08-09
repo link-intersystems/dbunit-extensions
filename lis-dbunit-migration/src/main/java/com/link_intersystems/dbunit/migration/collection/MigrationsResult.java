@@ -1,7 +1,6 @@
 package com.link_intersystems.dbunit.migration.collection;
 
 import com.link_intersystems.dbunit.stream.resource.DataSetResource;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractMap;
 import java.util.Collections;

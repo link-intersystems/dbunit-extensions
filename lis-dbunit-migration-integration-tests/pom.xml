@@ -26,11 +26,11 @@
         </dependency>
         <dependency>
             <groupId>com.link-intersystems.dbunit</groupId>
-            <artifactId>lis-dbunit-flyway</artifactId>
+            <artifactId>lis-dbunit-migration-flyway</artifactId>
         </dependency>
         <dependency>
             <groupId>com.link-intersystems.dbunit</groupId>
-            <artifactId>lis-dbunit-testcontainers</artifactId>
+            <artifactId>lis-dbunit-migration-testcontainers</artifactId>
         </dependency>
 
         <dependency>

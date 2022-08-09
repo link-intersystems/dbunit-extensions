@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.flyway;
+package com.link_intersystems.dbunit.migration.flyway;
 
 import org.flywaydb.core.api.MigrationVersion;
 import org.flywaydb.core.api.configuration.Configuration;

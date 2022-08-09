@@ -22,9 +22,10 @@
         <module>lis-dbunit-test</module>
         <module>lis-dbunit-stream</module>
         <module>lis-dbunit-testcontainers</module>
-        <module>lis-dbunit-flyway</module>
         <module>lis-dbunit-migration</module>
         <module>lis-dbunit-migration-integration-tests</module>
+        <module>lis-dbunit-migration-testcontainers</module>
+        <module>lis-dbunit-migration-flyway</module>
     </modules>
 
     <properties>
@@ -111,6 +112,16 @@
             <dependency>
                 <groupId>com.link-intersystems.dbunit</groupId>
                 <artifactId>lis-dbunit-migration</artifactId>
+                <version>1.0.5-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.link-intersystems.dbunit</groupId>
+                <artifactId>lis-dbunit-migration-testcontainers</artifactId>
+                <version>1.0.5-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.link-intersystems.dbunit</groupId>
+                <artifactId>lis-dbunit-migration-flyway</artifactId>
                 <version>1.0.5-SNAPSHOT</version>
             </dependency>
             <dependency>

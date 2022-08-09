@@ -21,17 +21,23 @@ Limitations and exceptions are listed below.
 
 A module that provides support for data set migration.
 
-    DataSetFlywayMigration flywayMigration = new DataSetFlywayMigration();
 
-    flywayMigration.setFlatXmlProducer("somepath/flat-v1.xml");
-    flywayMigration.setSourceVersion("1");
+    DataSetMigration dataSetMigration = new DataSetMigration();
     
-    flywayMigration.setFlatXmlConsumer("somepath/flat-v2.xml");
+    InputStream resourceAsStream = DataSetFlywayMigrationColumnSensingTest.class.getResourceAsStream("/tiny-sakila-flat-column-sensing.xml");
+    FlatXmlDataSet sourceDataSet = new FlatXmlDataSetBuilder().setColumnSensing(true).build(resourceAsStream);
+    dataSetMigration.setDataSetProducer(sourceDataSet);
     
-    flywayMigration.setDatabaseContainerFactory(DatabaseContainerSupportFactory.INSTANCE.createPostgres("postgres:latest")));
-    flywayMigration.setLocations("com/link_intersystems/dbunit/migration/postgres");
     
-    flywayMigration.exec();
+    dataSetMigration.setFlatXmlConsumer("target/flat.xml");
+    
+    dataSetMigration.setMigrationDataSetTransformerFactory(new TestcontainersMigrationDataSetTransformerFactory(databaseDefinition.databaseContainerSupport));
+    
+    FlywayMigrationConfig migrationConfig = new FlywayMigrationConfig();
+    // set the migration config properties
+    
+    dataSetMigration.setDatabaseMigrationSupport(new FlywayDatabaseMigrationSupport(migrationConfig));
+    dataSetMigration.exec();
 
 
 ## [lis-dbunit-stream](lis-dbunit-stream/README.md)

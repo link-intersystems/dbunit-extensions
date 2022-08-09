@@ -1,7 +1,8 @@
 package com.link_intersystems.dbunit.migration;
 
-import com.link_intersystems.dbunit.flyway.FlywayDatabaseMigrationSupport;
-import com.link_intersystems.dbunit.flyway.FlywayMigrationConfig;
+import com.link_intersystems.dbunit.migration.flyway.FlywayDatabaseMigrationSupport;
+import com.link_intersystems.dbunit.migration.flyway.FlywayMigrationConfig;
+import com.link_intersystems.dbunit.migration.testcontainers.TestcontainersMigrationDataSetTransformerFactory;
 import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
 import com.link_intersystems.dbunit.stream.consumer.DefaultDataSetConsumerSupport;
 import com.link_intersystems.dbunit.table.Row;
@@ -46,7 +47,7 @@ class DataSetFlywayMigrationColumnSensingTest {
 
         flywayMigration.setDataSetConsumers(copyDataSetConsumer, flatXmlConsumer);
 
-        flywayMigration.setDatabaseContainerSupport(databaseDefinition.databaseContainerSupport);
+        flywayMigration.setMigrationDataSetTransformerFactory(new TestcontainersMigrationDataSetTransformerFactory(databaseDefinition.databaseContainerSupport));
 
         FlywayMigrationConfig migrationConfig = FlywayConfigurationConfigFixture.createPostgresConfig();
         flywayMigration.setDatabaseMigrationSupport(new FlywayDatabaseMigrationSupport(migrationConfig));
