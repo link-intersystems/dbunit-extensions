@@ -17,7 +17,7 @@ Limitations and exceptions are listed below.
   - TypeConversionException.getCause will always be null. You must use TypeConversionException.getException.
   - slf4j api version 1.4.3 must be added.
 
-## [lis-dbunit-migration](lis-dbunit-migration/README.md)
+## [lis-dbunit-migration](lis-dbunit-migration-modules/README.md)
 
 A module that provides support for data set migration.
 
