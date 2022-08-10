@@ -8,6 +8,7 @@ import org.dbunit.dataset.xml.XmlProducer;
 import org.xml.sax.InputSource;
 
 import java.io.*;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
@@ -27,6 +28,16 @@ public interface DataSetProducerSupport {
         AutocloseDataSetProducer closeableDataSetProducer = new AutocloseDataSetProducer(dataSetProducer);
         setDataSetProducer(closeableDataSetProducer);
     }
+
+    /**
+     * Supports zipped csv data sets.
+     */
+    default public void setCsvProducer(URL csvResourceUrl) {
+        URLCsvProducer dataSetProducer = new URLCsvProducer(csvResourceUrl);
+        AutocloseDataSetProducer closeableDataSetProducer = new AutocloseDataSetProducer(dataSetProducer);
+        setDataSetProducer(closeableDataSetProducer);
+    }
+
 
 
     // XlsProducer

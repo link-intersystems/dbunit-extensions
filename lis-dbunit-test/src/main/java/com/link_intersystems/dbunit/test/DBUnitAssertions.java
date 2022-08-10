@@ -81,6 +81,8 @@ public class DBUnitAssertions {
                 }
 
                 String tableName = actualTable.getTableMetaData().getTableName();
+                actualValue = actualValue == ITable.NO_VALUE ? null : actualValue;
+                expectedValue = expectedValue == ITable.NO_VALUE ? null : expectedValue;
                 assertEquals(expectedValue, actualValue, tableName + "[" + row + "][" + columnName + "]");
             }
         }
