@@ -9,11 +9,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>lis-dbunit-migration-modules</artifactId>
+    <artifactId>lis-dbunit-migration</artifactId>
     <packaging>pom</packaging>
 
     <modules>
-        <module>lis-dbunit-migration</module>
+        <module>lis-dbunit-migration-core</module>
         <module>lis-dbunit-migration-testcontainers</module>
         <module>lis-dbunit-migration-flyway</module>
         <module>lis-dbunit-migration-integration-tests</module>

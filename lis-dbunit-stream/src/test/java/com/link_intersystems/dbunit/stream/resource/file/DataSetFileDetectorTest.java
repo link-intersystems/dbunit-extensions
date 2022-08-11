@@ -1,5 +1,6 @@
 package com.link_intersystems.dbunit.stream.resource.file;
 
+import com.link_intersystems.dbunit.stream.resource.detection.DataSetFileDetection;
 import com.link_intersystems.dbunit.stream.resource.file.csv.CsvDataSetFile;
 import com.link_intersystems.dbunit.stream.resource.file.xls.XlsDataSetFile;
 import com.link_intersystems.dbunit.stream.resource.file.xml.FlatXmlDataSetFile;

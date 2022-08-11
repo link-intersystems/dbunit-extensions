@@ -19,7 +19,7 @@ public class FlatXmlDataSetFile extends AbstractTextDataSetFile {
 
     private boolean columnSensing;
 
-    FlatXmlDataSetFile(File file) {
+    public FlatXmlDataSetFile(File file) {
         super(file);
     }
 

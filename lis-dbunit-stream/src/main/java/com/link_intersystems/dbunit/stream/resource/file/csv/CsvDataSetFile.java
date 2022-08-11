@@ -11,7 +11,7 @@ import java.io.File;
  */
 public class CsvDataSetFile extends AbstractDataSetFile {
 
-    CsvDataSetFile(File file) {
+    public CsvDataSetFile(File file) {
         super(file);
     }
 

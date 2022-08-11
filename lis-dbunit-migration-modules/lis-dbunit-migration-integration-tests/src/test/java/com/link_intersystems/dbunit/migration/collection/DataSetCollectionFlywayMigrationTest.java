@@ -3,15 +3,17 @@ package com.link_intersystems.dbunit.migration.collection;
 import com.link_intersystems.dbunit.migration.flyway.FlywayDatabaseMigrationSupport;
 import com.link_intersystems.dbunit.migration.flyway.FlywayMigrationConfig;
 import com.link_intersystems.dbunit.migration.FlywayConfigurationConfigFixture;
+import com.link_intersystems.dbunit.migration.resources.DataSetResourcesMigration;
+import com.link_intersystems.dbunit.migration.resources.MigrationsResult;
 import com.link_intersystems.dbunit.migration.testcontainers.TestcontainersMigrationDataSetTransformerFactory;
-import com.link_intersystems.dbunit.migration.resources.BasepathTargetPathSupplier;
-import com.link_intersystems.dbunit.migration.resources.DataSetFileLocationsScanner;
-import com.link_intersystems.dbunit.migration.resources.DefaultDataSetResourcesSupplier;
+import com.link_intersystems.dbunit.migration.resources.RebaseTargetpathDataSetResourceSupplier;
+import com.link_intersystems.dbunit.stream.resource.file.DataSetFileLocationsScanner;
+import com.link_intersystems.dbunit.stream.resource.detection.DetectingDataSetFileResourcesSupplier;
 import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
 import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerPipeTransformerAdapter;
 import com.link_intersystems.dbunit.stream.consumer.ExternalSortTableConsumer;
 import com.link_intersystems.dbunit.stream.resource.DataSetResource;
-import com.link_intersystems.dbunit.stream.resource.file.DataSetFileDetection;
+import com.link_intersystems.dbunit.stream.resource.detection.DataSetFileDetection;
 import com.link_intersystems.dbunit.table.DefaultTableOrder;
 import com.link_intersystems.dbunit.table.TableOrder;
 import com.link_intersystems.dbunit.test.TinySakilaDataSetFiles;
@@ -37,36 +39,36 @@ class DataSetCollectionFlywayMigrationTest {
     private Path sourcePath;
     private Path targetPath;
 
-    private DataSetsMigrations dataSetsMigrations;
-    private DataSetFileLocationsScanner fileLocationsScanner;
+    private DataSetResourcesMigration dataSetResourcesMigration;
+    private DetectingDataSetFileResourcesSupplier fileResourcesSupplier;
 
     @BeforeEach
     void setUp(@TempDir Path tmpDir) {
         this.sourcePath = Paths.get(tmpDir.toString(), "source");
         this.targetPath = Paths.get(tmpDir.toString(), "target/someSubdir");
         TinySakilaDataSetFiles.create(sourcePath);
-        dataSetsMigrations = new DataSetsMigrations();
+        dataSetResourcesMigration = new DataSetResourcesMigration();
 
-        BasepathTargetPathSupplier basepathTargetPathSupplier = new BasepathTargetPathSupplier(sourcePath, targetPath);
-        dataSetsMigrations.setTargetDataSetResourceSupplier(basepathTargetPathSupplier);
+        RebaseTargetpathDataSetResourceSupplier basepathTargetPathSupplier = new RebaseTargetpathDataSetResourceSupplier(sourcePath, targetPath);
+        dataSetResourcesMigration.setTargetDataSetResourceSupplier(basepathTargetPathSupplier);
 
-        fileLocationsScanner = new DataSetFileLocationsScanner(sourcePath);
-        dataSetsMigrations.setDataSetResourcesSupplier(new DefaultDataSetResourcesSupplier(fileLocationsScanner, new DataSetFileDetection()));
+        DataSetFileLocationsScanner fileLocationsScanner = new DataSetFileLocationsScanner(sourcePath);
+        fileResourcesSupplier = new DetectingDataSetFileResourcesSupplier(fileLocationsScanner, new DataSetFileDetection());
     }
 
     @Test
     void migrateDataSetCollection() throws DataSetException {
-        dataSetsMigrations.setMigrationDataSetTransformerFactory(new TestcontainersMigrationDataSetTransformerFactory("postgres:latest"));
+        dataSetResourcesMigration.setMigrationDataSetTransformerFactory(new TestcontainersMigrationDataSetTransformerFactory("postgres:latest"));
 
         FlywayMigrationConfig migrationConfig = FlywayConfigurationConfigFixture.createPostgresConfig();
 
-        dataSetsMigrations.setDatabaseMigrationSupport(new FlywayDatabaseMigrationSupport(migrationConfig));
+        dataSetResourcesMigration.setDatabaseMigrationSupport(new FlywayDatabaseMigrationSupport(migrationConfig));
 
         TableOrder tableOrder = new DefaultTableOrder("language", "film", "actor", "film_actor");
         ExternalSortTableConsumer externalSortTableConsumer = new ExternalSortTableConsumer(tableOrder);
-        dataSetsMigrations.setBeforeMigration(new DataSetConsumerPipeTransformerAdapter(externalSortTableConsumer));
+        dataSetResourcesMigration.setBeforeMigration(new DataSetConsumerPipeTransformerAdapter(externalSortTableConsumer));
 
-        MigrationsResult result = dataSetsMigrations.exec();
+        MigrationsResult result = dataSetResourcesMigration.exec(fileResourcesSupplier.getDataSetResources());
 
         assertDataSetsMigratedSuccessfully(result);
     }

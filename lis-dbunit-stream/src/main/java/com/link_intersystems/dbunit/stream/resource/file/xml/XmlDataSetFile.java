@@ -15,7 +15,7 @@ import java.io.Reader;
  */
 public class XmlDataSetFile extends AbstractTextDataSetFile {
 
-    XmlDataSetFile(File file) {
+    public XmlDataSetFile(File file) {
         super(file);
     }
 

@@ -12,7 +12,7 @@ import java.io.IOException;
  */
 public class XlsDataSetFile extends AbstractDataSetFile {
 
-    XlsDataSetFile(File file) {
+    public XlsDataSetFile(File file) {
         super(file);
     }
 

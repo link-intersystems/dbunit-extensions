@@ -1,0 +1,4 @@
+com.link_intersystems.dbunit.stream.resource.detection.file.csv.CsvDataSetDetectorProvider
+com.link_intersystems.dbunit.stream.resource.detection.file.xls.XlsDataSetDetectorProvider
+com.link_intersystems.dbunit.stream.resource.detection.file.xml.FlatXmlDataSetDetectorProvider
+com.link_intersystems.dbunit.stream.resource.detection.file.xml.XmlDataSetDetectorProvider
