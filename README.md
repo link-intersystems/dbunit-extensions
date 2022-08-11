@@ -5,18 +5,12 @@
 
 # DBUnit compatibility 
 
-The dbunit compatibility tests, test this library against dbunit versions 2.4.6 -
-[![Maven Central](https://img.shields.io/maven-central/v/org.dbunit/dbunit)](https://mvnrepository.com/artifact/org.dbunit/dbunit).
+The dbunit compatibility tests, test this library against dbunit versions 
+
+[![Maven Central](https://img.shields.io/maven-central/v/org.dbunit/dbunit?label=dbunit&versionPrefix=2.4.6&style=flat-square)](https://mvnrepository.com/artifact/org.dbunit/dbunit) to
+[![Maven Central](https://img.shields.io/maven-central/v/org.dbunit/dbunit?label=dbunit&style=flat-square)](https://mvnrepository.com/artifact/org.dbunit/dbunit) 
 
 ![DBUnit Compatibility Test](https://github.com/link-intersystems/dbunit-extensions/workflows/DBUnit%20Compatibility%20Tests/badge.svg)
-
-All modules in this project are at least compatible with the dbunit versions within the tested range. 
-Limitations and exceptions are listed below.
-
-- lis-dbunit-beans
-  - Support for BigInteger bean property types does not work.
-  - TypeConversionException.getCause will always be null. You must use TypeConversionException.getException.
-  - slf4j api version 1.4.3 must be added.
 
 ## [lis-dbunit-migration](lis-dbunit-migration-modules/README.md)
 
