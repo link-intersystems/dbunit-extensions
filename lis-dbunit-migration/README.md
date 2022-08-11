@@ -10,14 +10,18 @@ To use the data set migration you need 3 dependencies.
 
       <dependency>
          <groupId>com.link-intersystems.dbunit</groupId>
-         <artifactId>lis-dbunit-migration</artifactId>
+         <artifactId>lis-dbunit-migration-core</artifactId>
          <version>${lis-dbunit-migration.version}</version>
       </dependency>
+
+      <!-- migration plugin -->
       <dependency>
          <groupId>com.link-intersystems.dbunit</groupId>
          <artifactId>lis-dbunit-migration-flyway</artifactId>
          <version>${lis-dbunit-migration.version}</version>
       </dependency>
+
+      <!-- database provider plugin -->
       <dependency>
          <groupId>com.link-intersystems.dbunit</groupId>
          <artifactId>lis-dbunit-migration-testcontainers</artifactId>
@@ -33,6 +37,8 @@ Note: Before version 1.0.5 you only need the
       </dependency>
 
 because the project was restructured in 1.0.5.
+
+
 
 
 # Migrate a data set flat xml file to another database version using flyway 
@@ -66,34 +72,47 @@ because the project was restructured in 1.0.5.
        FlywayDatabaseMigrationSupport flywayMigrationSupport = new FlywayDatabaseMigrationSupport(flywayMigrationConfig);
        dataSetMigration.setDatabaseMigrationSupport(flywayMigrationSupport);
 
-7. Optionally tell the migration support to what the target version should be. This is the version the data sets will be migrated to.
+6. Optionally tell the migration support to what the target version should be. This is the version the data sets will be migrated to.
 
        flywayMigrationConfig.setTargetVersion("2"); // flyway uses the latest version if omitted.
 
-8. Execute the migration
+7. Optionally sort the tables before migrating them in order to prevent foreign key constraint violations.
+
+       TableOrder tableOrder = new DefaultTableOrder("language", "film", "actor", "film_actor");
+       ExternalSortTableConsumer externalSortTableConsumer = new ExternalSortTableConsumer(tableOrder);
+       dataSetMigration.setBeforeMigration(externalSortTableConsumer);
+
+9. Execute the migration
 
        dataSetMigration.exec();
 
 
-# Migrate a collection of DataSets
+# Migrate a collection of data sets
 
-     DataSetsMigrations dataSetsMigrations = new DataSetsMigrations();
+    DataSetResourcesMigration dataSetMigrations = new DataSetResourcesMigration();
      
-     BasepathTargetPathSupplier basepathTargetPathSupplier = new BasepathTargetPathSupplier(sourcePath, targetPath);
-     dataSetsMigrations.setTargetDataSetResourceSupplier(basepathTargetPathSupplier);
+    BasepathTargetPathSupplier basepathTargetPathSupplier = new BasepathTargetPathSupplier(sourcePath, targetPath);
+    dataSetMigrations.setTargetDataSetResourceSupplier(basepathTargetPathSupplier);
      
-     fileLocationsScanner = new DataSetFileLocationsScanner(sourcePath);
-     dataSetsMigrations.setDataSetResourcesSupplier(new DefaultDataSetResourcesSupplier(fileLocationsScanner, new DataSetFileDetection()));
+    dataSetMigrations.setMigrationDataSetTransformerFactory(new TestcontainersMigrationDataSetTransformerFactory("postgres:latest"));
 
+    // configure flyway
+    FlywayMigrationConfig migrationConfig = new FlywayMigrationConfig();
+    FluentConfiguration configuration = Flyway.configure();
+    configuration.locations("db/migration");
+    migrationConfig.setFlywayConfiguration(configuration);
+    migrationConfig.setSourceVersion("1");
+    dataSetMigrations.setDatabaseMigrationSupport(new FlywayDatabaseMigrationSupport(migrationConfig));
 
-     dataSetsMigrations.setMigrationDataSetTransformerFactory(new TestcontainersMigrationDataSetTransformerFactory("postgres:latest"));
+    // ensure table ordering to prevent foreign key constraint violations
+    TableOrder tableOrder = new DefaultTableOrder("language", "film", "actor", "film_actor");
+    ExternalSortTableConsumer externalSortTableConsumer = new ExternalSortTableConsumer(tableOrder);
+    dataSetMigrations.setBeforeMigration(externalSortTableConsumer);
 
-     FlywayMigrationConfig migrationConfig = new FlywayMigrationConfig();
-     // set the migration config properties
-     dataSetsMigrations.setDatabaseMigrationSupport(new FlywayDatabaseMigrationSupport(migrationConfig));
+    // get the data set resources
+    DataSetFileLocations fileLocations = new DataSetFileLocationsScanner(sourcePath);
+    DataSetFileDetection dataSetFileDetection = new DataSetFileDetection();
+    DataSetResourcesSupplier dataSetResourceSupplier = new DetectingDataSetFileResourcesSupplier(fileLocations, dataSetFileDetection);
 
-     TableOrder tableOrder = new DefaultTableOrder("language", "film", "actor", "film_actor");
-     ExternalSortTableConsumer externalSortTableConsumer = new ExternalSortTableConsumer(tableOrder);
-     dataSetsMigrations.setBeforeMigration(new DataSetConsumerPipeTransformerAdapter(externalSortTableConsumer));
-
-     MigrationsResult result = dataSetsMigrations.exec();
+    // migrate
+    MigrationsResult result = dataSetMigrations.exec(dataSetResourceSupplier.getDataSetResources());

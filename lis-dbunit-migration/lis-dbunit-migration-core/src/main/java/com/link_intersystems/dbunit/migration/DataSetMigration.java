@@ -7,6 +7,8 @@ import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
@@ -15,8 +17,8 @@ public class DataSetMigration implements DataSetSourceSupport, DataSetConsumerSu
     private DataSetSource sourceDataSet;
     private IDataSetConsumer targetConsumer;
     private MigrationDataSetTransformerFactory migrationDataSetTransformerFactory;
-    private DataSetTransormer beforeMigrationTransformer;
-    private DataSetTransormer afterMigrationTransformer;
+    private DataSetTransormer beforeMigration;
+    private DataSetTransormer afterMigration;
     private DatabaseMigrationSupport databaseMigrationSupport;
 
     public void setDatabaseMigrationSupport(DatabaseMigrationSupport databaseMigrationSupport) {
@@ -45,20 +47,28 @@ public class DataSetMigration implements DataSetSourceSupport, DataSetConsumerSu
         this.sourceDataSet = dataSetSource;
     }
 
-    public void setBeforeMigrationTransformer(DataSetTransormer beforeMigrationTransformer) {
-        this.beforeMigrationTransformer = beforeMigrationTransformer;
+    public void setBeforeMigration(DataSetTransormer beforeMigrationTransformer) {
+        this.beforeMigration = beforeMigrationTransformer;
     }
 
-    public DataSetTransormer getBeforeMigrationTransformer() {
-        return beforeMigrationTransformer;
+    public void setBeforeMigration(DataSetConsumerPipe beforeConsumerPipe) {
+        this.beforeMigration = new DataSetConsumerPipeTransformerAdapter(requireNonNull(beforeConsumerPipe));
     }
 
-    public void setAfterMigrationTransformer(DataSetTransormer afterMigrationTransformer) {
-        this.afterMigrationTransformer = afterMigrationTransformer;
+    public void setAfterMigration(DataSetTransormer afterMigrationTransformer) {
+        this.afterMigration = afterMigrationTransformer;
     }
 
-    public DataSetTransormer getAfterMigrationTransformer() {
-        return afterMigrationTransformer;
+    public void setAfterMigration(DataSetConsumerPipe afterConsumerPipe) {
+        this.afterMigration = new DataSetConsumerPipeTransformerAdapter(requireNonNull(afterConsumerPipe));
+    }
+
+    public DataSetTransormer getBeforeTransformer() {
+        return beforeMigration;
+    }
+
+    public DataSetTransormer getAfterMigration() {
+        return afterMigration;
     }
 
     public void exec() throws DataSetException {
@@ -87,10 +97,10 @@ public class DataSetMigration implements DataSetSourceSupport, DataSetConsumerSu
         if (targetConsumer == null) {
             throw new IllegalStateException("target consumer must be set");
         }
-        if(getDatabaseMigrationSupport() == null){
+        if (getDatabaseMigrationSupport() == null) {
             throw new IllegalStateException("databaseMigrationSupport must be set");
         }
-        if(getMigrationDataSetTransformerFactory() == null){
+        if (getMigrationDataSetTransformerFactory() == null) {
             throw new IllegalStateException("migrationDataSetTransformerFactory must be set");
         }
     }
@@ -98,15 +108,9 @@ public class DataSetMigration implements DataSetSourceSupport, DataSetConsumerSu
     protected DataSetTransormer applyBeforeAndAfterTransformers(DataSetTransormer transformer) {
         DataSetTransformerChain dataSetTransformerChain = new DataSetTransformerChain();
 
-        if (getBeforeMigrationTransformer() != null) {
-            dataSetTransformerChain.add(getBeforeMigrationTransformer());
-        }
-
+        dataSetTransformerChain.add(getBeforeTransformer());
         dataSetTransformerChain.add(transformer);
-
-        if (getAfterMigrationTransformer() != null) {
-            dataSetTransformerChain.add(getAfterMigrationTransformer());
-        }
+        dataSetTransformerChain.add(getAfterMigration());
 
         return dataSetTransformerChain;
     }

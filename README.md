@@ -28,15 +28,17 @@ A module that provides support for data set migration.
     FlatXmlDataSet sourceDataSet = new FlatXmlDataSetBuilder().setColumnSensing(true).build(resourceAsStream);
     dataSetMigration.setDataSetProducer(sourceDataSet);
     
-    
     dataSetMigration.setFlatXmlConsumer("target/flat.xml");
     
     dataSetMigration.setMigrationDataSetTransformerFactory(new TestcontainersMigrationDataSetTransformerFactory(databaseDefinition.databaseContainerSupport));
     
     FlywayMigrationConfig migrationConfig = new FlywayMigrationConfig();
-    // set the migration config properties
-    
-    dataSetMigration.setDatabaseMigrationSupport(new FlywayDatabaseMigrationSupport(migrationConfig));
+    FluentConfiguration configuration = Flyway.configure();
+    configuration.locations("db/migration");
+    migrationConfig.setFlywayConfiguration(configuration);
+    migrationConfig.setSourceVersion("1");
+    dataSetMigrations.setDatabaseMigrationSupport(new FlywayDatabaseMigrationSupport(migrationConfig));
+
     dataSetMigration.exec();
 
 

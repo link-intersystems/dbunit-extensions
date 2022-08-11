@@ -66,7 +66,7 @@ class DataSetCollectionFlywayMigrationTest {
 
         TableOrder tableOrder = new DefaultTableOrder("language", "film", "actor", "film_actor");
         ExternalSortTableConsumer externalSortTableConsumer = new ExternalSortTableConsumer(tableOrder);
-        dataSetResourcesMigration.setBeforeMigration(new DataSetConsumerPipeTransformerAdapter(externalSortTableConsumer));
+        dataSetResourcesMigration.setBeforeMigration(externalSortTableConsumer);
 
         MigrationsResult result = dataSetResourcesMigration.exec(fileResourcesSupplier.getDataSetResources());
 
