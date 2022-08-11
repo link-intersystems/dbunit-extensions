@@ -22,7 +22,7 @@
     <dependencies>
         <dependency>
             <groupId>com.link-intersystems.dbunit</groupId>
-            <artifactId>lis-dbunit-migration</artifactId>
+            <artifactId>lis-dbunit-migration-core</artifactId>
         </dependency>
         <dependency>
             <groupId>com.link-intersystems.dbunit</groupId>

@@ -1,7 +1,7 @@
-The lis-dbunit-migration-modules contain modules that support automatic data set migration using plugins for the
-Database provider (at the moment testcontainers) and for the migration implementor (at the moment flyway).
+The lis-dbunit-migration contain modules that support automatic data set migration using plugins for the
+database provider (at the moment testcontainers) and for the migration implementor (at the moment flyway).
 
-To use the `lis-dbunit-migration` module you need 3 dependencies.
+To use the data set migration you need 3 dependencies.
 
       <properties>
          <!-- set to the release version you want to use -->
