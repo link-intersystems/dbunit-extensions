@@ -185,6 +185,7 @@ public class URLCsvProducer implements IDataSetProducer {
 
     protected BufferedReader openReader(URL url) throws IOException {
         URLConnection urlConnection = url.openConnection();
+        // Need to turn off caches so that a jar url connection will not keep open file handles.
         urlConnection.setUseCaches(false);
         return new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
     }
