@@ -5,7 +5,8 @@
 
 # DBUnit compatibility 
 
-The dbunit compatibility tests, test this library against dbunit versions 2.4.6 - 2.7.3.
+The dbunit compatibility tests, test this library against dbunit versions 2.4.6 -
+[![Maven Central](https://img.shields.io/maven-central/v/org.dbunit/dbunit)](https://mvnrepository.com/artifact/org.dbunit/dbunit).
 
 ![DBUnit Compatibility Test](https://github.com/link-intersystems/dbunit-extensions/workflows/DBUnit%20Compatibility%20Tests/badge.svg)
 
