@@ -4,17 +4,25 @@ import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
 import com.link_intersystems.dbunit.stream.consumer.FilterTableConsumer;
 import com.link_intersystems.dbunit.test.DBUnitAssertions;
 import com.link_intersystems.dbunit.test.TestDataSets;
+import com.link_intersystems.io.Unzip;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -22,12 +30,23 @@ import static org.junit.jupiter.api.Assertions.*;
 class URLCsvProducerTest {
 
     @Test
-    void produce() throws DataSetException, IOException {
+    void produce(@TempDir Path tmpDir) throws DataSetException, IOException {
         URL csvResourceURL = URLCsvProducerTest.class.getResource("/tiny-sakila-csv.zip");
-        assertNotNull(csvResourceURL);
-        assertEquals("file", csvResourceURL.getProtocol());
 
-        URLCsvProducer urlCsvProducer = new URLCsvProducer(csvResourceURL);
+        byte[] buff = new byte[8192];
+        Path tmpZipFile = tmpDir.resolve("tiny-sakila-csv.zip");
+        try (InputStream inputStream = csvResourceURL.openStream()) {
+            try (OutputStream outputStream = new FileOutputStream(tmpZipFile.toFile())) {
+                int read;
+                while ((read = inputStream.read(buff)) > 0) {
+                    outputStream.write(buff, 0, read);
+                }
+            }
+        }
+
+        assertNotNull(csvResourceURL);
+
+        URLCsvProducer urlCsvProducer = new URLCsvProducer(tmpZipFile.toUri().toURL());
         CopyDataSetConsumer copyDataSetConsumer = new CopyDataSetConsumer();
         IDataSet tinySakilaDataSet = TestDataSets.getTinySakilaDataSet();
         List<String> tableNames = Arrays.asList(tinySakilaDataSet.getTableNames());
@@ -38,5 +57,7 @@ class URLCsvProducerTest {
         urlCsvProducer.produce();
 
         DBUnitAssertions.STRICT.assertDataSetEquals(tinySakilaDataSet, copyDataSetConsumer.getDataSet());
+
+
     }
 }

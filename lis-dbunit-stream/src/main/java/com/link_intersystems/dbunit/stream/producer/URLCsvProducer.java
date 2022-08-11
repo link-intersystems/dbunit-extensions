@@ -7,7 +7,6 @@ import org.dbunit.dataset.ITableMetaData;
 import org.dbunit.dataset.common.handlers.IllegalInputCharacterException;
 import org.dbunit.dataset.common.handlers.PipelineException;
 import org.dbunit.dataset.csv.CsvDataSetWriter;
-import org.dbunit.dataset.csv.CsvParser;
 import org.dbunit.dataset.csv.CsvParserException;
 import org.dbunit.dataset.csv.CsvParserImpl;
 import org.dbunit.dataset.datatype.DataType;
@@ -20,8 +19,10 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -65,17 +66,17 @@ public class URLCsvProducer implements IDataSetProducer {
         logger.debug("produce() - start");
 
         try {
-            URL effectiveCsvResourceUrl = getEffectiveResourceUrl(csvResourceURL);
-            List<String> tableNames = getTables(effectiveCsvResourceUrl);
+            URL validZipUrl = autocorrectZipUrl(csvResourceURL);
+            List<String> tableNames = getTables(validZipUrl);
 
-            produceTables(effectiveCsvResourceUrl, tableNames);
+            produceTables(validZipUrl, tableNames);
         } catch (IOException e) {
             throw new DataSetException("Unable to read tables from " + csvResourceURL, e);
         }
     }
 
-    protected URL getEffectiveResourceUrl(URL csvResourceURL) throws MalformedURLException {
-        if (csvResourceURL.getPath().endsWith(".zip")) {
+    protected URL autocorrectZipUrl(URL csvResourceURL) throws MalformedURLException {
+        if (csvResourceURL.getPath().endsWith(".zip") && !csvResourceURL.toString().startsWith("jar:")) {
             csvResourceURL = new URL("jar:" + csvResourceURL + "!/");
         }
         return csvResourceURL;
@@ -106,10 +107,10 @@ public class URLCsvProducer implements IDataSetProducer {
     private void tryProduceTable(URL tableResourceUrl, String tableName) throws DataSetException, CsvParserException {
         logger.debug("produceTableFile({}) - start", tableResourceUrl);
 
-        CsvParser parser = new CsvParserImpl();
+        CsvParserImpl parser = new CsvParserImpl();
 
-        try {
-            List<List<String>> csvContent = parser.parse(tableResourceUrl);
+        try (Reader reader = openReader(tableResourceUrl)) {
+            List<List<String>> csvContent = parser.parse(reader, tableResourceUrl.toString());
 
             List<String> csvHeaders = csvContent.get(0);
             ITableMetaData metaData = createTableMetaData(tableName, csvHeaders);
@@ -167,7 +168,8 @@ public class URLCsvProducer implements IDataSetProducer {
 
         List<String> orderedTableNames = new ArrayList<>();
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(base, TABLE_ORDERING_FILE).openStream()))) {
+        URL tableOrderingResource = new URL(base, TABLE_ORDERING_FILE);
+        try (BufferedReader reader = openReader(tableOrderingResource)) {
             String line;
 
             while ((line = reader.readLine()) != null) {
@@ -179,5 +181,11 @@ public class URLCsvProducer implements IDataSetProducer {
         }
 
         return orderedTableNames;
+    }
+
+    protected BufferedReader openReader(URL url) throws IOException {
+        URLConnection urlConnection = url.openConnection();
+        urlConnection.setUseCaches(false);
+        return new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
     }
 }
