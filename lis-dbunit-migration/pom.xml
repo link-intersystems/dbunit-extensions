@@ -19,6 +19,17 @@
         <module>lis-dbunit-migration-integration-tests</module>
     </modules>
 
+    <profiles>
+        <profile>
+            <id>release</id>
+            <modules>
+                <module>lis-dbunit-migration-core</module>
+                <module>lis-dbunit-migration-testcontainers</module>
+                <module>lis-dbunit-migration-flyway</module>
+            </modules>
+        </profile>
+    </profiles>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -38,4 +49,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+
 </project>
