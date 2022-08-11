@@ -8,13 +8,12 @@
     <parent>
         <groupId>com.link-intersystems.dbunit.integration-tests</groupId>
         <artifactId>compatibility-pom</artifactId>
-        <version>1</version>
+        <version>@project.version@</version>
     </parent>
 
     <artifactId>lis-dbunit-compatibility</artifactId>
-    <version>2.6.0</version>
 
     <properties>
-        <dbunit.version>${project.version}</dbunit.version>
+        <dbunit.version>2.6.0</dbunit.version>
     </properties>
 </project>

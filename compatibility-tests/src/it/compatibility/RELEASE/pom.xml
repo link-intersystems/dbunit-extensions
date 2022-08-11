@@ -14,6 +14,6 @@
     <artifactId>lis-dbunit-compatibility</artifactId>
 
     <properties>
-        <dbunit.version>2.5.0</dbunit.version>
+        <dbunit.version>RELEASE</dbunit.version>
     </properties>
 </project>

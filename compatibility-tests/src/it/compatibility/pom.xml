@@ -8,16 +8,15 @@
     <parent>
         <groupId>com.link-intersystems.dbunit</groupId>
         <artifactId>lis-dbunit</artifactId>
-        <version>1.0.5-SNAPSHOT</version>
+        <version>@project.version@</version>
     </parent>
 
     <groupId>com.link-intersystems.dbunit.integration-tests</groupId>
     <artifactId>compatibility-pom</artifactId>
-    <version>1</version>
     <packaging>pom</packaging>
 
     <properties>
-        <lis-dbunit.version>1.0.5-SNAPSHOT</lis-dbunit.version>
+        <lis-dbunit.version>${project.version}</lis-dbunit.version>
     </properties>
 
     <dependencyManagement>
