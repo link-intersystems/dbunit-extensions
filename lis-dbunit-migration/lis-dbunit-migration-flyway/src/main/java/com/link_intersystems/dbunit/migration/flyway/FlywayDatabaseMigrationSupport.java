@@ -2,6 +2,8 @@ package com.link_intersystems.dbunit.migration.flyway;
 
 import com.link_intersystems.dbunit.stream.consumer.DatabaseMigrationSupport;
 import org.dbunit.dataset.DataSetException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -70,12 +72,8 @@ public class FlywayDatabaseMigrationSupport implements DatabaseMigrationSupport 
         return FLYWAY_TABLES;
     }
 
-    protected void dropTable(Statement statement, String flywayTable) {
-        try {
-            statement.execute("drop table " + flywayTable);
-        } catch (SQLException e) {
-            // TODO log
-        }
+    protected void dropTable(Statement statement, String flywayTable) throws SQLException {
+        statement.execute("drop table " + flywayTable);
     }
 
 

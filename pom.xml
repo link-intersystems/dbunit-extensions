@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.link-intersystems</groupId>
         <artifactId>lis-central-jar</artifactId>
-        <version>8.2</version>
+        <version>8.3</version>
     </parent>
 
     <groupId>com.link-intersystems.dbunit</groupId>
@@ -99,11 +99,6 @@
             <dependency>
                 <groupId>com.link-intersystems.dbunit</groupId>
                 <artifactId>lis-dbunit-testcontainers</artifactId>
-                <version>1.0.5-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>com.link-intersystems.dbunit</groupId>
-                <artifactId>lis-dbunit-flyway</artifactId>
                 <version>1.0.5-SNAPSHOT</version>
             </dependency>
             <dependency>
