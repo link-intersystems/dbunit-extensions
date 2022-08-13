@@ -31,15 +31,17 @@ public class ArtifactInfo {
             properties = new Properties();
             ProtectionDomain protectionDomain = artifactClass.getProtectionDomain();
             CodeSource codeSource = protectionDomain.getCodeSource();
-            URL location = codeSource.getLocation();
-            URLClassLoader urlClassLoader = new URLClassLoader(new URL[]{location});
-            URL pomProperties = urlClassLoader.getResource("META-INF/maven/pom.properties");
-            try {
-                try (InputStream in = pomProperties.openStream()) {
-                    properties.load(in);
+            if (codeSource != null) {
+                URL location = codeSource.getLocation();
+                URLClassLoader urlClassLoader = new URLClassLoader(new URL[]{location});
+                URL pomProperties = urlClassLoader.getResource("META-INF/maven/pom.properties");
+                try {
+                    try (InputStream in = pomProperties.openStream()) {
+                        properties.load(in);
+                    }
+                } catch (IOException e) {
+                    logger.warn("ArtifactInfo not available {}", artifactClass, e);
                 }
-            } catch (IOException e) {
-                logger.warn("ArtifactInfo not available {}", artifactClass, e);
             }
         }
         return properties;
