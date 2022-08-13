@@ -6,7 +6,6 @@ import com.link_intersystems.dbunit.migration.testcontainers.TestcontainersMigra
 import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
 import com.link_intersystems.dbunit.stream.consumer.DefaultDataSetConsumerSupport;
 import com.link_intersystems.dbunit.test.TestDataSets;
-import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.DefaultTable;
 import org.dbunit.dataset.IDataSet;
@@ -28,8 +27,8 @@ class DataSetFlywayMigrationTest {
 
     static Stream<DatabaseDefinition> databases() {
         return Stream.of(
-                new DatabaseDefinition("postgres", DatabaseContainerSupport.getDatabaseContainerSupport("postgres:latest")),
-                new DatabaseDefinition("mysql", DatabaseContainerSupport.getDatabaseContainerSupport("mysql:latest"))
+                new DatabaseDefinition("postgres"),
+                new DatabaseDefinition("mysql")
         );
     }
 
@@ -52,9 +51,9 @@ class DataSetFlywayMigrationTest {
 
         dataSetMigration.setDataSetConsumers(copyDataSetConsumer, csvConsumer, flatXmlConsumer);
 
-        dataSetMigration.setMigrationDataSetTransformerFactory(new TestcontainersMigrationDataSetTransformerFactory(databaseDefinition.databaseContainerSupport));
+        dataSetMigration.setMigrationDataSetTransformerFactory(new TestcontainersMigrationDataSetTransformerFactory(databaseDefinition.getDatabaseContainerSupport()));
 
-        FlywayMigrationConfig migrationConfig = FlywayConfigurationConfigFixture.createConfig(databaseDefinition.containerName);
+        FlywayMigrationConfig migrationConfig = FlywayConfigurationConfigFixture.createConfig(databaseDefinition.getContainerName());
         dataSetMigration.setDatabaseMigrationSupport(new FlywayDatabaseMigrationSupport(migrationConfig));
 
         dataSetMigration.exec();

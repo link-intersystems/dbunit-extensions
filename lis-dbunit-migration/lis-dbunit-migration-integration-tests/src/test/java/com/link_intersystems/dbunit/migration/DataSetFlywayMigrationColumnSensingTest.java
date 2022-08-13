@@ -29,8 +29,7 @@ class DataSetFlywayMigrationColumnSensingTest {
 
     @Test
     void migrate() throws DataSetException, IOException {
-        DatabaseContainerSupport postgres = DatabaseContainerSupport.getDatabaseContainerSupport("postgres:latest");
-        DatabaseDefinition databaseDefinition = new DatabaseDefinition("postgres", postgres);
+        DatabaseDefinition databaseDefinition = new DatabaseDefinition("postgres");
 
         DataSetMigration flywayMigration = new DataSetMigration();
 
@@ -47,7 +46,7 @@ class DataSetFlywayMigrationColumnSensingTest {
 
         flywayMigration.setDataSetConsumers(copyDataSetConsumer, flatXmlConsumer);
 
-        flywayMigration.setMigrationDataSetTransformerFactory(new TestcontainersMigrationDataSetTransformerFactory(databaseDefinition.databaseContainerSupport));
+        flywayMigration.setMigrationDataSetTransformerFactory(new TestcontainersMigrationDataSetTransformerFactory(databaseDefinition.getDatabaseContainerSupport()));
 
         FlywayMigrationConfig migrationConfig = FlywayConfigurationConfigFixture.createPostgresConfig();
         flywayMigration.setDatabaseMigrationSupport(new FlywayDatabaseMigrationSupport(migrationConfig));
