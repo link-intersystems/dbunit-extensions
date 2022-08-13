@@ -46,19 +46,10 @@
 
         <!-- test dependencies -->
         <dependency>
-            <groupId>com.link-intersystems.dbunit</groupId>
-            <artifactId>lis-dbunit-test</artifactId>
-        </dependency>
-        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.29</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.link-intersystems.commons</groupId>
-            <artifactId>lis-commons-jdbc-test</artifactId>
-            <version>1.6.1</version>
         </dependency>
     </dependencies>
 

@@ -54,14 +54,14 @@ class DatabaseContainerDataSourceTest {
 
     @Test
     void connectionReuse() throws SQLException {
-        assertFalse(dataSource.isAutoCommit());
+        Assertions.assertFalse(dataSource.isAutoCommit());
 
         try (Connection connection = dataSource.getConnection()) {
             connection.setAutoCommit(true);
         }
 
         try (Connection connection = dataSource.getConnection()) {
-            assertTrue(connection.getAutoCommit());
+            Assertions.assertTrue(connection.getAutoCommit());
         }
     }
 
@@ -76,14 +76,14 @@ class DatabaseContainerDataSourceTest {
 
     @Test
     void reuseCustomConnection() throws SQLException {
-        assertFalse(dataSource.isAutoCommit());
+        Assertions.assertFalse(dataSource.isAutoCommit());
 
         try (Connection connection = dataSource.getConnection("user", "pass")) {
             connection.setAutoCommit(true);
         }
 
         try (Connection connection = dataSource.getConnection("user", "pass")) {
-            assertTrue(connection.getAutoCommit());
+            Assertions.assertTrue(connection.getAutoCommit());
         }
     }
 }

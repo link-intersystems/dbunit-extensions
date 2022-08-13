@@ -12,9 +12,13 @@
     <artifactId>lis-dbunit-testcontainers</artifactId>
     <packaging>pom</packaging>
 
+    <properties>
+        <org.testcontainers.version>1.17.3</org.testcontainers.version>
+    </properties>
 
     <modules>
         <module>lis-dbunit-testcontainers-core</module>
+        <module>lis-dbunit-testcontainers-postgres</module>
     </modules>
 
     <dependencyManagement>
@@ -22,6 +26,11 @@
             <dependency>
                 <groupId>com.link-intersystems.dbunit</groupId>
                 <artifactId>lis-dbunit-testcontainers-core</artifactId>
+                <version>1.0.6-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.link-intersystems.dbunit</groupId>
+                <artifactId>lis-dbunit-testcontainers-postgres</artifactId>
                 <version>1.0.6-SNAPSHOT</version>
             </dependency>
         </dependencies>

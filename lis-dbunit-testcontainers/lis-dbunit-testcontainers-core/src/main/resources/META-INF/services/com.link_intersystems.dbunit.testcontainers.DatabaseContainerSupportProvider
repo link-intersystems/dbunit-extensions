@@ -1,2 +1,1 @@
-com.link_intersystems.dbunit.testcontainers.postgres.PostgresDatabaseContainerSupportProvider
 com.link_intersystems.dbunit.testcontainers.mysql.MySqlDatabaseContainerSupportProvider
