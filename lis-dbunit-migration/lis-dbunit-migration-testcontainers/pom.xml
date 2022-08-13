@@ -11,8 +11,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.link-intersystems.dbunit</groupId>
+            <groupId>com.link-intersystems.dbunit.testcontainers</groupId>
             <artifactId>lis-dbunit-testcontainers-core</artifactId>
+            <version>1.0.6-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.link-intersystems.dbunit</groupId>
