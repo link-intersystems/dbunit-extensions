@@ -7,7 +7,6 @@ import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
 import com.link_intersystems.dbunit.stream.consumer.DefaultDataSetConsumerSupport;
 import com.link_intersystems.dbunit.table.Row;
 import com.link_intersystems.dbunit.table.TableUtil;
-import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;

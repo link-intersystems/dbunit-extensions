@@ -12,7 +12,7 @@
     <dependencies>
         <dependency>
             <groupId>com.link-intersystems.dbunit</groupId>
-            <artifactId>lis-dbunit-testcontainers</artifactId>
+            <artifactId>lis-dbunit-testcontainers-core</artifactId>
         </dependency>
         <dependency>
             <groupId>com.link-intersystems.dbunit</groupId>

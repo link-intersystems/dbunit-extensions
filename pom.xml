@@ -21,8 +21,8 @@
         <module>lis-dbunit-sql</module>
         <module>lis-dbunit-test</module>
         <module>lis-dbunit-stream</module>
-        <module>lis-dbunit-testcontainers</module>
         <module>lis-dbunit-migration</module>
+        <module>lis-dbunit-testcontainers</module>
     </modules>
 
     <properties>
@@ -94,11 +94,6 @@
             <dependency>
                 <groupId>com.link-intersystems.dbunit</groupId>
                 <artifactId>lis-dbunit-stream</artifactId>
-                <version>1.0.6-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>com.link-intersystems.dbunit</groupId>
-                <artifactId>lis-dbunit-testcontainers</artifactId>
                 <version>1.0.6-SNAPSHOT</version>
             </dependency>
             <dependency>
