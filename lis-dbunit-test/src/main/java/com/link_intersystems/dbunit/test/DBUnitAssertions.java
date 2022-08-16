@@ -5,11 +5,16 @@ import org.dbunit.dataset.datatype.DataType;
 import org.junit.jupiter.api.Assertions;
 import org.opentest4j.AssertionFailedError;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -30,7 +35,7 @@ public class DBUnitAssertions {
     }
 
     public void assertDataSetEquals(IDataSet expected, IDataSet actual) throws DataSetException {
-        assertEquals(new HashSet<>(Arrays.asList(expected.getTableNames())), new HashSet<>(Arrays.asList(actual.getTableNames())),
+        assertEquals(new LinkedHashSet<>(Arrays.asList(expected.getTableNames())), new LinkedHashSet<>(Arrays.asList(actual.getTableNames())),
                 "table names expected to be " + Arrays.asList(expected.getTableNames()) +
                         ", but were " + Arrays.asList(actual.getTableNames()));
 
@@ -83,9 +88,34 @@ public class DBUnitAssertions {
                 String tableName = actualTable.getTableMetaData().getTableName();
                 actualValue = actualValue == ITable.NO_VALUE ? null : actualValue;
                 expectedValue = expectedValue == ITable.NO_VALUE ? null : expectedValue;
-                assertEquals(expectedValue, actualValue, tableName + "[" + row + "][" + columnName + "]");
+
+                if (isArray(expectedValue)) {
+                    Class<?> expectedComponentType = expectedValue.getClass().getComponentType();
+                    if (isArray(actualValue)) {
+                        Class<?> actualComponentType = actualValue.getClass().getComponentType();
+                        assertEquals(expectedComponentType, actualComponentType, tableName + "[" + row + "][" + columnName + "] - array type");
+                        assertArrayEquals(expectedValue, actualValue, tableName + "[" + row + "][" + columnName + "]");
+                    } else {
+                        fail(tableName + "[" + row + "][" + columnName + "] expected to be an " + expectedComponentType + "[], but was " + actualValue);
+                    }
+                } else {
+                    assertEquals(expectedValue, actualValue, tableName + "[" + row + "][" + columnName + "]");
+                }
             }
         }
+    }
+
+    private void assertArrayEquals(Object expected, Object actual, String msg) {
+        try {
+            Method assertArrayEquals = Assertions.class.getDeclaredMethod("assertArrayEquals", expected.getClass(), expected.getClass(), String.class);
+            assertArrayEquals.invoke(null, expected, actual, msg);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private boolean isArray(Object obj) {
+        return obj == null ? false : obj.getClass().isArray();
     }
 
     public void assertMetaDataEquals(ITableMetaData expectedMetaData, ITableMetaData actualMetaData) throws DataSetException {
