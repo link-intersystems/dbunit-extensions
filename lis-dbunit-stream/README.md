@@ -3,6 +3,7 @@
 This module contains a lot of utility classes for dbunit stream handline.
 
 ## commands package
+
 The commands package contains a high level api for common dbunit tasks.
 
 ### Basic data set migration command setup
@@ -26,7 +27,6 @@ The commands package contains a high level api for common dbunit tasks.
 4. Decorate the result. E.g. make it consistent by following foreign keys:
 
        dataSetCommand.setResultDecorator(ds -> new ConsistentDatabaseDataSet(databaseConnection, ds));
-
 
 ### Migrate to another database
 

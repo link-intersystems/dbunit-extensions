@@ -1,7 +1,7 @@
 package com.link_intersystems.dbunit.stream.resource.detection.file.xls;
 
-import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
 import com.link_intersystems.dbunit.stream.resource.detection.DataSetFileDetector;
+import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +21,8 @@ public class XlsDataSetDetector implements DataSetFileDetector {
     public XlsDataSetDetector() {
         try {
             implementor = createXlsDetectorImplementor();
-        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException |
+                 IllegalAccessException e) {
             String msg = "XlsFileDetector is out of order. Maybe the apache poi library is not on the classpath.";
             if (logger.isDebugEnabled()) {
                 logger.warn(msg, e);

@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Path;
 import java.util.Objects;
 
 /**
@@ -67,7 +66,8 @@ public abstract class AbstractDataSetFile implements DataSetFile {
             Constructor<? extends AbstractDataSetFile> constructor = getClass().getDeclaredConstructor(File.class);
             constructor.setAccessible(true);
             return constructor.newInstance(newFile);
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+                 InvocationTargetException e) {
             throw new DataSetException(e);
         }
     }

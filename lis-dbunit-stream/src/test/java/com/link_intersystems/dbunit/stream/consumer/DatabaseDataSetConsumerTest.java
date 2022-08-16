@@ -4,14 +4,11 @@ import com.link_intersystems.dbunit.test.DBUnitAssertions;
 import com.link_intersystems.dbunit.test.TestDataSets;
 import com.link_intersystems.jdbc.ColumnMetaDataList;
 import com.link_intersystems.jdbc.ConnectionMetaData;
-import com.link_intersystems.jdbc.TableMetaData;
 import com.link_intersystems.jdbc.test.H2Database;
 import com.link_intersystems.jdbc.test.db.sakila.SakilaH2DatabaseFactory;
-import com.link_intersystems.jdbc.test.db.sakila.SakilaTinyDB;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.DatabaseDataSet;
-import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.filter.ITableFilterSimple;
 import org.dbunit.dataset.stream.DataSetProducerAdapter;
@@ -21,9 +18,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
-
-import static com.link_intersystems.dbunit.test.DBUnitAssertions.LENIENT;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}

@@ -4,8 +4,6 @@ import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITableMetaData;
 import org.dbunit.dataset.stream.DefaultConsumer;
 import org.dbunit.dataset.stream.IDataSetConsumer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -39,7 +37,7 @@ public abstract class AbstractDataSetConsumerDelegate extends DefaultConsumer {
         getNullSafeDelegate().row(objects);
     }
 
-    private IDataSetConsumer getNullSafeDelegate(){
+    private IDataSetConsumer getNullSafeDelegate() {
         IDataSetConsumer delegate = getDelegate();
         return delegate == null ? NOOP_CONSUMER : delegate;
     }

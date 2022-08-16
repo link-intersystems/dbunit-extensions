@@ -4,7 +4,6 @@ import com.link_intersystems.dbunit.stream.resource.DataSetResource;
 import org.dbunit.dataset.DataSetException;
 
 import java.io.File;
-import java.nio.file.Path;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}

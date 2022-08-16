@@ -1,7 +1,7 @@
 package com.link_intersystems.dbunit.stream.resource.detection.file.csv;
 
-import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
 import com.link_intersystems.dbunit.stream.resource.detection.DataSetFileDetector;
+import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
 import com.link_intersystems.dbunit.stream.resource.file.csv.CsvDataSetFile;
 
 import java.io.File;

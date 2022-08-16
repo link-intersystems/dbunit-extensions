@@ -1,6 +1,5 @@
 package com.link_intersystems.dbunit.stream.command;
 
-import com.link_intersystems.dbunit.stream.command.DataSetCommand;
 import com.link_intersystems.dbunit.dataset.consistency.ConsistentDatabaseDataSet;
 import com.link_intersystems.dbunit.table.DatabaseTableOrder;
 import com.link_intersystems.dbunit.test.DBUnitAssertions;

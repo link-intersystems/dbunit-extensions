@@ -1,7 +1,5 @@
 package com.link_intersystems.dbunit.stream.resource.file;
 
-import com.link_intersystems.dbunit.stream.resource.file.DataSetFileLocations;
-
 import java.io.File;
 import java.util.AbstractList;
 import java.util.ArrayList;

@@ -4,7 +4,6 @@ import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
-import org.mockito.Mockito;
 import org.slf4j.Logger;
 
 import java.io.IOException;

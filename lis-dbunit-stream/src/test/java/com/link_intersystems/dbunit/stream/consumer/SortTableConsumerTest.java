@@ -1,6 +1,5 @@
 package com.link_intersystems.dbunit.stream.consumer;
 
-import com.link_intersystems.dbunit.table.TableOrder;
 import com.link_intersystems.dbunit.test.TestDataSets;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
@@ -9,7 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
