@@ -1,10 +1,11 @@
 package com.link_intersystems.dbunit.migration.testcontainers;
 
+import com.link_intersystems.dbunit.migration.DatabaseMigrationSupport;
 import com.link_intersystems.dbunit.migration.MigrationDataSetTransformerFactory;
+import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerPipeTransformerAdapter;
 import com.link_intersystems.dbunit.stream.consumer.DataSetTransormer;
-import com.link_intersystems.dbunit.stream.consumer.DatabaseMigrationSupport;
 import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
-import com.link_intersystems.dbunit.testcontainers.consumer.TestContainersDataSetTransformer;
+import com.link_intersystems.dbunit.testcontainers.consumer.TestContainersConsumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -25,6 +26,9 @@ public class TestcontainersMigrationDataSetTransformerFactory implements Migrati
 
     @Override
     public DataSetTransormer createTransformer(DatabaseMigrationSupport databaseMigrationSupport) {
-        return new TestContainersDataSetTransformer(databaseContainerSupport, databaseMigrationSupport);
+        TestContainersConsumer testContainersConsumer = new TestContainersConsumer(databaseContainerSupport);
+        testContainersConsumer.setStartDataSourceConsumer(databaseMigrationSupport::prepareDataSource);
+        testContainersConsumer.setEndDataSourceConsumer(databaseMigrationSupport::migrateDataSource);
+        return new DataSetConsumerPipeTransformerAdapter(testContainersConsumer);
     }
 }

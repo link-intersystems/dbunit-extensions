@@ -5,7 +5,7 @@ import com.link_intersystems.dbunit.migration.MigrationDataSetTransformerFactory
 import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerPipe;
 import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerPipeTransformerAdapter;
 import com.link_intersystems.dbunit.stream.consumer.DataSetTransormer;
-import com.link_intersystems.dbunit.stream.consumer.DatabaseMigrationSupport;
+import com.link_intersystems.dbunit.migration.DatabaseMigrationSupport;
 import com.link_intersystems.dbunit.stream.resource.DataSetResource;
 import com.link_intersystems.util.concurrent.ProgressListener;
 import org.dbunit.dataset.DataSetException;

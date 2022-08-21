@@ -25,7 +25,7 @@ class TestContainersConsumerTest {
     @Test
     void consume() throws DataSetException, IOException {
         TestContainersConsumer testContainersConsumer = new TestContainersConsumer(containerSupport);
-        testContainersConsumer.setDatabaseMigrationSupport(new SakilaMigrationSupport());
+        testContainersConsumer.setStartDataSourceConsumer(new SakilaDataSourceSetup()::prepareDataSource);
 
         IDataSet tinySakilaDataSet = TestDataSets.getTinySakilaDataSet();
         DataSetProducerAdapter dataSetProducerAdapter = new DataSetProducerAdapter(tinySakilaDataSet);

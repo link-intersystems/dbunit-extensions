@@ -1,9 +1,6 @@
 package com.link_intersystems.dbunit.migration.flyway;
 
-import com.link_intersystems.dbunit.stream.consumer.DatabaseMigrationSupport;
-import org.dbunit.dataset.DataSetException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.link_intersystems.dbunit.migration.DatabaseMigrationSupport;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -33,7 +30,7 @@ public class FlywayDatabaseMigrationSupport implements DatabaseMigrationSupport 
     }
 
     @Override
-    public void prepareDataSource(DataSource dataSource) throws DataSetException {
+    public void prepareDataSource(DataSource dataSource) {
         FlywayMigration flywayMigration = createFlywayMigration();
         FlywayMigrationConfig migrationConfig = getMigrationConfig();
 
@@ -41,7 +38,7 @@ public class FlywayDatabaseMigrationSupport implements DatabaseMigrationSupport 
     }
 
     @Override
-    public void migrateDataSource(DataSource dataSource) throws DataSetException {
+    public void migrateDataSource(DataSource dataSource) throws SQLException {
         FlywayMigration flywayMigration = createFlywayMigration();
         FlywayMigrationConfig migrationConfig = getMigrationConfig();
 
@@ -50,7 +47,7 @@ public class FlywayDatabaseMigrationSupport implements DatabaseMigrationSupport 
         afterMigrate(dataSource);
     }
 
-    protected void afterMigrate(DataSource dataSource) throws DataSetException {
+    protected void afterMigrate(DataSource dataSource) throws SQLException {
         if (getMigrationConfig().isRemoveFlywayTables()) {
             try (Connection connection = dataSource.getConnection()) {
                 try (Statement statement = connection.createStatement()) {
@@ -58,8 +55,6 @@ public class FlywayDatabaseMigrationSupport implements DatabaseMigrationSupport 
                         dropTable(statement, flywayTable);
                     }
                 }
-            } catch (SQLException e) {
-                throw new DataSetException(e);
             }
         }
     }

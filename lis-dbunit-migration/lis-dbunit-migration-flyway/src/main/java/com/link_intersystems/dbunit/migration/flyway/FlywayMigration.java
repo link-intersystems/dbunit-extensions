@@ -1,7 +1,7 @@
 package com.link_intersystems.dbunit.migration.flyway;
 
-import org.dbunit.dataset.DataSetException;
 import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.FlywayException;
 import org.flywaydb.core.api.MigrationVersion;
 import org.flywaydb.core.api.configuration.Configuration;
 import org.flywaydb.core.api.configuration.FluentConfiguration;
@@ -21,7 +21,7 @@ public class FlywayMigration {
         this.configuration = Objects.requireNonNull(configuration);
     }
 
-    public void execute(DataSource dataSource, MigrationVersion targetVersion) throws DataSetException {
+    public void execute(DataSource dataSource, MigrationVersion targetVersion) throws FlywayException {
         ClassLoader classLoader = configuration.getClassLoader();
         FluentConfiguration fluentConfiguration = new FluentConfiguration(classLoader);
         fluentConfiguration.configuration(configuration);
@@ -33,10 +33,10 @@ public class FlywayMigration {
         execute(flyway);
     }
 
-    protected void execute(Flyway flyway) throws DataSetException {
+    protected void execute(Flyway flyway) throws FlywayException {
         MigrateResult migrateResult = flyway.migrate();
         if (!migrateResult.success) {
-            throw new DataSetException("Unable to setup baseline ");
+            throw new FlywayException("Unable to setup baseline ");
         }
     }
 }
