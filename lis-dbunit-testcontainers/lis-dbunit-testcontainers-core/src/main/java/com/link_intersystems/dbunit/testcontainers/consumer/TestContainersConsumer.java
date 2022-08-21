@@ -150,7 +150,7 @@ public class TestContainersConsumer implements DataSetConsumerPipe {
                 operation.execute(connection, tmpDataSet);
             } catch (AmbiguousTableNameException e) {
                 // should never happen, because we only add one table.
-                throw new RuntimeException(e);
+                throw new DataSetException(e);
             }
         } catch (SQLException | DatabaseUnitException e) {
             throw new DataSetException(e);
