@@ -1,5 +1,6 @@
 package com.link_intersystems.dbunit.stream.consumer;
 
+import com.link_intersystems.dbunit.stream.consumer.xls.XlsDataSetConsumer;
 import com.link_intersystems.dbunit.table.TableUtil;
 import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimExtension;
 import com.link_intersystems.jdbc.test.db.sakila.SakilaTinyDB;

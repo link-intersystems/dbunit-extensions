@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.stream.resource.db;
 
-import com.link_intersystems.dbunit.stream.consumer.DatabaseDataSetConsumer;
+import com.link_intersystems.dbunit.stream.consumer.db.DatabaseDataSetConsumer;
 import com.link_intersystems.dbunit.stream.producer.db.DatabaseDataSetProducer;
 import com.link_intersystems.dbunit.stream.producer.db.DatabaseDataSetProducerConfig;
 import com.link_intersystems.dbunit.stream.resource.DataSetResource;

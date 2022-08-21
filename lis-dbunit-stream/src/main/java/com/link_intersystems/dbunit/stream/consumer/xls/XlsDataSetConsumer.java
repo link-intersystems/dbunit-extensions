@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.stream.consumer;
+package com.link_intersystems.dbunit.stream.consumer.xls;
 
 import org.apache.poi.ss.usermodel.*;
 import org.dbunit.dataset.Column;

@@ -1,5 +1,6 @@
 package com.link_intersystems.dbunit.stream.consumer;
 
+import com.link_intersystems.dbunit.stream.consumer.db.DatabaseDataSetConsumer;
 import com.link_intersystems.dbunit.test.DBUnitAssertions;
 import com.link_intersystems.dbunit.test.TestDataSets;
 import com.link_intersystems.jdbc.ColumnMetaDataList;

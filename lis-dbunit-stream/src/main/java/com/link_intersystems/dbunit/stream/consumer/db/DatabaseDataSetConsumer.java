@@ -1,5 +1,6 @@
-package com.link_intersystems.dbunit.stream.consumer;
+package com.link_intersystems.dbunit.stream.consumer.db;
 
+import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseDataSet;
 import org.dbunit.database.IDatabaseConnection;

@@ -1,5 +1,7 @@
 package com.link_intersystems.dbunit.stream.consumer;
 
+import com.link_intersystems.dbunit.stream.consumer.db.DatabaseDataSetConsumer;
+import com.link_intersystems.dbunit.stream.consumer.xls.XlsDataSetConsumer;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
