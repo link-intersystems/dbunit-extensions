@@ -4,7 +4,7 @@ import com.link_intersystems.dbunit.test.DBUnitAssertions;
 import com.link_intersystems.dbunit.test.TestDataSets;
 import com.link_intersystems.jdbc.ColumnMetaDataList;
 import com.link_intersystems.jdbc.ConnectionMetaData;
-import com.link_intersystems.jdbc.test.H2Database;
+import com.link_intersystems.jdbc.test.db.h2.H2Database;
 import com.link_intersystems.jdbc.test.db.sakila.SakilaH2DatabaseFactory;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;

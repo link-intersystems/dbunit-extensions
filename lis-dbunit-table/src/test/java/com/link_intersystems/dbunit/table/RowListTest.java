@@ -1,13 +1,12 @@
 package com.link_intersystems.dbunit.table;
 
 
-import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimTestDBExtension;
+import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimExtension;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.sql.Connection;
 import java.util.List;
@@ -19,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 @UnitTest
-@ExtendWith(SakilaSlimTestDBExtension.class)
+@SakilaSlimExtension
 class RowListTest {
 
     private SakilaDBFixture sakilaDBFixture;

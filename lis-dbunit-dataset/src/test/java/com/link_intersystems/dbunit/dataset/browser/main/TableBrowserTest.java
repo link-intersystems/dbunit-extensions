@@ -3,17 +3,14 @@ package com.link_intersystems.dbunit.dataset.browser.main;
 import com.link_intersystems.dbunit.dataset.DataSetAssertions;
 import com.link_intersystems.dbunit.dataset.browser.model.BrowseTable;
 import com.link_intersystems.dbunit.table.TableUtil;
+import com.link_intersystems.jdbc.test.db.sakila.SakilaTinyExtension;
 import com.link_intersystems.test.ComponentTest;
-import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimTestDBExtension;
-import com.link_intersystems.jdbc.test.db.sakila.SakilaTestDBExtension;
-import com.link_intersystems.jdbc.test.db.sakila.SakilaTinyTestDBExtension;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.sql.Connection;
 
@@ -22,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-@ExtendWith(SakilaTinyTestDBExtension.class)
+@SakilaTinyExtension
 @ComponentTest
 public class TableBrowserTest {
 

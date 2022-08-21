@@ -4,9 +4,9 @@ import com.link_intersystems.dbunit.dataset.consistency.ConsistentDatabaseDataSe
 import com.link_intersystems.dbunit.table.DatabaseTableOrder;
 import com.link_intersystems.dbunit.test.DBUnitAssertions;
 import com.link_intersystems.dbunit.test.TestDataSets;
-import com.link_intersystems.jdbc.test.H2Database;
+import com.link_intersystems.jdbc.test.db.h2.H2Database;
 import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimDB;
-import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimTestDBExtension;
+import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimExtension;
 import com.link_intersystems.jdbc.test.db.sakila.SakilaTinyDB;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
@@ -17,7 +17,6 @@ import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.xml.XmlDataSet;
 import org.dbunit.operation.DatabaseOperation;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -31,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-@ExtendWith(SakilaSlimTestDBExtension.class)
+@SakilaSlimExtension
 class DataSetCommandTest {
 
     private String[] slimDbTableNames = SakilaSlimDB.getTableNames().toArray(new String[0]);

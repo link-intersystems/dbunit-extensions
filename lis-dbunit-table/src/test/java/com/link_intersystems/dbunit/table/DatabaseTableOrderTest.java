@@ -1,12 +1,11 @@
 package com.link_intersystems.dbunit.table;
 
-import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimTestDBExtension;
+import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimExtension;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.dataset.DataSetException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.sql.Connection;
 
@@ -15,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-@ExtendWith(SakilaSlimTestDBExtension.class)
+@SakilaSlimExtension
 class DatabaseTableOrderTest {
 
     private DatabaseTableOrder databaseTableOrder;

@@ -1,7 +1,7 @@
 package com.link_intersystems.dbunit.stream.consumer;
 
 import com.link_intersystems.dbunit.table.TableUtil;
-import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimTestDBExtension;
+import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimExtension;
 import com.link_intersystems.jdbc.test.db.sakila.SakilaTinyDB;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -16,7 +16,6 @@ import org.dbunit.dataset.datatype.DataType;
 import org.dbunit.dataset.stream.DataSetProducerAdapter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -32,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-@ExtendWith(SakilaSlimTestDBExtension.class)
+@SakilaSlimExtension
 class XlsDataSetConsumerTest {
 
 

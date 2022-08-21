@@ -1,8 +1,7 @@
 package com.link_intersystems.dbunit.sql.statement;
 
-import com.link_intersystems.jdbc.test.db.sakila.SakilaTinyTestDBExtension;
+import com.link_intersystems.jdbc.test.db.sakila.SakilaTinyExtension;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -13,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-@ExtendWith(SakilaTinyTestDBExtension.class)
+@SakilaTinyExtension
 class SqlStatementTest {
 
     @Test

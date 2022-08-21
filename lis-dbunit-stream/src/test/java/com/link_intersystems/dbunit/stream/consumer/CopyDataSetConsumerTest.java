@@ -1,13 +1,12 @@
 package com.link_intersystems.dbunit.stream.consumer;
 
-import com.link_intersystems.jdbc.test.db.sakila.SakilaTinyTestDBExtension;
+import com.link_intersystems.jdbc.test.db.sakila.SakilaTinyExtension;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.DatabaseDataSet;
 import org.dbunit.dataset.FilteredDataSet;
 import org.dbunit.dataset.stream.DataSetProducerAdapter;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -17,7 +16,7 @@ import static com.link_intersystems.dbunit.test.DBUnitAssertions.STRICT;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-@ExtendWith(SakilaTinyTestDBExtension.class)
+@SakilaTinyExtension
 class CopyDataSetConsumerTest {
 
     @Test

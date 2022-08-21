@@ -1,10 +1,9 @@
 package com.link_intersystems.dbunit.dataset.browser.model;
 
 import com.link_intersystems.jdbc.ConnectionMetaData;
-import com.link_intersystems.jdbc.test.db.sakila.SakilaEmptyTestDBExtension;
+import com.link_intersystems.jdbc.test.db.sakila.SakilaEmptyExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -12,7 +11,7 @@ import java.sql.SQLException;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-@ExtendWith(SakilaEmptyTestDBExtension.class)
+@SakilaEmptyExtension
 class BrowseTableTest {
 
     private ConnectionMetaData connectionMetaData;

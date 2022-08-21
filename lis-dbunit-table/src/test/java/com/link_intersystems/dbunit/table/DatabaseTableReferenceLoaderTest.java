@@ -4,14 +4,13 @@ import com.link_intersystems.dbunit.sql.statement.JoinTableReferenceSqlFactory;
 import com.link_intersystems.jdbc.ConnectionMetaData;
 import com.link_intersystems.jdbc.TableReference;
 import com.link_intersystems.jdbc.TableReferenceList;
-import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimTestDBExtension;
+import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimExtension;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -23,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 @ComponentTest
-@ExtendWith(SakilaSlimTestDBExtension.class)
+@SakilaSlimExtension
 class DatabaseTableReferenceLoaderTest {
 
     private DatabaseConnection databaseConnection;

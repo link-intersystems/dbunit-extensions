@@ -1,7 +1,7 @@
 package com.link_intersystems.dbunit.table;
 
 import com.link_intersystems.jdbc.ConnectionMetaData;
-import com.link_intersystems.jdbc.test.db.sakila.SakilaTinyTestDBExtension;
+import com.link_intersystems.jdbc.test.db.sakila.SakilaTinyExtension;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.DatabaseDataSet;
@@ -10,17 +10,17 @@ import org.dbunit.dataset.DefaultTable;
 import org.dbunit.dataset.ITable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-@ExtendWith(SakilaTinyTestDBExtension.class)
+@SakilaTinyExtension
 class TableReferenceTraversalTest {
 
     private TableReferenceTraversal tableReferenceTraversal;

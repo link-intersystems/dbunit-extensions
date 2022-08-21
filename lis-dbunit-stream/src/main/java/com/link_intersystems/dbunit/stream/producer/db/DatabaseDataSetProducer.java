@@ -3,10 +3,7 @@ package com.link_intersystems.dbunit.stream.producer.db;
 import com.link_intersystems.dbunit.table.Row;
 import com.link_intersystems.dbunit.table.TableUtil;
 import com.link_intersystems.jdbc.TableMetaData;
-import org.dbunit.database.DatabaseConfig;
-import org.dbunit.database.ForwardOnlyResultSetTable;
-import org.dbunit.database.IDatabaseConnection;
-import org.dbunit.database.IMetadataHandler;
+import org.dbunit.database.*;
 import org.dbunit.dataset.*;
 import org.dbunit.dataset.filter.ITableFilterSimple;
 import org.dbunit.dataset.stream.DefaultConsumer;
@@ -25,6 +22,8 @@ import java.sql.SQLException;
 import static java.util.Objects.requireNonNull;
 
 /**
+ * A streaming {@link IDataSetProducer} for database connections.
+ *
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 public class DatabaseDataSetProducer implements IDataSetProducer {
@@ -97,16 +96,17 @@ public class DatabaseDataSetProducer implements IDataSetProducer {
 
     public String[] getTableNames() throws DataSetException {
         if (tableMap == null) {
-            tableMap = getTableMap();
+            tableMap = loadTableMap();
         }
 
         return tableMap.getTableNames();
     }
 
+
     public ITableMetaData getTableMetaData(String tableName) throws DataSetException {
         logger.debug("getTableMetaData(tableName={}) - start", tableName);
 
-        OrderedTableNameMap tableMap = getTableMap();
+        OrderedTableNameMap tableMap = loadTableMap();
 
         if (!tableMap.containsTable(tableName)) {
             logger.error("Table '{}' not found in tableMap={}", tableName, tableMap);
@@ -118,46 +118,44 @@ public class DatabaseDataSetProducer implements IDataSetProducer {
             return metaData;
         }
 
-        metaData = new DatabaseTableMetaData(tableName, connection, true, isCaseSensitiveTableNames());
+        metaData = createDatabaseTableMetaData(connection, tableName);
         tableMap.update(tableName, metaData);
 
         return metaData;
     }
 
-    private String getDefaultSchema() {
+    @SuppressWarnings("deprecation")
+    protected ITableMetaData createDatabaseTableMetaData(IDatabaseConnection connection, String tableName) throws DataSetException {
+        return new DatabaseTableMetaDataAccess(tableName, connection, true, isCaseSensitiveTableNames());
+    }
+
+    protected String getDefaultSchema() {
         return connection.getSchema();
     }
 
-    private OrderedTableNameMap getTableMap() throws DataSetException {
+    protected OrderedTableNameMap loadTableMap() throws DataSetException {
         OrderedTableNameMap tableMap = new OrderedTableNameMap(isCaseSensitiveTableNames());
         DatabaseConfig config = connection.getConfig();
 
         String schema = getSchema();
 
         try {
-            Connection jdbcConnection = connection.getConnection();
-            DatabaseMetaData databaseMetaData = jdbcConnection.getMetaData();
-
-            if (SQLHelper.isSybaseDb(jdbcConnection.getMetaData()) && !jdbcConnection.getMetaData().getUserName().equals(schema)) {
-                logger.warn("For sybase the schema name should be equal to the user name. " + "Otherwise the DatabaseMetaData#getTables() method might not return any columns. " + "See dbunit tracker #1628896 and http://issues.apache.org/jira/browse/TORQUE-40?page=all");
-            }
-
-            String[] tableType = (String[]) config.getProperty(DatabaseConfig.PROPERTY_TABLE_TYPE);
-            IMetadataHandler metadataHandler = (IMetadataHandler) config.getProperty(DatabaseConfig.PROPERTY_METADATA_HANDLER);
-
-            ResultSet resultSet = metadataHandler.getTables(databaseMetaData, schema, tableType);
+            ResultSet resultSet = loadMetaData(config, schema);
 
             if (logger.isDebugEnabled()) {
-                logger.debug(SQLHelper.getDatabaseInfo(jdbcConnection.getMetaData()));
+                Connection jdbcConnection2 = connection.getConnection();
+                logger.debug(SQLHelper.getDatabaseInfo(jdbcConnection2.getMetaData()));
                 logger.debug("metadata resultset={}", resultSet);
             }
 
             ITableFilterSimple tableFilter = databaseDataSetProducerConfig.getTableFilter();
 
             try {
+                IMetadataHandler metadataHandler2 = (IMetadataHandler) config.getProperty(DatabaseConfig.PROPERTY_METADATA_HANDLER);
                 while (resultSet.next()) {
+                    String schemaName = metadataHandler2.getSchema(resultSet);
+
                     TableMetaData tableMetaData = new TableMetaData(resultSet);
-                    String schemaName = metadataHandler.getSchema(resultSet);
                     String tableName = tableMetaData.getTableName();
 
                     if (!tableFilter.accept(tableName)) {
@@ -183,6 +181,21 @@ public class DatabaseDataSetProducer implements IDataSetProducer {
         }
 
         return tableMap;
+    }
+
+    private ResultSet loadMetaData(DatabaseConfig config, String schema) throws SQLException {
+        Connection jdbcConnection = connection.getConnection();
+        DatabaseMetaData databaseMetaData = jdbcConnection.getMetaData();
+
+        if (SQLHelper.isSybaseDb(jdbcConnection.getMetaData()) && !jdbcConnection.getMetaData().getUserName().equals(schema)) {
+            logger.warn("For sybase the schema name should be equal to the user name. " + "Otherwise the DatabaseMetaData#getTables() method might not return any columns. " + "See dbunit tracker #1628896 and http://issues.apache.org/jira/browse/TORQUE-40?page=all");
+        }
+
+        String[] tableType = (String[]) config.getProperty(DatabaseConfig.PROPERTY_TABLE_TYPE);
+        IMetadataHandler metadataHandler = (IMetadataHandler) config.getProperty(DatabaseConfig.PROPERTY_METADATA_HANDLER);
+
+        ResultSet resultSet = metadataHandler.getTables(databaseMetaData, schema, tableType);
+        return resultSet;
     }
 
     private boolean isCaseSensitiveTableNames() {

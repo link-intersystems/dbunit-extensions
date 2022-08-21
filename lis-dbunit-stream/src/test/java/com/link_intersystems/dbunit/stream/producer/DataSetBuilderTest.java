@@ -2,11 +2,10 @@ package com.link_intersystems.dbunit.stream.producer;
 
 import com.link_intersystems.dbunit.test.DBUnitAssertions;
 import com.link_intersystems.dbunit.test.TestDataSets;
-import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimTestDBExtension;
+import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimExtension;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -14,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-@ExtendWith(SakilaSlimTestDBExtension.class)
+@SakilaSlimExtension
 class DataSetBuilderTest {
 
     @Test

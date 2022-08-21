@@ -1,23 +1,23 @@
 package com.link_intersystems.dbunit.table;
 
-import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimTestDBExtension;
+import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimExtension;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.ITable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.sql.Connection;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 @UnitTest
-@ExtendWith(SakilaSlimTestDBExtension.class)
+@SakilaSlimExtension
 class RowTest {
 
     private SakilaDBFixture sakilaDBFixture;
@@ -80,6 +80,6 @@ class RowTest {
 
         assertThrows(IllegalArgumentException.class, () -> row.getValue("FIRST_NAME"));
 
-         assertEquals("NICK", row.ignoreCase().getValue("FIRST_NAME"));
+        assertEquals("NICK", row.ignoreCase().getValue("FIRST_NAME"));
     }
 }

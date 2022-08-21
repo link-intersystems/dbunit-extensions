@@ -3,13 +3,12 @@ package com.link_intersystems.dbunit.stream.producer.db;
 import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
 import com.link_intersystems.dbunit.test.DBUnitAssertions;
 import com.link_intersystems.jdbc.test.db.sakila.SakilaTinyDB;
-import com.link_intersystems.jdbc.test.db.sakila.SakilaTinyTestDBExtension;
+import com.link_intersystems.jdbc.test.db.sakila.SakilaTinyExtension;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.DatabaseDataSet;
 import org.dbunit.dataset.filter.ITableFilterSimple;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -17,7 +16,7 @@ import java.sql.SQLException;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-@ExtendWith(SakilaTinyTestDBExtension.class)
+@SakilaTinyExtension
 class DatabaseDataSetProducerTest {
 
     @Test

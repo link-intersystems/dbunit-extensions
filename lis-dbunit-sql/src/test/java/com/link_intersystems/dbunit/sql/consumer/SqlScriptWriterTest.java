@@ -1,9 +1,9 @@
 package com.link_intersystems.dbunit.sql.consumer;
 
 import com.link_intersystems.jdbc.MapRowMapper;
-import com.link_intersystems.jdbc.test.H2Database;
+import com.link_intersystems.jdbc.test.db.h2.H2Database;
 import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimDB;
-import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimTestDBExtension;
+import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimExtension;
 import com.link_intersystems.sql.dialect.DefaultSqlDialect;
 import com.link_intersystems.sql.dialect.SqlDialect;
 import com.link_intersystems.sql.format.SqlFormatSettings;
@@ -18,12 +18,10 @@ import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.stream.DataSetProducerAdapter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.sql.*;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-@ExtendWith(SakilaSlimTestDBExtension.class)
+@SakilaSlimExtension
 class SqlScriptWriterTest {
 
     public static final String SELECT_ACTOR = "select * from actor where actor_id = ?";
