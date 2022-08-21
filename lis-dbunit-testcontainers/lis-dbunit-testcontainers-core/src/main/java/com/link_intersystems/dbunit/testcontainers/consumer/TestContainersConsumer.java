@@ -30,7 +30,7 @@ public class TestContainersConsumer implements DataSetConsumerPipe {
     private IDataSetConsumer dataSetConsumer = new DefaultConsumer();
     private DataSourceConsumer startDataSourceConsumer = NullDataSourceConsumer.INSTANCE;
     private DataSourceConsumer endDataSourceConsumer = NullDataSourceConsumer.INSTANCE;
-    private DefaultTable currentTable;
+    private DefaultTable rowCache;
     private RunningContainer runningContainer;
 
     private int rowCacheLimit = Integer.MAX_VALUE;
@@ -108,37 +108,37 @@ public class TestContainersConsumer implements DataSetConsumerPipe {
 
     @Override
     public void startTable(ITableMetaData metaData) {
-        currentTable = new DefaultTable(metaData);
+        rowCache = new DefaultTable(metaData);
     }
 
     @Override
     public void row(Object[] values) throws DataSetException {
-        currentTable.addRow(values);
+        rowCache.addRow(values);
         if (isRowCacheLimitExceeded()) {
             flushRowCache();
-            currentTable = new DefaultTable(currentTable.getTableMetaData());
+            rowCache = new DefaultTable(rowCache.getTableMetaData());
         }
     }
 
     protected boolean isRowCacheLimitExceeded() {
-        return currentTable != null && currentTable.getRowCount() >= rowCacheLimit;
+        return rowCache != null && rowCache.getRowCount() >= rowCacheLimit;
     }
 
     protected void flushRowCache() throws DataSetException {
-        if (currentTable == null || currentTable.getRowCount() == 0) {
+        if (rowCache == null || rowCache.getRowCount() == 0) {
             return;
         }
 
         IDatabaseConnection databaseConnection = runningContainer.getDatabaseConnection();
         DatabaseOperation databaseOperation = getDatabaseOperation();
-        processTable(databaseOperation, databaseConnection, currentTable);
+        processTable(databaseOperation, databaseConnection, rowCache);
     }
 
     @Override
     public void endTable() throws DataSetException {
         flushRowCache();
 
-        currentTable = null;
+        rowCache = null;
     }
 
     protected void processTable(DatabaseOperation operation, IDatabaseConnection connection, ITable table) throws DataSetException {
