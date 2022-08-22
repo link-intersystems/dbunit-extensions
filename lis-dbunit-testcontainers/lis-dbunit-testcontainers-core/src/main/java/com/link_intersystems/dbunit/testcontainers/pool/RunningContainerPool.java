@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.testcontainers.consumer;
+package com.link_intersystems.dbunit.testcontainers.pool;
 
 import com.link_intersystems.dbunit.testcontainers.RunningContainer;
 import org.dbunit.dataset.DataSetException;

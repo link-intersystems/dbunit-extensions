@@ -1,9 +1,9 @@
 package com.link_intersystems.dbunit.testcontainers.consumer;
 
 import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerPipe;
-import com.link_intersystems.dbunit.testcontainers.DBunitJdbcContainer;
-import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
-import com.link_intersystems.dbunit.testcontainers.RunningContainer;
+import com.link_intersystems.dbunit.testcontainers.*;
+import com.link_intersystems.dbunit.testcontainers.pool.RunningContainerPool;
+import com.link_intersystems.dbunit.testcontainers.pool.SingleRunningContainerPool;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseDataSet;
 import org.dbunit.database.IDatabaseConnection;
@@ -37,7 +37,10 @@ public class TestContainersConsumer implements DataSetConsumerPipe {
     private int rowCacheLimit = Integer.MAX_VALUE;
 
     public TestContainersConsumer(DatabaseContainerSupport databaseContainerSupport) {
-        Supplier<DBunitJdbcContainer> dBunitJdbcContainerSupplier = () -> new DBunitJdbcContainer(databaseContainerSupport.create(), databaseContainerSupport.getDatabaseConfig());
+        this(() -> new DBunitJdbcContainer(databaseContainerSupport.create(), databaseContainerSupport.getDatabaseConfig()));
+    }
+
+    public TestContainersConsumer(Supplier<DBunitJdbcContainer> dBunitJdbcContainerSupplier) {
         this.runningContainerPool = new SingleRunningContainerPool(
                 dBunitJdbcContainerSupplier
         );

@@ -21,6 +21,7 @@
         <module>lis-dbunit-testcontainers-core</module>
         <module>lis-dbunit-testcontainers-postgres</module>
         <module>lis-dbunit-testcontainers-mysql</module>
+        <module>lis-dbunit-testcontainers-commons-pool</module>
     </modules>
 
     <dependencyManagement>

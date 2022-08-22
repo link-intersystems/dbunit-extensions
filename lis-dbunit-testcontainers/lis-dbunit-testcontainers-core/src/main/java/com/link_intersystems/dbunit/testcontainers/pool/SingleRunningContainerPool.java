@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.testcontainers.consumer;
+package com.link_intersystems.dbunit.testcontainers.pool;
 
 import com.link_intersystems.dbunit.testcontainers.DBunitJdbcContainer;
 import com.link_intersystems.dbunit.testcontainers.RunningContainer;
@@ -46,7 +46,7 @@ public class SingleRunningContainerPool implements RunningContainerPool {
     }
 
     @Override
-    public synchronized void close() throws Exception {
+    public synchronized void close() {
         if (runningContainer != null) {
             returnContainer(runningContainer);
         }
