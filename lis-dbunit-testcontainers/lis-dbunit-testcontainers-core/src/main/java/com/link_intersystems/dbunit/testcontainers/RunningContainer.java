@@ -13,4 +13,6 @@ public interface RunningContainer {
     IDatabaseConnection getDatabaseConnection();
 
     void stop();
+
+    boolean isStopped();
 }

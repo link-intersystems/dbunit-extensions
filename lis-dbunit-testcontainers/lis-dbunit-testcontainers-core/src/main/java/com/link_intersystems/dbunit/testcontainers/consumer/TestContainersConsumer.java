@@ -16,6 +16,7 @@ import org.dbunit.operation.DatabaseOperation;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -25,21 +26,25 @@ import static java.util.Objects.requireNonNull;
 public class TestContainersConsumer implements DataSetConsumerPipe {
 
     private DatabaseOperation databaseOperation = DatabaseOperation.INSERT;
-    private final DBunitJdbcContainer dBunitJdbcContainer;
     private IDataSetConsumer dataSetConsumer = new DefaultConsumer();
     private DataSourceConsumer startDataSourceConsumer = NullDataSourceConsumer.INSTANCE;
     private DataSourceConsumer endDataSourceConsumer = NullDataSourceConsumer.INSTANCE;
     private DefaultTable rowCache;
     private RunningContainer runningContainer;
 
+    private RunningContainerPool runningContainerPool;
+
     private int rowCacheLimit = Integer.MAX_VALUE;
 
     public TestContainersConsumer(DatabaseContainerSupport databaseContainerSupport) {
-        this(new DBunitJdbcContainer(databaseContainerSupport.create(), databaseContainerSupport.getDatabaseConfig()));
+        Supplier<DBunitJdbcContainer> dBunitJdbcContainerSupplier = () -> new DBunitJdbcContainer(databaseContainerSupport.create(), databaseContainerSupport.getDatabaseConfig());
+        this.runningContainerPool = new SingleRunningContainerPool(
+                dBunitJdbcContainerSupplier
+        );
     }
 
-    public TestContainersConsumer(DBunitJdbcContainer dBunitJdbcContainer) {
-        this.dBunitJdbcContainer = Objects.requireNonNull(dBunitJdbcContainer);
+    public TestContainersConsumer(RunningContainerPool runningContainerPool) {
+        this.runningContainerPool = Objects.requireNonNull(runningContainerPool);
     }
 
     public void setDatabaseOperation(DatabaseOperation databaseOperation) {
@@ -94,7 +99,7 @@ public class TestContainersConsumer implements DataSetConsumerPipe {
 
     @Override
     public void startDataSet() throws DataSetException {
-        runningContainer = dBunitJdbcContainer.start();
+        runningContainer = runningContainerPool.borrowContainer();
 
         DataSource dataSource = runningContainer.getDataSource();
         try {
@@ -162,7 +167,7 @@ public class TestContainersConsumer implements DataSetConsumerPipe {
         } catch (SQLException e) {
             throw new DataSetException(e);
         } finally {
-            runningContainer.stop();
+            runningContainerPool.returnContainer(runningContainer);
         }
     }
 

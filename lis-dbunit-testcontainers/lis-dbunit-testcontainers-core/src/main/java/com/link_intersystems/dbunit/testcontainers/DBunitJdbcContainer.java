@@ -67,23 +67,45 @@ public class DBunitJdbcContainer {
 
     protected RunningContainer createRunningContainer(JdbcDatabaseContainer<?> jdbcDatabaseContainer, DatabaseContainerDataSource dataSource, DatabaseConnection databaseConnection) {
         return new RunningContainer() {
+
+            private DatabaseContainerDataSource containerDataSource = dataSource;
+            private JdbcDatabaseContainer<?> container = jdbcDatabaseContainer;
+
             @Override
             public DataSource getDataSource() {
-                return dataSource;
+                if (isStopped()) {
+                    throw new RuntimeException("Container stopped");
+                }
+
+                return containerDataSource;
             }
 
             @Override
             public IDatabaseConnection getDatabaseConnection() {
+                if (isStopped()) {
+                    throw new RuntimeException("Container stopped");
+                }
                 return databaseConnection;
             }
 
             @Override
             public void stop() {
-                try {
-                    dataSource.close();
-                } finally {
-                    jdbcDatabaseContainer.stop();
+                if (isStopped()) {
+                    return;
                 }
+
+                try {
+                    containerDataSource.close();
+                    containerDataSource = null;
+                } finally {
+                    container.stop();
+                    container = null;
+                }
+            }
+
+            @Override
+            public boolean isStopped() {
+                return container == null;
             }
         };
     }
