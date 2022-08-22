@@ -1,19 +1,21 @@
 package com.link_intersystems.dbunit.migration.resources;
 
 import com.link_intersystems.dbunit.migration.DataSetMigration;
+import com.link_intersystems.dbunit.migration.DatabaseMigrationSupport;
 import com.link_intersystems.dbunit.migration.MigrationDataSetTransformerFactory;
 import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerPipe;
 import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerPipeTransformerAdapter;
 import com.link_intersystems.dbunit.stream.consumer.DataSetTransormer;
-import com.link_intersystems.dbunit.migration.DatabaseMigrationSupport;
 import com.link_intersystems.dbunit.stream.resource.DataSetResource;
 import com.link_intersystems.util.concurrent.ProgressListener;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import static java.util.Objects.requireNonNull;
 
@@ -30,6 +32,8 @@ public class DataSetResourcesMigration {
     private DataSetTransormer beforeMigrationTransformer;
     private DataSetTransormer afterMigrationTransformer;
     private DatabaseMigrationSupport databaseMigrationSupport;
+
+    private ExecutorService executorService = Executors.newFixedThreadPool(1);
 
     public void setDatabaseMigrationSupport(DatabaseMigrationSupport databaseMigrationSupport) {
         this.databaseMigrationSupport = databaseMigrationSupport;
@@ -60,7 +64,7 @@ public class DataSetResourcesMigration {
     }
 
     public void setAfterMigrationTransformer(DataSetConsumerPipe afterConsumerPipe) {
-        this.afterMigrationTransformer =  new DataSetConsumerPipeTransformerAdapter(requireNonNull(afterConsumerPipe));
+        this.afterMigrationTransformer = new DataSetConsumerPipeTransformerAdapter(requireNonNull(afterConsumerPipe));
     }
 
     public DataSetTransormer getAfterMigrationTransformer() {
@@ -104,12 +108,30 @@ public class DataSetResourcesMigration {
 
         Map<DataSetResource, DataSetResource> migratedDataSetFiles = new LinkedHashMap<>();
 
+        List<Future<DataSetResource>> migrationFutures = new ArrayList<>();
+        Map<Future<DataSetResource>, DataSetResource> sourceDataSetResourcesByMigration = new HashMap<>();
+
+
         for (DataSetResource sourceDataSetResource : sourceDataSetResources) {
-            DataSetResource migratedDataSetResource = tryMigrate(sourceDataSetResource);
-            if (migratedDataSetResource != null) {
-                migratedDataSetFiles.put(sourceDataSetResource, migratedDataSetResource);
-            }
+            Future<DataSetResource> migrationFuture = executorService.submit(() -> tryMigrate(sourceDataSetResource));
+            migrationFutures.add(migrationFuture);
+            sourceDataSetResourcesByMigration.put(migrationFuture, sourceDataSetResource);
+
             progressListener.worked(1);
+        }
+
+        for (Future<DataSetResource> migrationFuture : migrationFutures) {
+            try {
+                DataSetResource migratedDataSetResource = migrationFuture.get();
+                if (migratedDataSetResource != null) {
+                    DataSetResource sourceDataSetResource = sourceDataSetResourcesByMigration.get(migrationFuture);
+                    migratedDataSetFiles.put(sourceDataSetResource, migratedDataSetResource);
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+            }
+
         }
 
         MigrationsResult migrationsResult = new MigrationsResult(migratedDataSetFiles);
