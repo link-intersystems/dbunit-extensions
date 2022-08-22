@@ -44,7 +44,11 @@
             <artifactId>lis-dbunit-testcontainers-mysql</artifactId>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>com.link-intersystems.dbunit.testcontainers</groupId>
+            <artifactId>lis-dbunit-testcontainers-commons-pool</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-mysql</artifactId>

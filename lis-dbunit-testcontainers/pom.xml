@@ -41,6 +41,12 @@
                 <artifactId>lis-dbunit-testcontainers-mysql</artifactId>
                 <version>1.0.6-SNAPSHOT</version>
             </dependency>
+            <dependency>
+                <groupId>com.link-intersystems.dbunit.testcontainers</groupId>
+                <artifactId>lis-dbunit-testcontainers-commons-pool</artifactId>
+                <version>1.0.6-SNAPSHOT</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>

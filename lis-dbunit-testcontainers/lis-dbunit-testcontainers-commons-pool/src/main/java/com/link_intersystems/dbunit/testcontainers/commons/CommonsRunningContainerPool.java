@@ -18,23 +18,25 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
-import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Objects.requireNonNull;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 public class CommonsRunningContainerPool implements RunningContainerPool {
-
-    public static CommonsRunningContainerPool createPool(Supplier<DBunitJdbcContainer> dBunitJdbcContainerSupplier, int minContainers) {
-        return createPool(dBunitJdbcContainerSupplier, minContainers, minContainers);
+    public static CommonsRunningContainerPool createPool(Supplier<DBunitJdbcContainer> dBunitJdbcContainerSupplier) {
+        return createPool(dBunitJdbcContainerSupplier, 1);
     }
 
-    public static CommonsRunningContainerPool createPool(Supplier<DBunitJdbcContainer> dBunitJdbcContainerSupplier, int minContainers, int maxConainers) {
+    public static CommonsRunningContainerPool createPool(Supplier<DBunitJdbcContainer> dBunitJdbcContainerSupplier, int containerCount) {
+        return createPool(dBunitJdbcContainerSupplier, containerCount, containerCount);
+    }
+
+    public static CommonsRunningContainerPool createPool(Supplier<DBunitJdbcContainer> dBunitJdbcContainerSupplier, int minContainerCount, int maxConainerCount) {
         GenericObjectPoolConfig<RunningContainer> conf = new GenericObjectPoolConfig<>();
 
-        conf.setMinIdle(minContainers);
-        conf.setMaxTotal(maxConainers);
+        conf.setMinIdle(minContainerCount);
+        conf.setMaxTotal(maxConainerCount);
         conf.setTestOnBorrow(true);
         conf.setBlockWhenExhausted(true);
         conf.setMaxWait(Duration.of(5, MINUTES));
@@ -49,7 +51,7 @@ public class CommonsRunningContainerPool implements RunningContainerPool {
 
         return createPool(dBunitJdbcContainerSupplier, pool -> {
             pool.setConfig(conf);
-            pool.setTimeBetweenEvictionRuns(Duration.of(1, SECONDS));
+            pool.setTimeBetweenEvictionRuns(Duration.ofMillis(500));
         });
     }
 
@@ -82,6 +84,7 @@ public class CommonsRunningContainerPool implements RunningContainerPool {
     public void returnContainer(RunningContainer runningContainer) {
         try {
             objectPool.returnObject(runningContainer);
+            objectPool.invalidateObject(runningContainer);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -124,7 +127,6 @@ public class CommonsRunningContainerPool implements RunningContainerPool {
 
         @Override
         public void passivateObject(PooledObject<RunningContainer> p) {
-            destroyObject(p);
         }
 
         @Override
