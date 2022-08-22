@@ -1,22 +1,24 @@
 package com.link_intersystems.dbunit.migration.collection;
 
+import com.link_intersystems.dbunit.migration.FlywayConfigurationConfigFixture;
 import com.link_intersystems.dbunit.migration.flyway.FlywayDatabaseMigrationSupport;
 import com.link_intersystems.dbunit.migration.flyway.FlywayMigrationConfig;
-import com.link_intersystems.dbunit.migration.FlywayConfigurationConfigFixture;
 import com.link_intersystems.dbunit.migration.resources.DataSetResourcesMigration;
 import com.link_intersystems.dbunit.migration.resources.MigrationsResult;
-import com.link_intersystems.dbunit.migration.testcontainers.TestcontainersMigrationDataSetTransformerFactory;
 import com.link_intersystems.dbunit.migration.resources.RebaseTargetpathDataSetResourceSupplier;
-import com.link_intersystems.dbunit.stream.resource.file.DataSetFileLocationsScanner;
-import com.link_intersystems.dbunit.stream.resource.detection.DetectingDataSetFileResourcesSupplier;
+import com.link_intersystems.dbunit.migration.testcontainers.TestcontainersMigrationDataSetTransformerFactory;
 import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
-import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerPipeTransformerAdapter;
 import com.link_intersystems.dbunit.stream.consumer.ExternalSortTableConsumer;
 import com.link_intersystems.dbunit.stream.resource.DataSetResource;
 import com.link_intersystems.dbunit.stream.resource.detection.DataSetFileDetection;
+import com.link_intersystems.dbunit.stream.resource.detection.DetectingDataSetFileResourcesSupplier;
+import com.link_intersystems.dbunit.stream.resource.file.DataSetFileLocationsScanner;
 import com.link_intersystems.dbunit.table.DefaultTableOrder;
 import com.link_intersystems.dbunit.table.TableOrder;
 import com.link_intersystems.dbunit.test.TinySakilaDataSetFiles;
+import com.link_intersystems.dbunit.testcontainers.DBunitJdbcContainer;
+import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
+import com.link_intersystems.dbunit.testcontainers.commons.CommonsRunningContainerPool;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
@@ -27,6 +29,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -58,7 +61,15 @@ class DataSetCollectionFlywayMigrationTest {
 
     @Test
     void migrateDataSetCollection() throws DataSetException {
-        dataSetResourcesMigration.setMigrationDataSetTransformerFactory(new TestcontainersMigrationDataSetTransformerFactory("postgres:latest"));
+        List<DataSetResource> dataSetResources = fileResourcesSupplier.getDataSetResources();
+
+        CommonsRunningContainerPool runningContainerPool = CommonsRunningContainerPool.createPool(() -> {
+            DatabaseContainerSupport databaseContainerSupport = DatabaseContainerSupport.getDatabaseContainerSupport("postgres:latest");
+            return new DBunitJdbcContainer(databaseContainerSupport.create(), databaseContainerSupport.getDatabaseConfig());
+        }, dataSetResources.size());
+
+        TestcontainersMigrationDataSetTransformerFactory migrationDataSetTransformerFactory = new TestcontainersMigrationDataSetTransformerFactory(runningContainerPool);
+        dataSetResourcesMigration.setMigrationDataSetTransformerFactory(migrationDataSetTransformerFactory);
 
         FlywayMigrationConfig migrationConfig = FlywayConfigurationConfigFixture.createPostgresConfig();
 
@@ -68,7 +79,7 @@ class DataSetCollectionFlywayMigrationTest {
         ExternalSortTableConsumer externalSortTableConsumer = new ExternalSortTableConsumer(tableOrder);
         dataSetResourcesMigration.setBeforeMigration(externalSortTableConsumer);
 
-        MigrationsResult result = dataSetResourcesMigration.exec(fileResourcesSupplier.getDataSetResources());
+        MigrationsResult result = dataSetResourcesMigration.exec(dataSetResources);
 
         assertDataSetsMigratedSuccessfully(result);
     }
