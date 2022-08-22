@@ -10,12 +10,11 @@ import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
+import static java.lang.Math.min;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -32,7 +31,11 @@ public class DataSetResourcesMigration {
     private Supplier<DataSetTransormer> afterMigrationTransformerSupplier = () -> null;
     private DatabaseMigrationSupport databaseMigrationSupport;
 
-    private ExecutorService executorService = Executors.newFixedThreadPool(4);
+    private ExecutorService executorService;
+
+    public void setExecutorService(ExecutorService executorService) {
+        this.executorService = executorService;
+    }
 
     public void setDatabaseMigrationSupport(DatabaseMigrationSupport databaseMigrationSupport) {
         this.databaseMigrationSupport = databaseMigrationSupport;
@@ -89,6 +92,12 @@ public class DataSetResourcesMigration {
     private MigrationsResult migrate(ProgressListener progressListener, List<DataSetResource> sourceDataSetResources) {
         checkMigrationPreconditions();
 
+        ExecutorService effectiveExecutorService = executorService;
+
+        if (effectiveExecutorService == null) {
+            effectiveExecutorService = getFallbackExecutorService(sourceDataSetResources.size());
+        }
+
         Map<DataSetResource, DataSetResource> migratedDataSetFiles = new LinkedHashMap<>();
 
         List<Future<DataSetResource>> migrationFutures = new ArrayList<>();
@@ -96,16 +105,15 @@ public class DataSetResourcesMigration {
 
 
         for (DataSetResource sourceDataSetResource : sourceDataSetResources) {
-            Future<DataSetResource> migrationFuture = executorService.submit(() -> tryMigrate(sourceDataSetResource));
+            Future<DataSetResource> migrationFuture = effectiveExecutorService.submit(() -> tryMigrate(sourceDataSetResource, progressListener));
             migrationFutures.add(migrationFuture);
             sourceDataSetResourcesByMigration.put(migrationFuture, sourceDataSetResource);
-
-            progressListener.worked(1);
         }
 
         for (Future<DataSetResource> migrationFuture : migrationFutures) {
             try {
                 DataSetResource migratedDataSetResource = migrationFuture.get();
+
                 if (migratedDataSetResource != null) {
                     DataSetResource sourceDataSetResource = sourceDataSetResourcesByMigration.get(migrationFuture);
                     migratedDataSetFiles.put(sourceDataSetResource, migratedDataSetResource);
@@ -123,6 +131,19 @@ public class DataSetResourcesMigration {
         return migrationsResult;
     }
 
+    protected ExecutorService getFallbackExecutorService(int dataSetResourcesCount) {
+        int threadCount = min(dataSetResourcesCount, 5);
+        ThreadFactory threadFactory = new ThreadFactory() {
+            private final AtomicInteger threadNumber = new AtomicInteger(1);
+
+            public Thread newThread(Runnable r) {
+                return new Thread(r, "data-set-migration-thread-" + threadNumber.getAndIncrement());
+            }
+        };
+
+        return Executors.newFixedThreadPool(threadCount, threadFactory);
+    }
+
     private void checkMigrationPreconditions() {
         if (getMigrationDataSetTransformerFactory() == null) {
             throw new IllegalStateException("migrationDataSetTransformerFactory must be set");
@@ -135,14 +156,41 @@ public class DataSetResourcesMigration {
         }
     }
 
-    protected DataSetResource tryMigrate(DataSetResource sourceDataSetResource) {
+    protected DataSetResource tryMigrate(DataSetResource sourceDataSetResource, ProgressListener progressListener) {
         try {
+            fireStartMigration(sourceDataSetResource);
             DataSetResource migratedDataSetFile = migrate(sourceDataSetResource);
-            migrationListener.migrationSuccessful(migratedDataSetFile);
+            fireMigrationSuccessful(migratedDataSetFile);
             return migratedDataSetFile;
         } catch (DataSetException e) {
-            migrationListener.migrationFailed(sourceDataSetResource, e);
+            fireMigrationFailed(sourceDataSetResource, e);
             return null;
+        } finally {
+            progressWorked(progressListener);
+        }
+    }
+
+    private void fireStartMigration(DataSetResource sourceDataSetResource) {
+        synchronized (migrationListener) {
+            migrationListener.startMigration(sourceDataSetResource);
+        }
+    }
+
+    private void fireMigrationSuccessful(DataSetResource migratedDataSetFile) {
+        synchronized (migrationListener) {
+            migrationListener.migrationSuccessful(migratedDataSetFile);
+        }
+    }
+
+    private void fireMigrationFailed(DataSetResource sourceDataSetResource, DataSetException e) {
+        synchronized (migrationListener) {
+            migrationListener.migrationFailed(sourceDataSetResource, e);
+        }
+    }
+
+    private void progressWorked(ProgressListener progressListener) {
+        synchronized (progressListener) {
+            progressListener.worked(1);
         }
     }
 
@@ -150,15 +198,17 @@ public class DataSetResourcesMigration {
     protected DataSetResource migrate(DataSetResource sourceDataSetResource) throws DataSetException {
         DataSetMigration dataSetMigration = createDataSetFlywayMigration(sourceDataSetResource);
         dataSetMigration.setMigrationDataSetTransformerFactory(getMigrationDataSetTransformerFactory());
-        dataSetMigration.setBeforeMigration(beforeMigrationTransformerSupplier.get());
-        dataSetMigration.setAfterMigration(afterMigrationTransformerSupplier.get());
+
+        DataSetTransormer beforeMigrationTransformer = beforeMigrationTransformerSupplier.get();
+        dataSetMigration.setBeforeMigration(beforeMigrationTransformer);
+
+        DataSetTransormer afterMigrationTransformer = afterMigrationTransformerSupplier.get();
+        dataSetMigration.setAfterMigration(afterMigrationTransformer);
 
         TargetDataSetResourceSupplier targetDataSetFileSupplier = getTargetDataSetResourceSupplier();
         DataSetResource targetDataSetResource = targetDataSetFileSupplier.getTargetDataSetResource(sourceDataSetResource);
         IDataSetConsumer targetDataSetFileConsumer = targetDataSetResource.createConsumer();
         dataSetMigration.setDataSetConsumer(targetDataSetFileConsumer);
-
-        migrationListener.startMigration(sourceDataSetResource);
 
         dataSetMigration.exec();
 
@@ -166,7 +216,8 @@ public class DataSetResourcesMigration {
     }
 
 
-    protected DataSetMigration createDataSetFlywayMigration(DataSetResource sourceDataSetResource) throws DataSetException {
+    protected DataSetMigration createDataSetFlywayMigration(DataSetResource sourceDataSetResource) throws
+            DataSetException {
         DataSetMigration dataSetMigration = new DataSetMigration();
         dataSetMigration.setDatabaseMigrationSupport(getDatabaseMigrationSupport());
         dataSetMigration.setDataSetProducer(sourceDataSetResource.createProducer());
