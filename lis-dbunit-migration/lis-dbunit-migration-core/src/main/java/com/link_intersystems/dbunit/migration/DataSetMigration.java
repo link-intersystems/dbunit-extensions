@@ -1,20 +1,19 @@
 package com.link_intersystems.dbunit.migration;
 
 import com.link_intersystems.dbunit.stream.consumer.*;
-import com.link_intersystems.dbunit.stream.producer.DataSetSource;
-import com.link_intersystems.dbunit.stream.producer.DataSetSourceSupport;
+import com.link_intersystems.dbunit.stream.producer.DataSetProducerSupport;
 import org.dbunit.dataset.DataSetException;
-import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.stream.IDataSetConsumer;
+import org.dbunit.dataset.stream.IDataSetProducer;
 
 import static java.util.Objects.requireNonNull;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class DataSetMigration implements DataSetSourceSupport, DataSetConsumerSupport {
+public class DataSetMigration implements DataSetProducerSupport, DataSetConsumerSupport {
 
-    private DataSetSource sourceDataSet;
+    private IDataSetProducer sourceProducer;
     private IDataSetConsumer targetConsumer;
     private MigrationDataSetTransformerFactory migrationDataSetTransformerFactory;
     private DataSetTransormer beforeMigration;
@@ -37,15 +36,15 @@ public class DataSetMigration implements DataSetSourceSupport, DataSetConsumerSu
         return migrationDataSetTransformerFactory;
     }
 
+    public void setDataSetProducer(IDataSetProducer dataSetProducer) {
+        sourceProducer = dataSetProducer;
+    }
+
     @Override
     public void setDataSetConsumer(IDataSetConsumer dataSetConsumer) {
         targetConsumer = dataSetConsumer;
     }
 
-    @Override
-    public void setDataSetSource(DataSetSource dataSetSource) {
-        this.sourceDataSet = dataSetSource;
-    }
 
     public void setBeforeMigration(DataSetTransormer beforeMigrationTransformer) {
         this.beforeMigration = beforeMigrationTransformer;
@@ -76,8 +75,7 @@ public class DataSetMigration implements DataSetSourceSupport, DataSetConsumerSu
 
         DataSetTransformExecutor transformExecutor = new DataSetTransformExecutor();
 
-        IDataSet dataSet = sourceDataSet.get();
-        transformExecutor.setDataSetProducer(dataSet);
+        transformExecutor.setDataSetProducer(sourceProducer);
 
         transformExecutor.setDataSetConsumer(targetConsumer);
 
@@ -91,8 +89,8 @@ public class DataSetMigration implements DataSetSourceSupport, DataSetConsumerSu
     }
 
     private void checkConfiguredProperly() {
-        if (sourceDataSet == null) {
-            throw new IllegalStateException("source dataset must be set");
+        if (sourceProducer == null) {
+            throw new IllegalStateException("source producer must be set");
         }
         if (targetConsumer == null) {
             throw new IllegalStateException("target consumer must be set");
