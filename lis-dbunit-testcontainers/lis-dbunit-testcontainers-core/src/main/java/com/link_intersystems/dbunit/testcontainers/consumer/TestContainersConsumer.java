@@ -5,7 +5,6 @@ import com.link_intersystems.dbunit.testcontainers.DBunitJdbcContainer;
 import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
 import com.link_intersystems.dbunit.testcontainers.RunningContainer;
 import org.dbunit.DatabaseUnitException;
-import org.dbunit.database.AmbiguousTableNameException;
 import org.dbunit.database.DatabaseDataSet;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.*;
@@ -143,15 +142,10 @@ public class TestContainersConsumer implements DataSetConsumerPipe {
 
     protected void processTable(DatabaseOperation operation, IDatabaseConnection connection, ITable table) throws DataSetException {
         try {
-            try {
-                DefaultDataSet tmpDataSet = new DefaultDataSet();
-                tmpDataSet.addTable(table);
+            DefaultDataSet tmpDataSet = new DefaultDataSet();
+            tmpDataSet.addTable(table);
 
-                operation.execute(connection, tmpDataSet);
-            } catch (AmbiguousTableNameException e) {
-                // should never happen, because we only add one table.
-                throw new DataSetException(e);
-            }
+            operation.execute(connection, tmpDataSet);
         } catch (SQLException | DatabaseUnitException e) {
             throw new DataSetException(e);
         }
