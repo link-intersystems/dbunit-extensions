@@ -3,8 +3,6 @@ package com.link_intersystems.dbunit.migration.resources;
 import com.link_intersystems.dbunit.migration.DataSetMigration;
 import com.link_intersystems.dbunit.migration.DatabaseMigrationSupport;
 import com.link_intersystems.dbunit.migration.MigrationDataSetTransformerFactory;
-import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerPipe;
-import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerPipeTransformerAdapter;
 import com.link_intersystems.dbunit.stream.consumer.DataSetTransormer;
 import com.link_intersystems.dbunit.stream.resource.DataSetResource;
 import com.link_intersystems.util.concurrent.ProgressListener;
@@ -16,6 +14,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -29,11 +28,11 @@ public class DataSetResourcesMigration {
     private TargetDataSetResourceSupplier targetDataSetResourceSupplier;
 
     private MigrationDataSetTransformerFactory migrationDataSetTransformerFactory;
-    private DataSetTransormer beforeMigrationTransformer;
-    private DataSetTransormer afterMigrationTransformer;
+    private Supplier<DataSetTransormer> beforeMigrationTransformerSupplier = () -> null;
+    private Supplier<DataSetTransormer> afterMigrationTransformerSupplier = () -> null;
     private DatabaseMigrationSupport databaseMigrationSupport;
 
-    private ExecutorService executorService = Executors.newFixedThreadPool(1);
+    private ExecutorService executorService = Executors.newFixedThreadPool(4);
 
     public void setDatabaseMigrationSupport(DatabaseMigrationSupport databaseMigrationSupport) {
         this.databaseMigrationSupport = databaseMigrationSupport;
@@ -47,28 +46,12 @@ public class DataSetResourcesMigration {
         this.migrationListener = requireNonNull(migrationListener);
     }
 
-    public void setBeforeMigration(DataSetTransormer beforeMigrationTransformer) {
-        this.beforeMigrationTransformer = beforeMigrationTransformer;
+    public void setBeforeMigrationSupplier(Supplier<DataSetTransormer> beforeMigrationTransformerSupplier) {
+        this.beforeMigrationTransformerSupplier = requireNonNull(beforeMigrationTransformerSupplier);
     }
 
-    public void setBeforeMigration(DataSetConsumerPipe beforeConsumerPipe) {
-        this.beforeMigrationTransformer = new DataSetConsumerPipeTransformerAdapter(requireNonNull(beforeConsumerPipe));
-    }
-
-    public DataSetTransormer getBeforeMigrationTransformer() {
-        return beforeMigrationTransformer;
-    }
-
-    public void setAfterMigrationTransformer(DataSetTransormer afterMigrationTransformer) {
-        this.afterMigrationTransformer = afterMigrationTransformer;
-    }
-
-    public void setAfterMigrationTransformer(DataSetConsumerPipe afterConsumerPipe) {
-        this.afterMigrationTransformer = new DataSetConsumerPipeTransformerAdapter(requireNonNull(afterConsumerPipe));
-    }
-
-    public DataSetTransormer getAfterMigrationTransformer() {
-        return afterMigrationTransformer;
+    public void setAfterMigrationSupplier(Supplier<DataSetTransormer> afterMigrationTransformerSupplier) {
+        this.afterMigrationTransformerSupplier = requireNonNull(afterMigrationTransformerSupplier);
     }
 
     public void setTargetDataSetResourceSupplier(TargetDataSetResourceSupplier targetDataSetResourceSupplier) {
@@ -167,8 +150,8 @@ public class DataSetResourcesMigration {
     protected DataSetResource migrate(DataSetResource sourceDataSetResource) throws DataSetException {
         DataSetMigration dataSetMigration = createDataSetFlywayMigration(sourceDataSetResource);
         dataSetMigration.setMigrationDataSetTransformerFactory(getMigrationDataSetTransformerFactory());
-        dataSetMigration.setBeforeMigration(getBeforeMigrationTransformer());
-        dataSetMigration.setAfterMigration(getAfterMigrationTransformer());
+        dataSetMigration.setBeforeMigration(beforeMigrationTransformerSupplier.get());
+        dataSetMigration.setAfterMigration(afterMigrationTransformerSupplier.get());
 
         TargetDataSetResourceSupplier targetDataSetFileSupplier = getTargetDataSetResourceSupplier();
         DataSetResource targetDataSetResource = targetDataSetFileSupplier.getTargetDataSetResource(sourceDataSetResource);

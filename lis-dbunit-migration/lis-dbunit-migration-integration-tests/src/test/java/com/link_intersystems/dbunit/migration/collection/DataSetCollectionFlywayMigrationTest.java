@@ -8,6 +8,7 @@ import com.link_intersystems.dbunit.migration.resources.MigrationsResult;
 import com.link_intersystems.dbunit.migration.resources.RebaseTargetpathDataSetResourceSupplier;
 import com.link_intersystems.dbunit.migration.testcontainers.TestcontainersMigrationDataSetTransformerFactory;
 import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
+import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerPipeTransformerAdapter;
 import com.link_intersystems.dbunit.stream.consumer.ExternalSortTableConsumer;
 import com.link_intersystems.dbunit.stream.resource.DataSetResource;
 import com.link_intersystems.dbunit.stream.resource.detection.DataSetFileDetection;
@@ -75,9 +76,11 @@ class DataSetCollectionFlywayMigrationTest {
 
         dataSetResourcesMigration.setDatabaseMigrationSupport(new FlywayDatabaseMigrationSupport(migrationConfig));
 
-        TableOrder tableOrder = new DefaultTableOrder("language", "film", "actor", "film_actor");
-        ExternalSortTableConsumer externalSortTableConsumer = new ExternalSortTableConsumer(tableOrder);
-        dataSetResourcesMigration.setBeforeMigration(externalSortTableConsumer);
+
+        dataSetResourcesMigration.setBeforeMigrationSupplier(() -> {
+            TableOrder tableOrder = new DefaultTableOrder("language", "film", "actor", "film_actor");
+            return new DataSetConsumerPipeTransformerAdapter(new ExternalSortTableConsumer(tableOrder));
+        });
 
         MigrationsResult result = dataSetResourcesMigration.exec(dataSetResources);
 
