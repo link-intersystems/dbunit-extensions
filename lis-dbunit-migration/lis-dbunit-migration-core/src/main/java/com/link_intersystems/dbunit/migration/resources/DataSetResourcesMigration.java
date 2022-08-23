@@ -8,6 +8,8 @@ import com.link_intersystems.dbunit.stream.resource.DataSetResource;
 import com.link_intersystems.util.concurrent.ProgressListener;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.stream.IDataSetConsumer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -23,15 +25,18 @@ import static java.util.Objects.requireNonNull;
 public class DataSetResourcesMigration {
 
     private DataSetResourcesMigrationListener migrationListener = new LoggingDataSetResourcesMigrationListener();
+    private Logger logger = LoggerFactory.getLogger(DataSetResourcesMigration.class);
 
     private TargetDataSetResourceSupplier targetDataSetResourceSupplier;
-
     private MigrationDataSetTransformerFactory migrationDataSetTransformerFactory;
     private Supplier<DataSetTransormer> beforeMigrationTransformerSupplier = () -> null;
     private Supplier<DataSetTransormer> afterMigrationTransformerSupplier = () -> null;
     private DatabaseMigrationSupport databaseMigrationSupport;
-
     private ExecutorService executorService;
+
+    public void setLogger(Logger logger) {
+        this.logger = requireNonNull(logger);
+    }
 
     public void setExecutorService(ExecutorService executorService) {
         this.executorService = executorService;
@@ -111,16 +116,18 @@ public class DataSetResourcesMigration {
         }
 
         for (Future<DataSetResource> migrationFuture : migrationFutures) {
+            DataSetResource sourceDataSetResource = sourceDataSetResourcesByMigration.get(migrationFuture);
+
             try {
                 DataSetResource migratedDataSetResource = migrationFuture.get();
 
                 if (migratedDataSetResource != null) {
-                    DataSetResource sourceDataSetResource = sourceDataSetResourcesByMigration.get(migrationFuture);
                     migratedDataSetFiles.put(sourceDataSetResource, migratedDataSetResource);
                 }
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             } catch (ExecutionException e) {
+                logger.error("Unable to migrate {}", sourceDataSetResource, e.getCause());
             }
 
         }
