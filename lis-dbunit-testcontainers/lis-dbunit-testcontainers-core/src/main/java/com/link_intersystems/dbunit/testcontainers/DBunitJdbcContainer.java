@@ -22,6 +22,10 @@ public class DBunitJdbcContainer {
     private final JdbcDatabaseContainer<?> jdbcDatabaseContainer;
     private DatabaseConfig dbunitConfig;
 
+    public DBunitJdbcContainer(DatabaseContainerSupport databaseContainerSupport) {
+        this(databaseContainerSupport.create(), databaseContainerSupport.getDatabaseConfig());
+    }
+
     public DBunitJdbcContainer(JdbcDatabaseContainer<?> jdbcDatabaseContainer) {
         this(jdbcDatabaseContainer, new DatabaseConfig());
     }
