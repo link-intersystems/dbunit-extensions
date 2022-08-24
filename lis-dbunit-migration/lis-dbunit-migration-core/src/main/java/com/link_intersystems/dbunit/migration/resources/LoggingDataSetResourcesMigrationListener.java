@@ -44,14 +44,6 @@ public class LoggingDataSetResourcesMigrationListener extends AbstractLoggingDat
     }
 
     @Override
-    protected void logResourcesSupplied(String msg, Supplier<String> details) {
-        logger.info(msg);
-        if (logger.isDebugEnabled()) {
-            logger.debug(details.get());
-        }
-    }
-
-    @Override
     protected void logMigrationsFinished(String msg, Supplier<String> details) {
         logger.info(msg);
         if (logger.isDebugEnabled()) {
