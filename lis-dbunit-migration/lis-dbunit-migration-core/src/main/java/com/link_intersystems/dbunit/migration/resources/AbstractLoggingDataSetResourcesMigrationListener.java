@@ -40,8 +40,6 @@ public abstract class AbstractLoggingDataSetResourcesMigrationListener implement
 
     protected abstract void logStartMigration(String msg);
 
-    protected abstract void logResourcesSupplied(String msg, Supplier<String> details);
-
     @Override
     public void migrationsFinished(MigrationsResult migrationsResult) {
         String msg = format("Migrated {0} data set resources ", migrationsResult.size());
