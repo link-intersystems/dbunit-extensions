@@ -7,10 +7,17 @@ import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
  */
 public class DatabaseDefinition {
     private final String containerName;
+    private String scriptsBase;
 
 
     public DatabaseDefinition(String containerName) {
+        this(containerName, containerName);
+    }
+
+    public DatabaseDefinition(String containerName, String scriptsBase) {
+
         this.containerName = containerName;
+        this.scriptsBase = scriptsBase;
     }
 
     public DatabaseContainerSupport getDatabaseContainerSupport() {
@@ -21,9 +28,16 @@ public class DatabaseDefinition {
         return containerName;
     }
 
+    public String getScriptsBase() {
+        return scriptsBase;
+    }
+
     @Override
     public String toString() {
-        return containerName;
+        if (containerName.equals(scriptsBase)) {
+            return containerName;
+        }
+        return containerName + " (" + scriptsBase + ")";
     }
 
 }
