@@ -3,7 +3,7 @@
     <parent>
         <artifactId>lis-dbunit</artifactId>
         <groupId>com.link-intersystems.dbunit</groupId>
-        <version>1.0.6</version>
+        <version>1.0.7-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -27,22 +27,22 @@
             <dependency>
                 <groupId>com.link-intersystems.dbunit.testcontainers</groupId>
                 <artifactId>lis-dbunit-testcontainers-core</artifactId>
-                <version>1.0.6</version>
+                <version>1.0.7-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.link-intersystems.dbunit.testcontainers</groupId>
                 <artifactId>lis-dbunit-testcontainers-postgres</artifactId>
-                <version>1.0.6</version>
+                <version>1.0.7-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.link-intersystems.dbunit.testcontainers</groupId>
                 <artifactId>lis-dbunit-testcontainers-mysql</artifactId>
-                <version>1.0.6</version>
+                <version>1.0.7-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.link-intersystems.dbunit.testcontainers</groupId>
                 <artifactId>lis-dbunit-testcontainers-commons-pool</artifactId>
-                <version>1.0.6</version>
+                <version>1.0.7-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
