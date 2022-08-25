@@ -8,7 +8,9 @@ import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerPipeTransform
 import com.link_intersystems.dbunit.stream.consumer.DefaultDataSetConsumerSupport;
 import com.link_intersystems.dbunit.stream.consumer.ExternalSortTableConsumer;
 import com.link_intersystems.dbunit.table.DefaultTableOrder;
+import com.link_intersystems.dbunit.table.Row;
 import com.link_intersystems.dbunit.table.TableOrder;
+import com.link_intersystems.dbunit.table.TableUtil;
 import com.link_intersystems.jdbc.test.db.h2.H2Extension;
 import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimExtension;
 import com.link_intersystems.jdbc.test.db.sakila.SakilaTinyDB;
@@ -29,8 +31,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -88,7 +89,8 @@ class DataSetFlywayMigrationTest {
         IDataSet migratedDataSet = copyDataSetConsumer.getDataSet();
 
         ITable migratedActorTable = migratedDataSet.getTable("actor");
-        assertEquals(200, migratedActorTable.getRowCount());
+        Row rowById = new TableUtil(migratedActorTable).getRowById(201);
+        assertNull(rowById);
 
         ITable filmDescriptionTable = migratedDataSet.getTable("film_description");
         assertNotNull(filmDescriptionTable);
