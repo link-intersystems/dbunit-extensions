@@ -44,6 +44,7 @@ class DataSetFlywayMigrationTest {
     static Stream<DatabaseDefinition> databases() {
         return Stream.of(
                 new DatabaseDefinition("postgres"),
+                new DatabaseDefinition("postgres", "postgres_with_dml"),
                 new DatabaseDefinition("mysql")
         );
     }
