@@ -7,7 +7,7 @@
         </encoder>
     </appender>
 
-    <logger name="com.link_intersystems.dbunit.migration" level="debug"/>
+    <logger name="com.link_intersystems.dbunit.migration" level="info"/>
     <logger name="org.dbunit" level="info"/>
 
     <root level="off">
