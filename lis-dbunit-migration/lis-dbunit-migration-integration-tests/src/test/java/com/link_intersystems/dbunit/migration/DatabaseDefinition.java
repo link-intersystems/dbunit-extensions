@@ -8,16 +8,18 @@ import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
 public class DatabaseDefinition {
     private final String containerName;
     private String scriptsBase;
+    private String sourceVersion;
 
 
     public DatabaseDefinition(String containerName) {
-        this(containerName, containerName);
+        this(containerName, containerName, "1");
     }
 
-    public DatabaseDefinition(String containerName, String scriptsBase) {
+    public DatabaseDefinition(String containerName, String scriptsBase, String sourceVersion) {
 
         this.containerName = containerName;
         this.scriptsBase = scriptsBase;
+        this.sourceVersion = sourceVersion;
     }
 
     public DatabaseContainerSupport getDatabaseContainerSupport() {
@@ -40,4 +42,7 @@ public class DatabaseDefinition {
         return containerName + " (" + scriptsBase + ")";
     }
 
+    public String getSourceVersion() {
+        return sourceVersion;
+    }
 }

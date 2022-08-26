@@ -1,6 +1,10 @@
 package com.link_intersystems.dbunit.table;
 
 import org.dbunit.dataset.Column;
+import org.dbunit.dataset.DataSetException;
+import org.dbunit.dataset.IRowValueProvider;
+import org.dbunit.dataset.ITableMetaData;
+import org.dbunit.dataset.datatype.DataType;
 
 import java.util.*;
 import java.util.function.BiPredicate;
@@ -12,16 +16,49 @@ import static java.util.Objects.requireNonNull;
  */
 public class Row extends AbstractList<Object> {
 
+    private ITableMetaData metaData;
     private List<Cell> cells;
 
     private BiPredicate<String, String> columnNameEquality = String::equals;
 
-    public Row(List<Cell> cells) {
+    public Row(ITableMetaData metaData, List<Cell> cells) {
+        this.metaData = requireNonNull(metaData);
         this.cells = new ArrayList<>(requireNonNull(cells));
     }
 
+    public Row(ITableMetaData metaData, IRowValueProvider rowValueProvider) throws DataSetException {
+        this(metaData, toCells(metaData, rowValueProvider));
+    }
+
+    public Row(ITableMetaData metaData, Object... values) throws DataSetException {
+        this(metaData, toCells(metaData, columnName -> values[metaData.getColumnIndex(columnName)]));
+    }
+
+    private static List<Cell> toCells(ITableMetaData metaData, IRowValueProvider rowValueProvider) throws DataSetException {
+        Column[] columns = metaData.getColumns();
+        List<Cell> cells = new ArrayList<>();
+
+        for (int colIndex = 0; colIndex < columns.length; colIndex++) {
+            Column column = columns[colIndex];
+            Object columnValue = rowValueProvider.getColumnValue(column.getColumnName());
+            DataType dataType = column.getDataType();
+            Object castedValue = dataType.typeCast(columnValue);
+            cells.add(new Cell(column, castedValue));
+        }
+
+        return cells;
+    }
+
+    public PrimaryKey getPrimaryKey() throws DataSetException {
+        return new PrimaryKey(this);
+    }
+
+    public ITableMetaData getMetaData() {
+        return metaData;
+    }
+
     public Row ignoreCase() {
-        Row ignoreCaseRow = new Row(cells);
+        Row ignoreCaseRow = new Row(metaData, cells);
         ignoreCaseRow.columnNameEquality = String::equalsIgnoreCase;
         return ignoreCaseRow;
     }

@@ -44,7 +44,7 @@ class DataSetFlywayMigrationTest {
     static Stream<DatabaseDefinition> databases() {
         return Stream.of(
                 new DatabaseDefinition("postgres"),
-//                new DatabaseDefinition("postgres", "postgres_with_dml"),
+                new DatabaseDefinition("postgres", "postgres_with_dml", "2"),
                 new DatabaseDefinition("mysql")
         );
     }
@@ -74,10 +74,9 @@ class DataSetFlywayMigrationTest {
         IDataSetConsumer flatXmlConsumer = consumerSupport.getDataSetConsumer();
 
         dataSetMigration.setDataSetConsumers(copyDataSetConsumer, csvConsumer, flatXmlConsumer);
-
         dataSetMigration.setMigrationDataSetTransformerFactory(new TestcontainersMigrationDataSetPipeFactory(databaseDefinition.getDatabaseContainerSupport()));
 
-        FlywayMigrationConfig migrationConfig = FlywayConfigurationConfigFixture.createConfig(databaseDefinition.getScriptsBase());
+        FlywayMigrationConfig migrationConfig = FlywayConfigurationConfigFixture.createConfig(databaseDefinition);
         dataSetMigration.setDatabaseMigrationSupport(new FlywayDatabaseMigrationSupport(migrationConfig));
 
         TableOrder tableOrder = new DefaultTableOrder("language", "film", "actor", "film_actor");

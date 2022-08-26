@@ -5,11 +5,12 @@ import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.ITableMetaData;
 import org.dbunit.dataset.datatype.DataType;
-import org.dbunit.dataset.datatype.TypeCastException;
 
 import java.text.MessageFormat;
-import java.util.*;
-import java.util.function.Function;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
@@ -20,22 +21,10 @@ import static java.util.Objects.requireNonNull;
  */
 public class TableUtil implements Iterable<Row> {
 
-    private static interface TypeCast {
-
-        public Object cast(Object o) throws TypeCastException;
-    }
-
     private ITable table;
-
-    private TypeCast passthroughDataType;
-
 
     public TableUtil(ITable table) {
         this.table = requireNonNull(table);
-    }
-
-    public void setRawTypes(boolean rawTypes) {
-        passthroughDataType = rawTypes ? Function.identity()::apply : null;
     }
 
     public ITable getTable() {
@@ -105,29 +94,26 @@ public class TableUtil implements Iterable<Row> {
     }
 
     public Row getRow(int row) throws DataSetException {
+        Object[] rowValues = getRowValues(row);
+        return new Row(getTable().getTableMetaData(), rowValues);
+    }
+
+
+    protected Object[] getRowValues(int row) throws DataSetException {
         ITable table = getTable();
         ITableMetaData tableMetaData = table.getTableMetaData();
         Column[] columns = tableMetaData.getColumns();
-        List<Cell> cells = new ArrayList<>();
+        Object[] values = new Object[columns.length];
 
         for (int colIndex = 0; colIndex < columns.length; colIndex++) {
             Column column = columns[colIndex];
             String columnName = column.getColumnName();
             Object columnValue = table.getValue(row, columnName);
             DataType dataType = column.getDataType();
-            Object castedValue = cast(columnValue, dataType);
-            cells.add(new Cell(column, castedValue));
+            values[colIndex] = dataType.typeCast(columnValue);
         }
 
-        return new Row(cells);
-    }
-
-    protected Object cast(Object value, DataType dataType) throws TypeCastException {
-        TypeCast typeCast = dataType::typeCast;
-        if (passthroughDataType != null) {
-            typeCast = passthroughDataType;
-        }
-        return typeCast.cast(value);
+        return values;
     }
 
     public RowList getRows(int startIndexInclusive, int endIndexExclusive) throws DataSetException {

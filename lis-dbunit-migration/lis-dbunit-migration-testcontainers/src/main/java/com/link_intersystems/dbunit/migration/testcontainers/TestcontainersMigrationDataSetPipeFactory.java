@@ -2,11 +2,11 @@ package com.link_intersystems.dbunit.migration.testcontainers;
 
 import com.link_intersystems.dbunit.migration.DatabaseMigrationSupport;
 import com.link_intersystems.dbunit.migration.MigrationDataSetPipeFactory;
-import com.link_intersystems.dbunit.stream.consumer.ChainableDataSetConsumer;
 import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerPipe;
 import com.link_intersystems.dbunit.testcontainers.DBunitJdbcContainer;
 import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
 import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseDataSetConsumerAdapter;
+import com.link_intersystems.dbunit.testcontainers.consumer.ExistingEntriesConsumerRowFilterFactory;
 import com.link_intersystems.dbunit.testcontainers.consumer.TestContainersLifecycleConsumer;
 import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseOperationConsumer;
 import com.link_intersystems.dbunit.testcontainers.pool.RunningContainerPool;
@@ -41,12 +41,15 @@ public class TestcontainersMigrationDataSetPipeFactory implements MigrationDataS
         MigrationDatabaseCustomizationConsumer databaseCustomizationConsumer = new MigrationDatabaseCustomizationConsumer(databaseMigrationSupport);
 
         DatabaseOperationConsumer testContainersMigrationConsumer = new DatabaseOperationConsumer();
+        ExistingEntriesConsumerRowFilterFactory primaryKeyCollectingConsumer = new ExistingEntriesConsumerRowFilterFactory();
         DatabaseDataSetConsumerAdapter databaseDataSetConsumerAdapter = new DatabaseDataSetConsumerAdapter();
+        databaseDataSetConsumerAdapter.setRowFilterFactory(primaryKeyCollectingConsumer);
 
         DataSetConsumerPipe dataSetConsumerPipe = new DataSetConsumerPipe();
         dataSetConsumerPipe.add(testContainersConsumer);
         dataSetConsumerPipe.add(databaseCustomizationConsumer);
         dataSetConsumerPipe.add(testContainersMigrationConsumer);
+        dataSetConsumerPipe.add(primaryKeyCollectingConsumer);
         dataSetConsumerPipe.add(databaseDataSetConsumerAdapter);
 
         return dataSetConsumerPipe;
