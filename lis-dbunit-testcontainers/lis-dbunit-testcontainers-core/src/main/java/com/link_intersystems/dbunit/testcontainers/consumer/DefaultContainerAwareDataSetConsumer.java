@@ -4,6 +4,10 @@ import com.link_intersystems.dbunit.stream.consumer.DefaultChainableDataSetConsu
 import com.link_intersystems.dbunit.testcontainers.JdbcContainer;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.stream.IDataSetConsumer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.text.MessageFormat;
 
 import static java.text.MessageFormat.format;
 
@@ -12,7 +16,11 @@ import static java.text.MessageFormat.format;
  */
 public class DefaultContainerAwareDataSetConsumer extends DefaultChainableDataSetConsumer implements ContainerAwareDataSetConsumer {
 
+    private Logger logger = LoggerFactory.getLogger(DefaultContainerAwareDataSetConsumer.class);
+
     private JdbcContainer jdbcContainer;
+
+    private ThreadLocal<Boolean> endlessRecursionDetector = new ThreadLocal<>();
 
     @Override
     public final void containerStarted(JdbcContainer jdbcContainer) {
@@ -33,7 +41,27 @@ public class DefaultContainerAwareDataSetConsumer extends DefaultChainableDataSe
             throw new DataSetException(msg);
         }
 
-        startDataSet(jdbcContainer);
+        try {
+            if (Boolean.TRUE.equals(endlessRecursionDetector.get())) {
+                if (logger.isWarnEnabled()) {
+                    String msg = format("{0} introduces an endless recursion. You probably call super.startDataSet() within an overridden startDataSet({1}) and you should fix this." +
+                                    " The {2} will automatically break the endless recursion and call startDataSet({1}) for you.",
+                            getClass().getName(),
+                            JdbcContainer.class.getSimpleName(),
+                            DefaultContainerAwareDataSetConsumer.class.getName()
+                    );
+                    logger.warn(msg);
+                }
+
+                startDataSetInternal(getJdbcContainer());;
+                return;
+            }
+
+            endlessRecursionDetector.set(true);
+            startDataSet(jdbcContainer);
+        } finally {
+            endlessRecursionDetector.remove();
+        }
     }
 
 
@@ -42,6 +70,10 @@ public class DefaultContainerAwareDataSetConsumer extends DefaultChainableDataSe
     }
 
     protected void startDataSet(JdbcContainer jdbcContainer) throws DataSetException {
+        startDataSetInternal(jdbcContainer);
+    }
+
+    private void startDataSetInternal(JdbcContainer jdbcContainer) throws DataSetException {
         IDataSetConsumer delegate = getDelegate();
 
         if (delegate instanceof ContainerAwareDataSetConsumer) {

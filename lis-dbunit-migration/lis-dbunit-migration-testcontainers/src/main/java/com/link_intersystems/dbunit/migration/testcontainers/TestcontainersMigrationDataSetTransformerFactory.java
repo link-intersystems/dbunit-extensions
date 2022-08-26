@@ -6,7 +6,6 @@ import com.link_intersystems.dbunit.stream.consumer.ChainableDataSetConsumer;
 import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerPipe;
 import com.link_intersystems.dbunit.testcontainers.DBunitJdbcContainer;
 import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
-import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseCustomizationConsumer;
 import com.link_intersystems.dbunit.testcontainers.consumer.TestContainersLifecycleConsumer;
 import com.link_intersystems.dbunit.testcontainers.consumer.TestContainersMigrationConsumer;
 import com.link_intersystems.dbunit.testcontainers.pool.RunningContainerPool;
@@ -38,10 +37,7 @@ public class TestcontainersMigrationDataSetTransformerFactory implements Migrati
         TestContainersLifecycleConsumer testContainersConsumer = new TestContainersLifecycleConsumer(runningContainerPool);
 
 
-        DatabaseCustomizationConsumer databaseCustomizationConsumer = new DatabaseCustomizationConsumer();
-        databaseCustomizationConsumer.setCustomizeDatabaseOnStartDataSet(databaseMigrationSupport::prepareDataSource);
-        databaseCustomizationConsumer.setCustomizeDatabaseOnEndDataSet(databaseMigrationSupport::migrateDataSource);
-
+        MigrationDatabaseCustomizationConsumer databaseCustomizationConsumer = new MigrationDatabaseCustomizationConsumer(databaseMigrationSupport);
 
         TestContainersMigrationConsumer testContainersMigrationConsumer = new TestContainersMigrationConsumer();
 
