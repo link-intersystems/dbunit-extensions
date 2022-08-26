@@ -93,7 +93,7 @@ public class DataSetMigration implements DataSetProducerSupport, DataSetConsumer
 
         MigrationDataSetPipeFactory pipeFactory = getMigrationDataSetTransformerFactory();
         DataSetConsumerPipe migrationPipe = pipeFactory.createMigrationPipe(getDatabaseMigrationSupport());
-        migrationPipe.add(migrationPipe);
+        migrationProcessPipe.add(migrationPipe);
 
         migrationPipe.add(getAfterMigration());
 

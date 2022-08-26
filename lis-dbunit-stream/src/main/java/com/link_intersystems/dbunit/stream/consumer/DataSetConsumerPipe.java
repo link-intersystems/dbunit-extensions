@@ -46,6 +46,10 @@ public class DataSetConsumerPipe extends AbstractDataSetConsumerDelegate impleme
             return;
         }
 
+        if (dataSetConsumer == this) {
+            throw new IllegalArgumentException("Can not add me to myself as a pipe element");
+        }
+
         if (lastElement == null) {
             firstElement = dataSetConsumer;
             lastElement = firstElement;
