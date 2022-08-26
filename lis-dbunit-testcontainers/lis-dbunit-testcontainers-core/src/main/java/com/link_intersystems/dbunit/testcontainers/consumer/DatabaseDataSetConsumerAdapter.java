@@ -54,12 +54,10 @@ public class DatabaseDataSetConsumerAdapter extends DefaultContainerAwareDataSet
         DatabaseDataSet databaseDataSet = createDataSet(databaseConnection);
         DataSetProducerAdapter dataSetProducerAdapter = new DataSetProducerAdapter(databaseDataSet);
 
-        IDataSetConsumer effectiveConsumer = resultConsumer;
-
         RowFilterConsumer rowFilterConsumer = new RowFilterConsumer();
         rowFilterConsumer.setRowFilterFactory(rowFilterFactory);
         rowFilterConsumer.setSubsequentConsumer(resultConsumer);
-        effectiveConsumer = rowFilterConsumer;
+        IDataSetConsumer effectiveConsumer = rowFilterConsumer;
 
         dataSetProducerAdapter.setConsumer(effectiveConsumer);
         dataSetProducerAdapter.produce();
