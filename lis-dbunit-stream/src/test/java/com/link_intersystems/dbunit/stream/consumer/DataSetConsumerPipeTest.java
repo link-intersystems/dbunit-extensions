@@ -40,7 +40,7 @@ class DataSetConsumerPipeTest {
 
     @Test
     void addPipeToItself() throws DataSetException {
-        assertThrows(IllegalArgumentException.class, () -> dataSetConsumerPipe.setSubsequentConsumer(dataSetConsumerPipe));
+        assertThrows(IllegalArgumentException.class, () -> dataSetConsumerPipe.add(dataSetConsumerPipe));
     }
 
     @Test
