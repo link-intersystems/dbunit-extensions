@@ -7,8 +7,6 @@ import org.dbunit.dataset.stream.IDataSetConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.MessageFormat;
-
 import static java.text.MessageFormat.format;
 
 /**
@@ -43,18 +41,12 @@ public class DefaultContainerAwareDataSetConsumer extends DefaultChainableDataSe
 
         try {
             if (Boolean.TRUE.equals(endlessRecursionDetector.get())) {
-                if (logger.isWarnEnabled()) {
-                    String msg = format("{0} introduces an endless recursion. You probably call super.startDataSet() within an overridden startDataSet({1}) and you should fix this." +
-                                    " The {2} will automatically break the endless recursion and call startDataSet({1}) for you.",
-                            getClass().getName(),
-                            JdbcContainer.class.getSimpleName(),
-                            DefaultContainerAwareDataSetConsumer.class.getName()
-                    );
-                    logger.warn(msg);
-                }
+                String msg = format("Endless recursion detected. You probably call super.startDataSet() within an overridden startDataSet({0}) which introduces an endless recursion. " +
+                                "You might want to call super.startDataSet({0}) instead.",
+                        JdbcContainer.class.getSimpleName()
+                );
 
-                startDataSetInternal(getJdbcContainer());;
-                return;
+                throw new DataSetException(msg);
             }
 
             endlessRecursionDetector.set(true);
