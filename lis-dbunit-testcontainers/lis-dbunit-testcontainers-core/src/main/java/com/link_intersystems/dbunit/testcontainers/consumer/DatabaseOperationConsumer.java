@@ -2,12 +2,8 @@ package com.link_intersystems.dbunit.testcontainers.consumer;
 
 import com.link_intersystems.dbunit.stream.consumer.ChainableDataSetConsumer;
 import org.dbunit.DatabaseUnitException;
-import org.dbunit.database.DatabaseDataSet;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.*;
-import org.dbunit.dataset.stream.DataSetProducerAdapter;
-import org.dbunit.dataset.stream.DefaultConsumer;
-import org.dbunit.dataset.stream.IDataSetConsumer;
 import org.dbunit.operation.DatabaseOperation;
 
 import javax.sql.DataSource;
@@ -18,10 +14,9 @@ import static java.util.Objects.requireNonNull;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class TestContainersMigrationConsumer extends DefaultContainerAwareDataSetConsumer implements ChainableDataSetConsumer {
+public class DatabaseOperationConsumer extends DefaultContainerAwareDataSetConsumer implements ChainableDataSetConsumer {
 
     private DatabaseOperation databaseOperation = DatabaseOperation.INSERT;
-    private IDataSetConsumer dataSetConsumer = new DefaultConsumer();
     private DefaultTable rowCache;
 
     private int rowCacheLimit = Integer.MAX_VALUE;
@@ -34,10 +29,6 @@ public class TestContainersMigrationConsumer extends DefaultContainerAwareDataSe
         return databaseOperation;
     }
 
-    @Override
-    public void setSubsequentConsumer(IDataSetConsumer dataSetConsumer) {
-        this.dataSetConsumer = requireNonNull(dataSetConsumer);
-    }
 
     /**
      * The rowCacheLimit property controls when the cached table rows are passed to
@@ -59,8 +50,9 @@ public class TestContainersMigrationConsumer extends DefaultContainerAwareDataSe
     }
 
     @Override
-    public void startTable(ITableMetaData metaData) {
+    public void startTable(ITableMetaData metaData) throws DataSetException {
         rowCache = new DefaultTable(metaData);
+        super.startTable(metaData);
     }
 
     @Override
@@ -70,6 +62,7 @@ public class TestContainersMigrationConsumer extends DefaultContainerAwareDataSe
             flushRowCache();
             rowCache = new DefaultTable(rowCache.getTableMetaData());
         }
+        super.row(values);
     }
 
     protected boolean isRowCacheLimitExceeded() {
@@ -86,13 +79,6 @@ public class TestContainersMigrationConsumer extends DefaultContainerAwareDataSe
         processTable(databaseOperation, databaseConnection, rowCache);
     }
 
-    @Override
-    public void endTable() throws DataSetException {
-        flushRowCache();
-
-        rowCache = null;
-    }
-
     protected void processTable(DatabaseOperation operation, IDatabaseConnection connection, ITable table) throws DataSetException {
         try {
             DefaultDataSet tmpDataSet = new DefaultDataSet();
@@ -105,23 +91,12 @@ public class TestContainersMigrationConsumer extends DefaultContainerAwareDataSe
     }
 
     @Override
-    public void endDataSet() throws DataSetException {
-        try {
-            IDatabaseConnection databaseConnection = getJdbcContainer().getDatabaseConnection();
-            processResult(databaseConnection, dataSetConsumer);
-        } catch (SQLException e) {
-            throw new DataSetException(e);
-        }
+    public void endTable() throws DataSetException {
+        flushRowCache();
+
+        rowCache = null;
+
+        super.endTable();
     }
 
-    protected void processResult(IDatabaseConnection databaseConnection, IDataSetConsumer resultConsumer) throws SQLException, DataSetException {
-        DatabaseDataSet databaseDataSet = createDataSet(databaseConnection);
-        DataSetProducerAdapter dataSetProducerAdapter = new DataSetProducerAdapter(databaseDataSet);
-        dataSetProducerAdapter.setConsumer(resultConsumer);
-        dataSetProducerAdapter.produce();
-    }
-
-    protected DatabaseDataSet createDataSet(IDatabaseConnection databaseConnection) throws SQLException {
-        return new DatabaseDataSet(databaseConnection, false);
-    }
 }
