@@ -5,7 +5,7 @@ import org.dbunit.dataset.stream.IDataSetConsumer;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class DefaultDataSetConsumerPipe extends AbstractDataSetConsumerDelegate implements DataSetConsumerPipe {
+public class DefaultChainableDataSetConsumer extends AbstractDataSetConsumerDelegate implements ChainableDataSetConsumer {
 
     private IDataSetConsumer subsequentConsumer;
 

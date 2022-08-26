@@ -1,12 +1,12 @@
 package com.link_intersystems.dbunit.migration;
 
-import com.link_intersystems.dbunit.stream.consumer.*;
+import com.link_intersystems.dbunit.stream.consumer.ChainableDataSetConsumer;
+import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerPipe;
+import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerSupport;
 import com.link_intersystems.dbunit.stream.producer.DataSetProducerSupport;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 import org.dbunit.dataset.stream.IDataSetProducer;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -16,8 +16,8 @@ public class DataSetMigration implements DataSetProducerSupport, DataSetConsumer
     private IDataSetProducer sourceProducer;
     private IDataSetConsumer targetConsumer;
     private MigrationDataSetTransformerFactory migrationDataSetTransformerFactory;
-    private DataSetTransormer beforeMigration;
-    private DataSetTransormer afterMigration;
+    private ChainableDataSetConsumer beforeMigration;
+    private ChainableDataSetConsumer afterMigration;
     private DatabaseMigrationSupport databaseMigrationSupport;
 
     public void setDatabaseMigrationSupport(DatabaseMigrationSupport databaseMigrationSupport) {
@@ -46,49 +46,32 @@ public class DataSetMigration implements DataSetProducerSupport, DataSetConsumer
     }
 
 
-    public void setBeforeMigration(DataSetTransormer beforeMigrationTransformer) {
+    public void setBeforeMigration(ChainableDataSetConsumer beforeMigrationTransformer) {
         this.beforeMigration = beforeMigrationTransformer;
     }
 
-    public void setBeforeMigration(DataSetConsumerPipe beforeConsumerPipe) {
-        this.beforeMigration = new DataSetConsumerPipeTransformerAdapter(requireNonNull(beforeConsumerPipe));
-    }
-
-    public void setAfterMigration(DataSetTransormer afterMigrationTransformer) {
+    public void setAfterMigration(ChainableDataSetConsumer afterMigrationTransformer) {
         this.afterMigration = afterMigrationTransformer;
     }
 
-    public void setAfterMigration(DataSetConsumerPipe afterConsumerPipe) {
-        this.afterMigration = new DataSetConsumerPipeTransformerAdapter(requireNonNull(afterConsumerPipe));
-    }
-
-    public DataSetTransormer getBeforeTransformer() {
+    public ChainableDataSetConsumer getBeforeTransformer() {
         return beforeMigration;
     }
 
-    public DataSetTransormer getAfterMigration() {
+    public ChainableDataSetConsumer getAfterMigration() {
         return afterMigration;
     }
 
     public void exec() throws DataSetException {
-        checkConfiguredProperly();
+        checkProperlyConfigured();
 
-        DataSetTransformExecutor transformExecutor = new DataSetTransformExecutor();
+        DataSetConsumerPipe migrationPipe = createMigrationPipe();
+        migrationPipe.setOutputConsumer(targetConsumer);
 
-        transformExecutor.setDataSetProducer(sourceProducer);
-
-        transformExecutor.setDataSetConsumer(targetConsumer);
-
-        MigrationDataSetTransformerFactory transformerFactory = getMigrationDataSetTransformerFactory();
-        DataSetTransormer migrationTransformer = transformerFactory.createTransformer(getDatabaseMigrationSupport());
-
-        DataSetTransormer dataSetTransormer = applyBeforeAndAfterTransformers(migrationTransformer);
-        transformExecutor.setDataSetTransformer(dataSetTransormer);
-
-        transformExecutor.exec();
+        migrationPipe.execute(sourceProducer);
     }
 
-    private void checkConfiguredProperly() {
+    private void checkProperlyConfigured() {
         if (sourceProducer == null) {
             throw new IllegalStateException("source producer must be set");
         }
@@ -103,14 +86,18 @@ public class DataSetMigration implements DataSetProducerSupport, DataSetConsumer
         }
     }
 
-    protected DataSetTransormer applyBeforeAndAfterTransformers(DataSetTransormer transformer) {
-        DataSetTransformerChain dataSetTransformerChain = new DataSetTransformerChain();
+    protected DataSetConsumerPipe createMigrationPipe() {
+        DataSetConsumerPipe consumerPipe = new DataSetConsumerPipe();
 
-        dataSetTransformerChain.add(getBeforeTransformer());
-        dataSetTransformerChain.add(transformer);
-        dataSetTransformerChain.add(getAfterMigration());
+        consumerPipe.add(getBeforeTransformer());
 
-        return dataSetTransformerChain;
+        MigrationDataSetTransformerFactory transformerFactory = getMigrationDataSetTransformerFactory();
+        ChainableDataSetConsumer migrationConsumer = transformerFactory.createTransformer(getDatabaseMigrationSupport());
+        consumerPipe.add(migrationConsumer);
+
+        consumerPipe.add(getAfterMigration());
+
+        return consumerPipe;
     }
 
 

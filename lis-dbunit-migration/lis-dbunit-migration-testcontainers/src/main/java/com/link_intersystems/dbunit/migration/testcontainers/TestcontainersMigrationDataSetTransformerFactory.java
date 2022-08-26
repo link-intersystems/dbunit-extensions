@@ -2,11 +2,12 @@ package com.link_intersystems.dbunit.migration.testcontainers;
 
 import com.link_intersystems.dbunit.migration.DatabaseMigrationSupport;
 import com.link_intersystems.dbunit.migration.MigrationDataSetTransformerFactory;
-import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerPipeTransformerAdapter;
-import com.link_intersystems.dbunit.stream.consumer.DataSetTransormer;
+import com.link_intersystems.dbunit.stream.consumer.ChainableDataSetConsumer;
+import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerPipe;
 import com.link_intersystems.dbunit.testcontainers.DBunitJdbcContainer;
 import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
 import com.link_intersystems.dbunit.testcontainers.consumer.TestContainersConsumer;
+import com.link_intersystems.dbunit.testcontainers.consumer.TestContainersMigrationConsumer;
 import com.link_intersystems.dbunit.testcontainers.pool.RunningContainerPool;
 import com.link_intersystems.dbunit.testcontainers.pool.SingleRunningContainerPool;
 
@@ -32,10 +33,17 @@ public class TestcontainersMigrationDataSetTransformerFactory implements Migrati
     }
 
     @Override
-    public DataSetTransormer createTransformer(DatabaseMigrationSupport databaseMigrationSupport) {
+    public ChainableDataSetConsumer createTransformer(DatabaseMigrationSupport databaseMigrationSupport) {
         TestContainersConsumer testContainersConsumer = new TestContainersConsumer(runningContainerPool);
-        testContainersConsumer.setStartDataSourceConsumer(databaseMigrationSupport::prepareDataSource);
-        testContainersConsumer.setEndDataSourceConsumer(databaseMigrationSupport::migrateDataSource);
-        return new DataSetConsumerPipeTransformerAdapter(testContainersConsumer);
+
+        TestContainersMigrationConsumer testContainersMigrationConsumer = new TestContainersMigrationConsumer();
+        testContainersMigrationConsumer.setStartDataSourceConsumer(databaseMigrationSupport::prepareDataSource);
+        testContainersMigrationConsumer.setEndDataSourceConsumer(databaseMigrationSupport::migrateDataSource);
+
+        DataSetConsumerPipe dataSetConsumerPipe = new DataSetConsumerPipe();
+        dataSetConsumerPipe.add(testContainersConsumer);
+        dataSetConsumerPipe.add(testContainersMigrationConsumer);
+
+        return dataSetConsumerPipe;
     }
 }

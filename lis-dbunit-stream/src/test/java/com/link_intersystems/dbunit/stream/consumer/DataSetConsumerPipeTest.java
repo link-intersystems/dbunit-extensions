@@ -14,21 +14,20 @@ import java.io.IOException;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-class DataSetTransformerChainTest {
+class DataSetConsumerPipeTest {
 
-
-    private DefaultDataSetConsumerPipe pipe1;
-    private DefaultDataSetConsumerPipe pipe2;
+    private DefaultChainableDataSetConsumer pipe1;
+    private DefaultChainableDataSetConsumer pipe2;
     private CopyDataSetConsumer targetConsumer;
-    private DataSetTransformerChain transformerChain;
+    private DataSetConsumerPipe dataSetConsumerPipe;
     private IDataSet tinySakilaDataSet;
 
     @BeforeEach
     void setUp() throws DataSetException, IOException {
-        transformerChain = new DataSetTransformerChain();
+        dataSetConsumerPipe = new DataSetConsumerPipe();
 
-        pipe1 = new DefaultDataSetConsumerPipe();
-        pipe2 = new DefaultDataSetConsumerPipe();
+        pipe1 = new DefaultChainableDataSetConsumer();
+        pipe2 = new DefaultChainableDataSetConsumer();
         targetConsumer = new CopyDataSetConsumer();
 
         tinySakilaDataSet = TestDataSets.getTinySakilaDataSet();
@@ -36,7 +35,7 @@ class DataSetTransformerChainTest {
 
     @Test
     void outputConsumerOnly() throws DataSetException {
-        transformerChain.setOutputConsumer(targetConsumer);
+        dataSetConsumerPipe.setOutputConsumer(targetConsumer);
 
         chainProduce();
         assertTransformerChainWorks();
@@ -49,10 +48,10 @@ class DataSetTransformerChainTest {
 
     @Test
     void setOutputConsumerBeforeAddElements() throws DataSetException {
-        transformerChain.setOutputConsumer(targetConsumer);
+        dataSetConsumerPipe.setOutputConsumer(targetConsumer);
 
-        transformerChain.add(pipe1);
-        transformerChain.add(pipe2);
+        dataSetConsumerPipe.add(pipe1);
+        dataSetConsumerPipe.add(pipe2);
 
         chainProduce();
         assertTransformerChainWorks();
@@ -60,10 +59,10 @@ class DataSetTransformerChainTest {
 
     @Test
     void setOutputConsumerAfterAddElements() throws DataSetException {
-        transformerChain.add(pipe1);
-        transformerChain.add(pipe2);
+        dataSetConsumerPipe.add(pipe1);
+        dataSetConsumerPipe.add(pipe2);
 
-        transformerChain.setOutputConsumer(targetConsumer);
+        dataSetConsumerPipe.setOutputConsumer(targetConsumer);
 
         chainProduce();
         assertTransformerChainWorks();
@@ -71,10 +70,10 @@ class DataSetTransformerChainTest {
 
     @Test
     void firstElementConstructor() throws DataSetException {
-        transformerChain = new DataSetTransformerChain(pipe1);
-        transformerChain.add(pipe2);
+        dataSetConsumerPipe = new DataSetConsumerPipe(pipe1);
+        dataSetConsumerPipe.add(pipe2);
 
-        transformerChain.setOutputConsumer(targetConsumer);
+        dataSetConsumerPipe.setOutputConsumer(targetConsumer);
 
         chainProduce();
         assertTransformerChainWorks();
@@ -91,7 +90,7 @@ class DataSetTransformerChainTest {
         producerSupport.setDataSetProducer(tinySakilaDataSet);
 
         IDataSetProducer dataSetProducer = producerSupport.getDataSetProducer();
-        dataSetProducer.setConsumer(transformerChain.getInputConsumer());
+        dataSetProducer.setConsumer(dataSetConsumerPipe);
         dataSetProducer.produce();
     }
 }

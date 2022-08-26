@@ -3,7 +3,7 @@ package com.link_intersystems.dbunit.migration.resources;
 import com.link_intersystems.dbunit.migration.DataSetMigration;
 import com.link_intersystems.dbunit.migration.DatabaseMigrationSupport;
 import com.link_intersystems.dbunit.migration.MigrationDataSetTransformerFactory;
-import com.link_intersystems.dbunit.stream.consumer.DataSetTransormer;
+import com.link_intersystems.dbunit.stream.consumer.ChainableDataSetConsumer;
 import com.link_intersystems.dbunit.stream.resource.DataSetResource;
 import com.link_intersystems.util.concurrent.ProgressListener;
 import org.dbunit.dataset.DataSetException;
@@ -29,8 +29,8 @@ public class DataSetResourcesMigration {
 
     private TargetDataSetResourceSupplier targetDataSetResourceSupplier;
     private MigrationDataSetTransformerFactory migrationDataSetTransformerFactory;
-    private Supplier<DataSetTransormer> beforeMigrationTransformerSupplier = () -> null;
-    private Supplier<DataSetTransormer> afterMigrationTransformerSupplier = () -> null;
+    private Supplier<ChainableDataSetConsumer> beforeMigrationConsumerSupplier = () -> null;
+    private Supplier<ChainableDataSetConsumer> afterMigrationConsumerSupplier = () -> null;
     private DatabaseMigrationSupport databaseMigrationSupport;
     private ExecutorService executorService;
 
@@ -54,12 +54,12 @@ public class DataSetResourcesMigration {
         this.migrationListener = requireNonNull(migrationListener);
     }
 
-    public void setBeforeMigrationSupplier(Supplier<DataSetTransormer> beforeMigrationTransformerSupplier) {
-        this.beforeMigrationTransformerSupplier = requireNonNull(beforeMigrationTransformerSupplier);
+    public void setBeforeMigrationSupplier(Supplier<ChainableDataSetConsumer> beforeMigrationConsumerSupplier) {
+        this.beforeMigrationConsumerSupplier = requireNonNull(beforeMigrationConsumerSupplier);
     }
 
-    public void setAfterMigrationSupplier(Supplier<DataSetTransormer> afterMigrationTransformerSupplier) {
-        this.afterMigrationTransformerSupplier = requireNonNull(afterMigrationTransformerSupplier);
+    public void setAfterMigrationSupplier(Supplier<ChainableDataSetConsumer> afterMigrationConsumerSupplier) {
+        this.afterMigrationConsumerSupplier = requireNonNull(afterMigrationConsumerSupplier);
     }
 
     public void setTargetDataSetResourceSupplier(TargetDataSetResourceSupplier targetDataSetResourceSupplier) {
@@ -206,11 +206,11 @@ public class DataSetResourcesMigration {
         DataSetMigration dataSetMigration = createDataSetFlywayMigration(sourceDataSetResource);
         dataSetMigration.setMigrationDataSetTransformerFactory(getMigrationDataSetTransformerFactory());
 
-        DataSetTransormer beforeMigrationTransformer = beforeMigrationTransformerSupplier.get();
-        dataSetMigration.setBeforeMigration(beforeMigrationTransformer);
+        ChainableDataSetConsumer beforeMigrationConsumer = beforeMigrationConsumerSupplier.get();
+        dataSetMigration.setBeforeMigration(beforeMigrationConsumer);
 
-        DataSetTransormer afterMigrationTransformer = afterMigrationTransformerSupplier.get();
-        dataSetMigration.setAfterMigration(afterMigrationTransformer);
+        ChainableDataSetConsumer afterMigrationConsumer = afterMigrationConsumerSupplier.get();
+        dataSetMigration.setAfterMigration(afterMigrationConsumer);
 
         TargetDataSetResourceSupplier targetDataSetFileSupplier = getTargetDataSetResourceSupplier();
         DataSetResource targetDataSetResource = targetDataSetFileSupplier.getTargetDataSetResource(sourceDataSetResource);

@@ -9,7 +9,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class FilterTableConsumer extends DefaultDataSetConsumerPipe {
+public class FilterTableConsumer extends DefaultChainableDataSetConsumer {
 
     private ITableFilterSimple tableFilterSimple;
     private boolean tableAccepted;

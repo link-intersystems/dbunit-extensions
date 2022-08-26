@@ -4,7 +4,6 @@ import com.link_intersystems.dbunit.migration.flyway.FlywayDatabaseMigrationSupp
 import com.link_intersystems.dbunit.migration.flyway.FlywayMigrationConfig;
 import com.link_intersystems.dbunit.migration.testcontainers.TestcontainersMigrationDataSetTransformerFactory;
 import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
-import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerPipeTransformerAdapter;
 import com.link_intersystems.dbunit.stream.consumer.DefaultDataSetConsumerSupport;
 import com.link_intersystems.dbunit.stream.consumer.ExternalSortTableConsumer;
 import com.link_intersystems.dbunit.table.DefaultTableOrder;
@@ -45,7 +44,7 @@ class DataSetFlywayMigrationTest {
     static Stream<DatabaseDefinition> databases() {
         return Stream.of(
                 new DatabaseDefinition("postgres"),
-                new DatabaseDefinition("postgres", "postgres_with_dml"),
+//                new DatabaseDefinition("postgres", "postgres_with_dml"),
                 new DatabaseDefinition("mysql")
         );
     }
@@ -82,7 +81,7 @@ class DataSetFlywayMigrationTest {
         dataSetMigration.setDatabaseMigrationSupport(new FlywayDatabaseMigrationSupport(migrationConfig));
 
         TableOrder tableOrder = new DefaultTableOrder("language", "film", "actor", "film_actor");
-        dataSetMigration.setBeforeMigration(new DataSetConsumerPipeTransformerAdapter(new ExternalSortTableConsumer(tableOrder)));
+        dataSetMigration.setBeforeMigration(new ExternalSortTableConsumer(tableOrder));
 
         dataSetMigration.exec();
 

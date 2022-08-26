@@ -22,7 +22,7 @@ import java.util.Objects;
  *
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class ExternalSortTableConsumer extends DefaultDataSetConsumerPipe implements Closeable {
+public class ExternalSortTableConsumer extends DefaultChainableDataSetConsumer implements Closeable {
 
     private Logger logger = LoggerFactory.getLogger(ExternalSortTableConsumer.class);
 
