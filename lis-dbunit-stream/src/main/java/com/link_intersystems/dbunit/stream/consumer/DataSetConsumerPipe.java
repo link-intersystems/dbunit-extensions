@@ -14,14 +14,13 @@ public class DataSetConsumerPipe extends AbstractDataSetConsumerDelegate impleme
 
     private ChainableDataSetConsumer firstElement;
     private ChainableDataSetConsumer lastElement;
-    private IDataSetConsumer outputConsumer;
+    private IDataSetConsumer outputConsumer = new DefaultConsumer();
 
     public DataSetConsumerPipe() {
-        this(new DefaultConsumer());
     }
 
-    public DataSetConsumerPipe(IDataSetConsumer outputConsumer) {
-        this.outputConsumer = requireNonNull(outputConsumer);
+    public DataSetConsumerPipe(ChainableDataSetConsumer firstElement) {
+        add(firstElement);
     }
 
     public void setOutputConsumer(IDataSetConsumer outputConsumer) {
@@ -47,11 +46,11 @@ public class DataSetConsumerPipe extends AbstractDataSetConsumerDelegate impleme
             return;
         }
 
-        if (firstElement == null) {
+        if (lastElement == null) {
             firstElement = dataSetConsumer;
             lastElement = firstElement;
         } else {
-            firstElement.setSubsequentConsumer(dataSetConsumer);
+            lastElement.setSubsequentConsumer(dataSetConsumer);
             lastElement = dataSetConsumer;
         }
 

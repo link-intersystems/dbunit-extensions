@@ -1,9 +1,6 @@
 package com.link_intersystems.dbunit.testcontainers.consumer;
 
 import com.link_intersystems.dbunit.stream.consumer.ChainableDataSetConsumer;
-import com.link_intersystems.dbunit.testcontainers.DataSourceConsumer;
-import com.link_intersystems.dbunit.testcontainers.JdbcContainer;
-import com.link_intersystems.dbunit.testcontainers.NullDataSourceConsumer;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseDataSet;
 import org.dbunit.database.IDatabaseConnection;
@@ -25,8 +22,6 @@ public class TestContainersMigrationConsumer extends DefaultContainerAwareDataSe
 
     private DatabaseOperation databaseOperation = DatabaseOperation.INSERT;
     private IDataSetConsumer dataSetConsumer = new DefaultConsumer();
-    private DataSourceConsumer startDataSourceConsumer = NullDataSourceConsumer.INSTANCE;
-    private DataSourceConsumer endDataSourceConsumer = NullDataSourceConsumer.INSTANCE;
     private DefaultTable rowCache;
 
     private int rowCacheLimit = Integer.MAX_VALUE;
@@ -61,34 +56,6 @@ public class TestContainersMigrationConsumer extends DefaultContainerAwareDataSe
             throw new IllegalArgumentException("rowCacheLimit must be 1 or greater");
         }
         this.rowCacheLimit = rowCacheLimit;
-    }
-
-    /**
-     * A {@link DataSourceConsumer} that will be invoked with the test containers {@link DataSource} on {@link #containerStarted(JdbcContainer)} .
-     *
-     * @param startDataSourceConsumer
-     */
-    public void setStartDataSourceConsumer(DataSourceConsumer startDataSourceConsumer) {
-        this.startDataSourceConsumer = requireNonNull(startDataSourceConsumer);
-    }
-
-    /**
-     * A {@link DataSourceConsumer} that will be invoked with the test containers {@link DataSource} on {@link #endDataSet()}.
-     *
-     * @param endDataSourceConsumer
-     */
-    public void setEndDataSourceConsumer(DataSourceConsumer endDataSourceConsumer) {
-        this.endDataSourceConsumer = requireNonNull(endDataSourceConsumer);
-    }
-
-    @Override
-    public void startDataSet(JdbcContainer jdbcContainer) throws DataSetException {
-        DataSource dataSource = jdbcContainer.getDataSource();
-        try {
-            startDataSourceConsumer.consume(dataSource);
-        } catch (SQLException e) {
-            throw new DataSetException("StartDataSetConsumer threw exception.", e);
-        }
     }
 
     @Override
@@ -140,9 +107,6 @@ public class TestContainersMigrationConsumer extends DefaultContainerAwareDataSe
     @Override
     public void endDataSet() throws DataSetException {
         try {
-            DataSource dataSource = getJdbcContainer().getDataSource();
-            endDataSourceConsumer.consume(dataSource);
-
             IDatabaseConnection databaseConnection = getJdbcContainer().getDatabaseConnection();
             processResult(databaseConnection, dataSetConsumer);
         } catch (SQLException e) {

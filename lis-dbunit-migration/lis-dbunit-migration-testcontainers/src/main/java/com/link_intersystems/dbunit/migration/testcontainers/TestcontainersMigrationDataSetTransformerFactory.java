@@ -6,7 +6,8 @@ import com.link_intersystems.dbunit.stream.consumer.ChainableDataSetConsumer;
 import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerPipe;
 import com.link_intersystems.dbunit.testcontainers.DBunitJdbcContainer;
 import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
-import com.link_intersystems.dbunit.testcontainers.consumer.TestContainersConsumer;
+import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseCustomizationConsumer;
+import com.link_intersystems.dbunit.testcontainers.consumer.TestContainersLifecycleConsumer;
 import com.link_intersystems.dbunit.testcontainers.consumer.TestContainersMigrationConsumer;
 import com.link_intersystems.dbunit.testcontainers.pool.RunningContainerPool;
 import com.link_intersystems.dbunit.testcontainers.pool.SingleRunningContainerPool;
@@ -34,14 +35,19 @@ public class TestcontainersMigrationDataSetTransformerFactory implements Migrati
 
     @Override
     public ChainableDataSetConsumer createTransformer(DatabaseMigrationSupport databaseMigrationSupport) {
-        TestContainersConsumer testContainersConsumer = new TestContainersConsumer(runningContainerPool);
+        TestContainersLifecycleConsumer testContainersConsumer = new TestContainersLifecycleConsumer(runningContainerPool);
+
+
+        DatabaseCustomizationConsumer databaseCustomizationConsumer = new DatabaseCustomizationConsumer();
+        databaseCustomizationConsumer.setCustomizeDatabaseOnStartDataSet(databaseMigrationSupport::prepareDataSource);
+        databaseCustomizationConsumer.setCustomizeDatabaseOnEndDataSet(databaseMigrationSupport::migrateDataSource);
+
 
         TestContainersMigrationConsumer testContainersMigrationConsumer = new TestContainersMigrationConsumer();
-        testContainersMigrationConsumer.setStartDataSourceConsumer(databaseMigrationSupport::prepareDataSource);
-        testContainersMigrationConsumer.setEndDataSourceConsumer(databaseMigrationSupport::migrateDataSource);
 
         DataSetConsumerPipe dataSetConsumerPipe = new DataSetConsumerPipe();
         dataSetConsumerPipe.add(testContainersConsumer);
+        dataSetConsumerPipe.add(databaseCustomizationConsumer);
         dataSetConsumerPipe.add(testContainersMigrationConsumer);
 
         return dataSetConsumerPipe;

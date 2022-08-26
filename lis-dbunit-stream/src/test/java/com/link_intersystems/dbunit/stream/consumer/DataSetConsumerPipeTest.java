@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
+import static org.mockito.Mockito.*;
+
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
@@ -18,6 +20,7 @@ class DataSetConsumerPipeTest {
 
     private DefaultChainableDataSetConsumer pipe1;
     private DefaultChainableDataSetConsumer pipe2;
+    private DefaultChainableDataSetConsumer pipe3;
     private CopyDataSetConsumer targetConsumer;
     private DataSetConsumerPipe dataSetConsumerPipe;
     private IDataSet tinySakilaDataSet;
@@ -26,8 +29,9 @@ class DataSetConsumerPipeTest {
     void setUp() throws DataSetException, IOException {
         dataSetConsumerPipe = new DataSetConsumerPipe();
 
-        pipe1 = new DefaultChainableDataSetConsumer();
-        pipe2 = new DefaultChainableDataSetConsumer();
+        pipe1 = spy(DefaultChainableDataSetConsumer.class);
+        pipe2 = spy(DefaultChainableDataSetConsumer.class);
+        pipe3 = spy(DefaultChainableDataSetConsumer.class);
         targetConsumer = new CopyDataSetConsumer();
 
         tinySakilaDataSet = TestDataSets.getTinySakilaDataSet();
@@ -52,8 +56,14 @@ class DataSetConsumerPipeTest {
 
         dataSetConsumerPipe.add(pipe1);
         dataSetConsumerPipe.add(pipe2);
+        dataSetConsumerPipe.add(pipe3);
 
         chainProduce();
+
+        verify(pipe1, times(1)).startDataSet();
+        verify(pipe2, times(1)).startDataSet();
+        verify(pipe3, times(1)).startDataSet();
+
         assertTransformerChainWorks();
     }
 
@@ -61,10 +71,16 @@ class DataSetConsumerPipeTest {
     void setOutputConsumerAfterAddElements() throws DataSetException {
         dataSetConsumerPipe.add(pipe1);
         dataSetConsumerPipe.add(pipe2);
+        dataSetConsumerPipe.add(pipe3);
 
         dataSetConsumerPipe.setOutputConsumer(targetConsumer);
 
         chainProduce();
+
+        verify(pipe1, times(1)).startDataSet();
+        verify(pipe2, times(1)).startDataSet();
+        verify(pipe3, times(1)).startDataSet();
+
         assertTransformerChainWorks();
     }
 
@@ -72,15 +88,20 @@ class DataSetConsumerPipeTest {
     void firstElementConstructor() throws DataSetException {
         dataSetConsumerPipe = new DataSetConsumerPipe(pipe1);
         dataSetConsumerPipe.add(pipe2);
+        dataSetConsumerPipe.add(pipe3);
 
         dataSetConsumerPipe.setOutputConsumer(targetConsumer);
 
         chainProduce();
+
+        verify(pipe1, times(1)).startDataSet();
+        verify(pipe2, times(1)).startDataSet();
+        verify(pipe3, times(1)).startDataSet();
+
         assertTransformerChainWorks();
     }
 
     private void assertTransformerChainWorks() throws DataSetException {
-
 
         DBUnitAssertions.STRICT.assertDataSetEquals(tinySakilaDataSet, targetConsumer.getDataSet());
     }

@@ -16,21 +16,21 @@ import static java.util.Objects.requireNonNull;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class TestContainersConsumer extends DefaultChainableDataSetConsumer {
+public class TestContainersLifecycleConsumer extends DefaultChainableDataSetConsumer {
     private RunningContainerPool runningContainerPool;
     private RunningContainer runningContainer;
 
-    public TestContainersConsumer(DatabaseContainerSupport databaseContainerSupport) {
+    public TestContainersLifecycleConsumer(DatabaseContainerSupport databaseContainerSupport) {
         this(() -> new DBunitJdbcContainer(databaseContainerSupport.create(), databaseContainerSupport.getDatabaseConfig()));
     }
 
-    public TestContainersConsumer(Supplier<DBunitJdbcContainer> dBunitJdbcContainerSupplier) {
+    public TestContainersLifecycleConsumer(Supplier<DBunitJdbcContainer> dBunitJdbcContainerSupplier) {
         this.runningContainerPool = new SingleRunningContainerPool(
                 dBunitJdbcContainerSupplier
         );
     }
 
-    public TestContainersConsumer(RunningContainerPool runningContainerPool) {
+    public TestContainersLifecycleConsumer(RunningContainerPool runningContainerPool) {
         this.runningContainerPool = requireNonNull(runningContainerPool);
     }
 
