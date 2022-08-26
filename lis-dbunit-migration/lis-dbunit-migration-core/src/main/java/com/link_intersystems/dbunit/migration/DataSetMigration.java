@@ -15,7 +15,7 @@ public class DataSetMigration implements DataSetProducerSupport, DataSetConsumer
 
     private IDataSetProducer sourceProducer;
     private IDataSetConsumer targetConsumer;
-    private MigrationDataSetTransformerFactory migrationDataSetTransformerFactory;
+    private MigrationDataSetPipeFactory migrationDataSetTransformerFactory;
     private ChainableDataSetConsumer beforeMigration;
     private ChainableDataSetConsumer afterMigration;
     private DatabaseMigrationSupport databaseMigrationSupport;
@@ -28,11 +28,11 @@ public class DataSetMigration implements DataSetProducerSupport, DataSetConsumer
         return databaseMigrationSupport;
     }
 
-    public void setMigrationDataSetTransformerFactory(MigrationDataSetTransformerFactory migrationDataSetTransformerFactory) {
+    public void setMigrationDataSetTransformerFactory(MigrationDataSetPipeFactory migrationDataSetTransformerFactory) {
         this.migrationDataSetTransformerFactory = migrationDataSetTransformerFactory;
     }
 
-    public MigrationDataSetTransformerFactory getMigrationDataSetTransformerFactory() {
+    public MigrationDataSetPipeFactory getMigrationDataSetTransformerFactory() {
         return migrationDataSetTransformerFactory;
     }
 
@@ -87,17 +87,17 @@ public class DataSetMigration implements DataSetProducerSupport, DataSetConsumer
     }
 
     protected DataSetConsumerPipe createMigrationPipe() {
-        DataSetConsumerPipe consumerPipe = new DataSetConsumerPipe();
+        DataSetConsumerPipe migrationProcessPipe = new DataSetConsumerPipe();
 
-        consumerPipe.add(getBeforeTransformer());
+        migrationProcessPipe.add(getBeforeTransformer());
 
-        MigrationDataSetTransformerFactory transformerFactory = getMigrationDataSetTransformerFactory();
-        ChainableDataSetConsumer migrationConsumer = transformerFactory.createTransformer(getDatabaseMigrationSupport());
-        consumerPipe.add(migrationConsumer);
+        MigrationDataSetPipeFactory pipeFactory = getMigrationDataSetTransformerFactory();
+        DataSetConsumerPipe migrationPipe = pipeFactory.createMigrationPipe(getDatabaseMigrationSupport());
+        migrationPipe.add(migrationPipe);
 
-        consumerPipe.add(getAfterMigration());
+        migrationPipe.add(getAfterMigration());
 
-        return consumerPipe;
+        return migrationPipe;
     }
 
 

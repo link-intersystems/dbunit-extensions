@@ -6,7 +6,7 @@ import com.link_intersystems.dbunit.migration.flyway.FlywayMigrationConfig;
 import com.link_intersystems.dbunit.migration.resources.DataSetResourcesMigration;
 import com.link_intersystems.dbunit.migration.resources.MigrationsResult;
 import com.link_intersystems.dbunit.migration.resources.RebaseTargetpathDataSetResourceSupplier;
-import com.link_intersystems.dbunit.migration.testcontainers.TestcontainersMigrationDataSetTransformerFactory;
+import com.link_intersystems.dbunit.migration.testcontainers.TestcontainersMigrationDataSetPipeFactory;
 import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
 import com.link_intersystems.dbunit.stream.consumer.ExternalSortTableConsumer;
 import com.link_intersystems.dbunit.stream.resource.DataSetResource;
@@ -68,7 +68,7 @@ class DataSetCollectionFlywayMigrationTest {
             return new DBunitJdbcContainer(databaseContainerSupport.create(), databaseContainerSupport.getDatabaseConfig());
         }, dataSetResources.size());
 
-        TestcontainersMigrationDataSetTransformerFactory migrationDataSetTransformerFactory = new TestcontainersMigrationDataSetTransformerFactory(runningContainerPool);
+        TestcontainersMigrationDataSetPipeFactory migrationDataSetTransformerFactory = new TestcontainersMigrationDataSetPipeFactory(runningContainerPool);
         dataSetResourcesMigration.setMigrationDataSetTransformerFactory(migrationDataSetTransformerFactory);
 
         FlywayMigrationConfig migrationConfig = FlywayConfigurationConfigFixture.createPostgresConfig();

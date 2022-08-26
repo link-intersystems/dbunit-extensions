@@ -1,7 +1,7 @@
 package com.link_intersystems.dbunit.migration.testcontainers;
 
 import com.link_intersystems.dbunit.migration.DatabaseMigrationSupport;
-import com.link_intersystems.dbunit.migration.MigrationDataSetTransformerFactory;
+import com.link_intersystems.dbunit.migration.MigrationDataSetPipeFactory;
 import com.link_intersystems.dbunit.stream.consumer.ChainableDataSetConsumer;
 import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerPipe;
 import com.link_intersystems.dbunit.testcontainers.DBunitJdbcContainer;
@@ -17,24 +17,24 @@ import static java.util.Objects.requireNonNull;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class TestcontainersMigrationDataSetTransformerFactory implements MigrationDataSetTransformerFactory {
+public class TestcontainersMigrationDataSetPipeFactory implements MigrationDataSetPipeFactory {
 
     private RunningContainerPool runningContainerPool;
 
-    public TestcontainersMigrationDataSetTransformerFactory(String dockerImageName) {
+    public TestcontainersMigrationDataSetPipeFactory(String dockerImageName) {
         this(DatabaseContainerSupport.getDatabaseContainerSupport(dockerImageName));
     }
 
-    public TestcontainersMigrationDataSetTransformerFactory(DatabaseContainerSupport databaseContainerSupport) {
+    public TestcontainersMigrationDataSetPipeFactory(DatabaseContainerSupport databaseContainerSupport) {
         this(new SingleRunningContainerPool(() -> new DBunitJdbcContainer(databaseContainerSupport.create(), databaseContainerSupport.getDatabaseConfig())));
     }
 
-    public TestcontainersMigrationDataSetTransformerFactory(RunningContainerPool runningContainerPool) {
+    public TestcontainersMigrationDataSetPipeFactory(RunningContainerPool runningContainerPool) {
         this.runningContainerPool = requireNonNull(runningContainerPool);
     }
 
     @Override
-    public ChainableDataSetConsumer createTransformer(DatabaseMigrationSupport databaseMigrationSupport) {
+    public DataSetConsumerPipe createMigrationPipe(DatabaseMigrationSupport databaseMigrationSupport) {
         TestContainersLifecycleConsumer testContainersConsumer = new TestContainersLifecycleConsumer(runningContainerPool);
 
 

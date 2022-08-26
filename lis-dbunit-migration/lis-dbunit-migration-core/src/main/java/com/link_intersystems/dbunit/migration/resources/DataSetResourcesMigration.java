@@ -2,7 +2,7 @@ package com.link_intersystems.dbunit.migration.resources;
 
 import com.link_intersystems.dbunit.migration.DataSetMigration;
 import com.link_intersystems.dbunit.migration.DatabaseMigrationSupport;
-import com.link_intersystems.dbunit.migration.MigrationDataSetTransformerFactory;
+import com.link_intersystems.dbunit.migration.MigrationDataSetPipeFactory;
 import com.link_intersystems.dbunit.stream.consumer.ChainableDataSetConsumer;
 import com.link_intersystems.dbunit.stream.resource.DataSetResource;
 import com.link_intersystems.util.concurrent.ProgressListener;
@@ -28,7 +28,7 @@ public class DataSetResourcesMigration {
     private Logger logger = LoggerFactory.getLogger(DataSetResourcesMigration.class);
 
     private TargetDataSetResourceSupplier targetDataSetResourceSupplier;
-    private MigrationDataSetTransformerFactory migrationDataSetTransformerFactory;
+    private MigrationDataSetPipeFactory migrationDataSetTransformerFactory;
     private Supplier<ChainableDataSetConsumer> beforeMigrationConsumerSupplier = () -> null;
     private Supplier<ChainableDataSetConsumer> afterMigrationConsumerSupplier = () -> null;
     private DatabaseMigrationSupport databaseMigrationSupport;
@@ -70,11 +70,11 @@ public class DataSetResourcesMigration {
         return targetDataSetResourceSupplier;
     }
 
-    public void setMigrationDataSetTransformerFactory(MigrationDataSetTransformerFactory migrationDataSetTransformerFactory) {
+    public void setMigrationDataSetTransformerFactory(MigrationDataSetPipeFactory migrationDataSetTransformerFactory) {
         this.migrationDataSetTransformerFactory = migrationDataSetTransformerFactory;
     }
 
-    public MigrationDataSetTransformerFactory getMigrationDataSetTransformerFactory() {
+    public MigrationDataSetPipeFactory getMigrationDataSetTransformerFactory() {
         return migrationDataSetTransformerFactory;
     }
 
