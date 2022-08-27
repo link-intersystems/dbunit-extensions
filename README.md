@@ -16,7 +16,7 @@ The dbunit compatibility tests, test this library against dbunit versions
 
 A module that provides support for data set migration.
 
-https://github.com/link-intersystems/dbunit-extensions/blob/b8f572f1f44867557dec0089df18b53e03240305/lis-dbunit-migration/lis-dbunit-migration-integration-tests/src/test/java/com/link_intersystems/dbunit/migration/DataSetMigrationDocTest.java#L28
+https://github.com/link-intersystems/dbunit-extensions/blob/b8f572f1f44867557dec0089df18b53e03240305/lis-dbunit-migration/lis-dbunit-migration-integration-tests/src/test/java/com/link_intersystems/dbunit/migration/DataSetMigrationDocTest.java#L28-L40
 
 
 ## [lis-dbunit-stream](lis-dbunit-stream/README.md)
