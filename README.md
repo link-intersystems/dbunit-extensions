@@ -56,7 +56,7 @@ https://github.com/link-intersystems/dbunit-extensions/blob/bdca14be702bf3be67d8
 The `ConsistentDataSetLoader` is another option to load consistent datasets. You can
 pass it an SQL-Select statement.
 
-    IDataSet dataSet = dataSetLoader.load("SELECT * from film_actor where film_actor.film_id = ?", Integer.valueOf(200));
+https://github.com/link-intersystems/dbunit-extensions/blob/67e05865a2454a8ddfb33c2938f601d446b893e5/lis-dbunit-dataset/src/test/java/com/link_intersystems/dbunit/dataset/consistency/ConsistentDataSetLoaderDocTest.java#L24-L52
 
 ## lis-dbunit-table
 
