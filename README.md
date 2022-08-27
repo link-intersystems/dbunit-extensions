@@ -12,11 +12,14 @@ The dbunit compatibility tests, test this library against dbunit versions
 
 ![DBUnit Compatibility Test](https://github.com/link-intersystems/dbunit-extensions/workflows/DBUnit%20Compatibility%20Tests/badge.svg)
 
+<!-- SEARCH AND REPLACE THE LATEST DOC COMMIT HASH TO UPDATE ALL CODE PERMALINKS TO THE ACTUAL HEAD -->
+<!-- LATEST DOC COMMIT HASH: beb9b68c3b4e8277bb9f67e7463770bc80383c0c -->
+
 ## [lis-dbunit-migration](lis-dbunit-migration/README.md)
 
 A module that provides support for data set migration.
 
-https://github.com/link-intersystems/dbunit-extensions/blob/b8f572f1f44867557dec0089df18b53e03240305/lis-dbunit-migration/lis-dbunit-migration-integration-tests/src/test/java/com/link_intersystems/dbunit/migration/DataSetMigrationDocTest.java#L28-L41
+https://github.com/link-intersystems/dbunit-extensions/blob/beb9b68c3b4e8277bb9f67e7463770bc80383c0c/lis-dbunit-migration/lis-dbunit-migration-integration-tests/src/test/java/com/link_intersystems/dbunit/migration/DataSetMigrationDocTest.java#L28-L41
 
 
 ## [lis-dbunit-stream](lis-dbunit-stream/README.md)
@@ -49,14 +52,14 @@ For details take a look at [lis-dbunit-dataset](lis-dbunit-dataset/README.md)
 The `TableBrowser` can be used to extract a dataset based on a kind of extract description.
 This description can be build using a domain-specific language. E.g.
 
-https://github.com/link-intersystems/dbunit-extensions/blob/bdca14be702bf3be67d83e30c245041a0aaceef3/lis-dbunit-dataset/src/test/java/com/link_intersystems/dbunit/dataset/browser/main/TableBrowserDocTest.java#L19-L31
+https://github.com/link-intersystems/dbunit-extensions/blob/beb9b68c3b4e8277bb9f67e7463770bc80383c0c/lis-dbunit-dataset/src/test/java/com/link_intersystems/dbunit/dataset/browser/main/TableBrowserDocTest.java#L19-L31
 
 ### ConsistentDataSetLoader
 
 The `ConsistentDataSetLoader` is another option to load consistent datasets. You can
 pass it an SQL-Select statement.
 
-https://github.com/link-intersystems/dbunit-extensions/blob/67e05865a2454a8ddfb33c2938f601d446b893e5/lis-dbunit-dataset/src/test/java/com/link_intersystems/dbunit/dataset/consistency/ConsistentDataSetLoaderDocTest.java#L24-L52
+https://github.com/link-intersystems/dbunit-extensions/blob/beb9b68c3b4e8277bb9f67e7463770bc80383c0c/lis-dbunit-dataset/src/test/java/com/link_intersystems/dbunit/dataset/consistency/ConsistentDataSetLoaderDocTest.java#L24-L52
 
 ## lis-dbunit-table
 
