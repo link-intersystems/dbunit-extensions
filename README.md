@@ -12,29 +12,11 @@ The dbunit compatibility tests, test this library against dbunit versions
 
 ![DBUnit Compatibility Test](https://github.com/link-intersystems/dbunit-extensions/workflows/DBUnit%20Compatibility%20Tests/badge.svg)
 
-## [lis-dbunit-migration](lis-dbunit-migration-modules/README.md)
+## [lis-dbunit-migration](lis-dbunit-migration/README.md)
 
 A module that provides support for data set migration.
 
-
-    DataSetMigration dataSetMigration = new DataSetMigration();
-    
-    InputStream resourceAsStream = DataSetFlywayMigrationColumnSensingTest.class.getResourceAsStream("/tiny-sakila-flat-column-sensing.xml");
-    FlatXmlDataSet sourceDataSet = new FlatXmlDataSetBuilder().setColumnSensing(true).build(resourceAsStream);
-    dataSetMigration.setDataSetProducer(sourceDataSet);
-    
-    dataSetMigration.setFlatXmlConsumer("target/flat.xml");
-    
-    dataSetMigration.setMigrationDataSetTransformerFactory(new TestcontainersMigrationDataSetTransformerFactory(databaseDefinition.databaseContainerSupport));
-    
-    FlywayMigrationConfig migrationConfig = new FlywayMigrationConfig();
-    FluentConfiguration configuration = Flyway.configure();
-    configuration.locations("db/migration");
-    migrationConfig.setFlywayConfiguration(configuration);
-    migrationConfig.setSourceVersion("1");
-    dataSetMigrations.setDatabaseMigrationSupport(new FlywayDatabaseMigrationSupport(migrationConfig));
-
-    dataSetMigration.exec();
+https://github.com/link-intersystems/dbunit-extensions/blob/master/lis-dbunit-migration/lis-dbunit-migration-integration-tests/src/test/java/com/link_intersystems/dbunit/migration/DataSetMigrationDocTest.java#L28
 
 
 ## [lis-dbunit-stream](lis-dbunit-stream/README.md)
