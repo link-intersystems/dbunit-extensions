@@ -11,32 +11,41 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
+
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-class DataSetTransformerChainTest {
+class DataSetConsumerPipeTest {
 
-
-    private DefaultDataSetConsumerPipe pipe1;
-    private DefaultDataSetConsumerPipe pipe2;
+    private DefaultChainableDataSetConsumer pipe1;
+    private DefaultChainableDataSetConsumer pipe2;
+    private DefaultChainableDataSetConsumer pipe3;
     private CopyDataSetConsumer targetConsumer;
-    private DataSetTransformerChain transformerChain;
+    private DataSetConsumerPipe dataSetConsumerPipe;
     private IDataSet tinySakilaDataSet;
 
     @BeforeEach
     void setUp() throws DataSetException, IOException {
-        transformerChain = new DataSetTransformerChain();
+        dataSetConsumerPipe = new DataSetConsumerPipe();
 
-        pipe1 = new DefaultDataSetConsumerPipe();
-        pipe2 = new DefaultDataSetConsumerPipe();
+        pipe1 = spy(DefaultChainableDataSetConsumer.class);
+        pipe2 = spy(DefaultChainableDataSetConsumer.class);
+        pipe3 = spy(DefaultChainableDataSetConsumer.class);
         targetConsumer = new CopyDataSetConsumer();
 
         tinySakilaDataSet = TestDataSets.getTinySakilaDataSet();
     }
 
     @Test
+    void addPipeToItself() throws DataSetException {
+        assertThrows(IllegalArgumentException.class, () -> dataSetConsumerPipe.add(dataSetConsumerPipe));
+    }
+
+    @Test
     void outputConsumerOnly() throws DataSetException {
-        transformerChain.setOutputConsumer(targetConsumer);
+        dataSetConsumerPipe.setOutputConsumer(targetConsumer);
 
         chainProduce();
         assertTransformerChainWorks();
@@ -49,39 +58,56 @@ class DataSetTransformerChainTest {
 
     @Test
     void setOutputConsumerBeforeAddElements() throws DataSetException {
-        transformerChain.setOutputConsumer(targetConsumer);
+        dataSetConsumerPipe.setOutputConsumer(targetConsumer);
 
-        transformerChain.add(pipe1);
-        transformerChain.add(pipe2);
+        dataSetConsumerPipe.add(pipe1);
+        dataSetConsumerPipe.add(pipe2);
+        dataSetConsumerPipe.add(pipe3);
 
         chainProduce();
+
+        verify(pipe1, times(1)).startDataSet();
+        verify(pipe2, times(1)).startDataSet();
+        verify(pipe3, times(1)).startDataSet();
+
         assertTransformerChainWorks();
     }
 
     @Test
     void setOutputConsumerAfterAddElements() throws DataSetException {
-        transformerChain.add(pipe1);
-        transformerChain.add(pipe2);
+        dataSetConsumerPipe.add(pipe1);
+        dataSetConsumerPipe.add(pipe2);
+        dataSetConsumerPipe.add(pipe3);
 
-        transformerChain.setOutputConsumer(targetConsumer);
+        dataSetConsumerPipe.setOutputConsumer(targetConsumer);
 
         chainProduce();
+
+        verify(pipe1, times(1)).startDataSet();
+        verify(pipe2, times(1)).startDataSet();
+        verify(pipe3, times(1)).startDataSet();
+
         assertTransformerChainWorks();
     }
 
     @Test
     void firstElementConstructor() throws DataSetException {
-        transformerChain = new DataSetTransformerChain(pipe1);
-        transformerChain.add(pipe2);
+        dataSetConsumerPipe = new DataSetConsumerPipe(pipe1);
+        dataSetConsumerPipe.add(pipe2);
+        dataSetConsumerPipe.add(pipe3);
 
-        transformerChain.setOutputConsumer(targetConsumer);
+        dataSetConsumerPipe.setOutputConsumer(targetConsumer);
 
         chainProduce();
+
+        verify(pipe1, times(1)).startDataSet();
+        verify(pipe2, times(1)).startDataSet();
+        verify(pipe3, times(1)).startDataSet();
+
         assertTransformerChainWorks();
     }
 
     private void assertTransformerChainWorks() throws DataSetException {
-
 
         DBUnitAssertions.STRICT.assertDataSetEquals(tinySakilaDataSet, targetConsumer.getDataSet());
     }
@@ -91,7 +117,7 @@ class DataSetTransformerChainTest {
         producerSupport.setDataSetProducer(tinySakilaDataSet);
 
         IDataSetProducer dataSetProducer = producerSupport.getDataSetProducer();
-        dataSetProducer.setConsumer(transformerChain.getInputConsumer());
+        dataSetProducer.setConsumer(dataSetConsumerPipe);
         dataSetProducer.produce();
     }
 }

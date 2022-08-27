@@ -12,7 +12,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class FilterTableContentConsumer extends DefaultDataSetConsumerPipe {
+public class FilterTableContentConsumer extends DefaultChainableDataSetConsumer {
 
     private final IRowFilterFactory rowFilterFactory;
     private IRowFilter rowFilter;

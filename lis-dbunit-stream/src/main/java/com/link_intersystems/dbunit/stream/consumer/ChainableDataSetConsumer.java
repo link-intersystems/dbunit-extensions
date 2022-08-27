@@ -5,9 +5,8 @@ import org.dbunit.dataset.stream.IDataSetConsumer;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public interface DataSetTransormer {
+public interface ChainableDataSetConsumer extends IDataSetConsumer {
 
-    public IDataSetConsumer getInputConsumer();
+    public void setSubsequentConsumer(IDataSetConsumer dataSetConsumer);
 
-    public void setOutputConsumer(IDataSetConsumer dataSetConsumer);
 }

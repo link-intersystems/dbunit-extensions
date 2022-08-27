@@ -7,9 +7,8 @@ import javax.sql.DataSource;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public interface RunningContainer extends JdbcContainer {
+public interface JdbcContainer {
+    DataSource getDataSource();
 
-    void stop();
-
-    boolean isStopped();
+    IDatabaseConnection getDatabaseConnection();
 }

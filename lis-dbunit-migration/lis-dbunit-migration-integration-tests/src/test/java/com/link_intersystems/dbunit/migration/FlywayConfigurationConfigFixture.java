@@ -12,11 +12,13 @@ import java.util.Map;
  */
 public class FlywayConfigurationConfigFixture {
 
-    public static FlywayMigrationConfig createConfig(String name) {
+    public static FlywayMigrationConfig createConfig(DatabaseDefinition databaseDefinition) {
         FlywayMigrationConfig migrationConfig = new FlywayMigrationConfig();
 
+        String scriptsBase = databaseDefinition.getScriptsBase();
+
         FluentConfiguration configuration = Flyway.configure();
-        configuration.locations("com/link_intersystems/dbunit/migration/" + name);
+        configuration.locations("com/link_intersystems/dbunit/migration/" + scriptsBase);
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("new_first_name_column_name", "firstname");
         placeholders.put("new_last_name_column_name", "lastname");
@@ -24,15 +26,15 @@ public class FlywayConfigurationConfigFixture {
 
         migrationConfig.setFlywayConfiguration(configuration);
 
-        migrationConfig.setSourceVersion("1");
+        migrationConfig.setSourceVersion(databaseDefinition.getSourceVersion());
         return migrationConfig;
     }
 
     public static FlywayMigrationConfig createPostgresConfig() {
-        return createConfig("postgres");
+        return createConfig(new DatabaseDefinition("postgres"));
     }
 
     public static FlywayMigrationConfig createMySqlConfig() {
-        return createConfig("mysql");
+        return createConfig(new DatabaseDefinition("mysql"));
     }
 }

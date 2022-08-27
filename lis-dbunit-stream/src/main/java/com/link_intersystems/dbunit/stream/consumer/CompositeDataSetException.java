@@ -14,9 +14,13 @@ public class CompositeDataSetException extends DataSetException {
 
     public CompositeDataSetException(List<DataSetException> dataSetExceptions) {
         this.dataSetExceptions.addAll(dataSetExceptions);
+        if (!dataSetExceptions.isEmpty()) {
+            initCause(this.dataSetExceptions.get(0));
+        }
     }
 
     public List<DataSetException> getDataSetExceptions() {
         return dataSetExceptions;
     }
+
 }

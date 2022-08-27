@@ -6,9 +6,8 @@ import com.link_intersystems.dbunit.migration.flyway.FlywayMigrationConfig;
 import com.link_intersystems.dbunit.migration.resources.DataSetResourcesMigration;
 import com.link_intersystems.dbunit.migration.resources.MigrationsResult;
 import com.link_intersystems.dbunit.migration.resources.RebaseTargetpathDataSetResourceSupplier;
-import com.link_intersystems.dbunit.migration.testcontainers.TestcontainersMigrationDataSetTransformerFactory;
+import com.link_intersystems.dbunit.migration.testcontainers.TestcontainersMigrationDataSetPipeFactory;
 import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
-import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerPipeTransformerAdapter;
 import com.link_intersystems.dbunit.stream.consumer.ExternalSortTableConsumer;
 import com.link_intersystems.dbunit.stream.resource.DataSetResource;
 import com.link_intersystems.dbunit.stream.resource.detection.DataSetFileDetection;
@@ -31,7 +30,6 @@ import org.junit.jupiter.api.io.TempDir;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -70,7 +68,7 @@ class DataSetCollectionFlywayMigrationTest {
             return new DBunitJdbcContainer(databaseContainerSupport.create(), databaseContainerSupport.getDatabaseConfig());
         }, dataSetResources.size());
 
-        TestcontainersMigrationDataSetTransformerFactory migrationDataSetTransformerFactory = new TestcontainersMigrationDataSetTransformerFactory(runningContainerPool);
+        TestcontainersMigrationDataSetPipeFactory migrationDataSetTransformerFactory = new TestcontainersMigrationDataSetPipeFactory(runningContainerPool);
         dataSetResourcesMigration.setMigrationDataSetTransformerFactory(migrationDataSetTransformerFactory);
 
         FlywayMigrationConfig migrationConfig = FlywayConfigurationConfigFixture.createPostgresConfig();
@@ -80,7 +78,7 @@ class DataSetCollectionFlywayMigrationTest {
 
         dataSetResourcesMigration.setBeforeMigrationSupplier(() -> {
             TableOrder tableOrder = new DefaultTableOrder("language", "film", "actor", "film_actor");
-            return new DataSetConsumerPipeTransformerAdapter(new ExternalSortTableConsumer(tableOrder));
+            return new ExternalSortTableConsumer(tableOrder);
         });
 
         MigrationsResult result = dataSetResourcesMigration.exec(dataSetResources);
