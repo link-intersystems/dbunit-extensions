@@ -49,14 +49,7 @@ For details take a look at [lis-dbunit-dataset](lis-dbunit-dataset/README.md)
 The `TableBrowser` can be used to extract a dataset based on a kind of extract description.
 This description can be build using a domain-specific language. E.g.
 
-    BrowseTable actor = new BrowseTable("actor");
-    actor.with("actor_id").in(1, 2, 3);
-    BrowseTable filmActor = actor.browse("film_actor").natural();
-    BrowseTable film = filmActor.browse("film").natural();
-    film.browse("language").on("original_language_id").references("language_id")
-    film.browse("inventory").natural();
-
-    IDataSet dataSet = tableBrowser.browse(actor);
+https://github.com/link-intersystems/dbunit-extensions/blob/bdca14be702bf3be67d83e30c245041a0aaceef3/lis-dbunit-dataset/src/test/java/com/link_intersystems/dbunit/dataset/browser/main/TableBrowserDocTest.java#L19-L31
 
 ### ConsistentDataSetLoader
 
