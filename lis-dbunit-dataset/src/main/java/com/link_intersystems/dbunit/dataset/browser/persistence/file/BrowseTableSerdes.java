@@ -2,9 +2,6 @@ package com.link_intersystems.dbunit.dataset.browser.persistence.file;
 
 import com.link_intersystems.dbunit.dataset.browser.model.BrowseTable;
 
-import javax.activation.MimeType;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 

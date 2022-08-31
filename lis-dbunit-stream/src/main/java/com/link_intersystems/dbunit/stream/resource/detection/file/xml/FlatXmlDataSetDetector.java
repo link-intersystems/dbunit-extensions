@@ -4,11 +4,13 @@ import com.link_intersystems.dbunit.stream.producer.DefaultDataSetProducerSuppor
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFileConfig;
 import com.link_intersystems.dbunit.stream.resource.file.xml.FlatXmlDataSetFile;
+import com.link_intersystems.dbunit.stream.resource.file.xml.FlatXmlDataSetFileConfig;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITableMetaData;
 
 import java.io.File;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -24,14 +26,20 @@ public class FlatXmlDataSetDetector extends AbstractXmlTableMetaDataDataSetFileD
     @Override
     protected DataSetFile dataSetFileDetectedSucessfully(File file) {
         FlatXmlDataSetFile flatXmlDataSetFile = new FlatXmlDataSetFile(file);
-        flatXmlDataSetFile.setColumnSensing(dataSetFileConfig.isColumnSensing());
-        flatXmlDataSetFile.setCharset(dataSetFileConfig.getCharset());
+
+        Boolean columnSensing = dataSetFileConfig.getProperty(FlatXmlDataSetFileConfig.COLUMN_SENSING_PROPERTY);
+        flatXmlDataSetFile.setColumnSensing(columnSensing);
+
+        Charset charset = dataSetFileConfig.getProperty(DataSetFileConfig.CHARSET_PROPERTY);
+        flatXmlDataSetFile.setCharset(charset);
+
         return flatXmlDataSetFile;
     }
 
     @Override
     protected void setProducer(DefaultDataSetProducerSupport producerSupport, InputStream inputStream) {
-        producerSupport.setFlatXmlProducer(inputStream, dataSetFileConfig.getCharset());
+        Charset charset = dataSetFileConfig.getProperty(DataSetFileConfig.CHARSET_PROPERTY);
+        producerSupport.setFlatXmlProducer(inputStream, charset);
     }
 
     @Override

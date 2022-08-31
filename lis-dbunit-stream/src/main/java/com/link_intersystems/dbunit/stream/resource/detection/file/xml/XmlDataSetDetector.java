@@ -23,7 +23,7 @@ public class XmlDataSetDetector extends AbstractXmlTableMetaDataDataSetFileDetec
     @Override
     protected DataSetFile dataSetFileDetectedSucessfully(File file) {
         XmlDataSetFile xmlDataSetFile = new XmlDataSetFile(file);
-        xmlDataSetFile.setCharset(dataSetFileConfig.getCharset());
+        xmlDataSetFile.setCharset(dataSetFileConfig.getProperty(DataSetFileConfig.CHARSET_PROPERTY));
         return xmlDataSetFile;
     }
 
