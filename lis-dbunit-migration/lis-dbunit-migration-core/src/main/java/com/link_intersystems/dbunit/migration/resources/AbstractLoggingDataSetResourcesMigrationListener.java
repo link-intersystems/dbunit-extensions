@@ -26,7 +26,7 @@ public abstract class AbstractLoggingDataSetResourcesMigrationListener implement
 
     @Override
     public void migrationFailed(DataSetResource dataSetResource, DataSetException e) {
-        String msg = format("\u274c\ufe0e Unable to migrate ''{0}''", dataSetResource);
+        String msg = format("\u274c\ufe0e Migration failed ''{0}''", dataSetResource);
         logMigrationFailed(e, msg);
     }
 
