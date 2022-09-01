@@ -1,8 +1,9 @@
 package com.link_intersystems.dbunit.testcontainers.commons;
 
 import com.link_intersystems.dbunit.testcontainers.DBunitJdbcContainer;
+import com.link_intersystems.dbunit.testcontainers.JdbcContainer;
 import com.link_intersystems.dbunit.testcontainers.RunningContainer;
-import com.link_intersystems.dbunit.testcontainers.pool.RunningContainerPool;
+import com.link_intersystems.dbunit.testcontainers.pool.JdbcContainerPool;
 import org.apache.commons.pool2.ObjectPool;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.PooledObjectFactory;
@@ -23,7 +24,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class CommonsRunningContainerPool implements RunningContainerPool {
+public class CommonsRunningContainerPool implements JdbcContainerPool {
     public static CommonsRunningContainerPool createPool(Supplier<DBunitJdbcContainer> dBunitJdbcContainerSupplier) {
         return createPool(dBunitJdbcContainerSupplier, 1);
     }
@@ -72,7 +73,7 @@ public class CommonsRunningContainerPool implements RunningContainerPool {
     }
 
     @Override
-    public RunningContainer borrowContainer() throws DataSetException {
+    public JdbcContainer borrowContainer() throws DataSetException {
         try {
             return objectPool.borrowObject();
         } catch (Exception e) {
@@ -81,10 +82,10 @@ public class CommonsRunningContainerPool implements RunningContainerPool {
     }
 
     @Override
-    public void returnContainer(RunningContainer runningContainer) {
+    public void returnContainer(JdbcContainer jdbcContainer) {
         try {
-            objectPool.returnObject(runningContainer);
-            objectPool.invalidateObject(runningContainer);
+            objectPool.returnObject((RunningContainer) jdbcContainer);
+            objectPool.invalidateObject((RunningContainer) jdbcContainer);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

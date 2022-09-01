@@ -3,9 +3,9 @@ package com.link_intersystems.dbunit.testcontainers.consumer;
 import com.link_intersystems.dbunit.stream.consumer.DefaultChainableDataSetConsumer;
 import com.link_intersystems.dbunit.testcontainers.DBunitJdbcContainer;
 import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
-import com.link_intersystems.dbunit.testcontainers.RunningContainer;
-import com.link_intersystems.dbunit.testcontainers.pool.RunningContainerPool;
-import com.link_intersystems.dbunit.testcontainers.pool.SingleRunningContainerPool;
+import com.link_intersystems.dbunit.testcontainers.JdbcContainer;
+import com.link_intersystems.dbunit.testcontainers.pool.JdbcContainerPool;
+import com.link_intersystems.dbunit.testcontainers.pool.SingleJdbcContainerPool;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 
@@ -15,29 +15,29 @@ import static java.util.Objects.requireNonNull;
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 public class TestContainersLifecycleConsumer extends DefaultChainableDataSetConsumer {
-    private RunningContainerPool runningContainerPool;
-    private RunningContainer runningContainer;
+    private JdbcContainerPool jdbcContainerPool;
+    private JdbcContainer jdbcContainer;
 
     public TestContainersLifecycleConsumer(DatabaseContainerSupport databaseContainerSupport) {
         this(new DBunitJdbcContainer(databaseContainerSupport.create(), databaseContainerSupport.getDatabaseConfig()));
     }
 
     public TestContainersLifecycleConsumer(DBunitJdbcContainer dBunitJdbcContainer) {
-        this(new SingleRunningContainerPool(dBunitJdbcContainer));
+        this(new SingleJdbcContainerPool(dBunitJdbcContainer));
     }
 
-    public TestContainersLifecycleConsumer(RunningContainerPool runningContainerPool) {
-        this.runningContainerPool = requireNonNull(runningContainerPool);
+    public TestContainersLifecycleConsumer(JdbcContainerPool jdbcContainerPool) {
+        this.jdbcContainerPool = requireNonNull(jdbcContainerPool);
     }
 
     @Override
     public void startDataSet() throws DataSetException {
-        runningContainer = runningContainerPool.borrowContainer();
+        jdbcContainer = jdbcContainerPool.borrowContainer();
 
         IDataSetConsumer delegate = getDelegate();
         if (delegate instanceof ContainerAwareDataSetConsumer) {
             ContainerAwareDataSetConsumer containerAwareDataSetConsumer = (ContainerAwareDataSetConsumer) delegate;
-            containerAwareDataSetConsumer.containerStarted(runningContainer);
+            containerAwareDataSetConsumer.containerStarted(jdbcContainer);
         }
 
         super.startDataSet();
@@ -48,7 +48,7 @@ public class TestContainersLifecycleConsumer extends DefaultChainableDataSetCons
         try {
             super.endDataSet();
         } finally {
-            runningContainerPool.returnContainer(runningContainer);
+            jdbcContainerPool.returnContainer(jdbcContainer);
         }
     }
 }

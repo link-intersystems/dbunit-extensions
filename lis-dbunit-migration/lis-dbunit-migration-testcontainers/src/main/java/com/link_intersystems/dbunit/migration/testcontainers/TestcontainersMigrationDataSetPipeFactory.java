@@ -9,8 +9,8 @@ import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
 import com.link_intersystems.dbunit.testcontainers.consumer.ReproduceConsumerAdapter;
 import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseOperationConsumer;
 import com.link_intersystems.dbunit.testcontainers.consumer.TestContainersLifecycleConsumer;
-import com.link_intersystems.dbunit.testcontainers.pool.RunningContainerPool;
-import com.link_intersystems.dbunit.testcontainers.pool.SingleRunningContainerPool;
+import com.link_intersystems.dbunit.testcontainers.pool.JdbcContainerPool;
+import com.link_intersystems.dbunit.testcontainers.pool.SingleJdbcContainerPool;
 
 import static java.util.Objects.requireNonNull;
 
@@ -19,7 +19,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class TestcontainersMigrationDataSetPipeFactory implements MigrationDataSetPipeFactory {
 
-    private RunningContainerPool runningContainerPool;
+    private JdbcContainerPool runningContainerPool;
 
     private MigrationPipeCustomizationFactory migrationPipeCustomizationFactory;
 
@@ -28,10 +28,10 @@ public class TestcontainersMigrationDataSetPipeFactory implements MigrationDataS
     }
 
     public TestcontainersMigrationDataSetPipeFactory(DatabaseContainerSupport databaseContainerSupport) {
-        this(new SingleRunningContainerPool(new DBunitJdbcContainer(databaseContainerSupport.create(), databaseContainerSupport.getDatabaseConfig())));
+        this(new SingleJdbcContainerPool(new DBunitJdbcContainer(databaseContainerSupport.create(), databaseContainerSupport.getDatabaseConfig())));
     }
 
-    public TestcontainersMigrationDataSetPipeFactory(RunningContainerPool runningContainerPool) {
+    public TestcontainersMigrationDataSetPipeFactory(JdbcContainerPool runningContainerPool) {
         this.runningContainerPool = requireNonNull(runningContainerPool);
         setMigrationPipeCustomizationFactory(() -> new SkipExistingDatabaseEntitiesMigrationPipeCustomization());
     }

@@ -1,26 +1,25 @@
 package com.link_intersystems.dbunit.testcontainers.pool;
 
 import com.link_intersystems.dbunit.testcontainers.DBunitJdbcContainer;
+import com.link_intersystems.dbunit.testcontainers.JdbcContainer;
 import com.link_intersystems.dbunit.testcontainers.RunningContainer;
 import org.dbunit.dataset.DataSetException;
-
-import java.util.function.Supplier;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class SingleRunningContainerPool implements RunningContainerPool {
+public class SingleJdbcContainerPool implements JdbcContainerPool {
 
     private DBunitJdbcContainer dBunitJdbcContainer;
 
     private RunningContainer runningContainer;
 
-    public SingleRunningContainerPool(DBunitJdbcContainer dBunitJdbcContainer) {
+    public SingleJdbcContainerPool(DBunitJdbcContainer dBunitJdbcContainer) {
         this.dBunitJdbcContainer = dBunitJdbcContainer;
     }
 
     @Override
-    public synchronized RunningContainer borrowContainer() throws DataSetException {
+    public synchronized JdbcContainer borrowContainer() throws DataSetException {
         while (runningContainer != null) {
             try {
                 this.wait();
@@ -34,9 +33,9 @@ public class SingleRunningContainerPool implements RunningContainerPool {
     }
 
     @Override
-    public synchronized void returnContainer(RunningContainer runningContainer) {
-        if (runningContainer != this.runningContainer) {
-            throw new IllegalArgumentException("runningContainer is not an instance of this pool");
+    public synchronized void returnContainer(JdbcContainer jdbcContainer) {
+        if (jdbcContainer != runningContainer) {
+            throw new IllegalArgumentException("jdbcContainer is not an instance of this pool");
         }
 
         runningContainer.stop();
