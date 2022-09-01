@@ -9,8 +9,6 @@ import com.link_intersystems.dbunit.testcontainers.pool.SingleRunningContainerPo
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 
-import java.util.function.Supplier;
-
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -21,13 +19,11 @@ public class TestContainersLifecycleConsumer extends DefaultChainableDataSetCons
     private RunningContainer runningContainer;
 
     public TestContainersLifecycleConsumer(DatabaseContainerSupport databaseContainerSupport) {
-        this(() -> new DBunitJdbcContainer(databaseContainerSupport.create(), databaseContainerSupport.getDatabaseConfig()));
+        this(new DBunitJdbcContainer(databaseContainerSupport.create(), databaseContainerSupport.getDatabaseConfig()));
     }
 
-    public TestContainersLifecycleConsumer(Supplier<DBunitJdbcContainer> dBunitJdbcContainerSupplier) {
-        this.runningContainerPool = new SingleRunningContainerPool(
-                dBunitJdbcContainerSupplier
-        );
+    public TestContainersLifecycleConsumer(DBunitJdbcContainer dBunitJdbcContainer) {
+        this(new SingleRunningContainerPool(dBunitJdbcContainer));
     }
 
     public TestContainersLifecycleConsumer(RunningContainerPool runningContainerPool) {

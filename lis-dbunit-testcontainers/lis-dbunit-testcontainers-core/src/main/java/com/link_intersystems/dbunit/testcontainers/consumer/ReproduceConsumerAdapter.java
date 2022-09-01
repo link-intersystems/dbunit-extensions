@@ -2,21 +2,21 @@ package com.link_intersystems.dbunit.testcontainers.consumer;
 
 import com.link_intersystems.dbunit.stream.consumer.ChainableDataSetConsumer;
 import com.link_intersystems.dbunit.stream.consumer.RowFilterConsumer;
+import com.link_intersystems.dbunit.stream.producer.db.DatabaseDataSetProducer;
 import com.link_intersystems.dbunit.table.IRowFilterFactory;
 import com.link_intersystems.dbunit.testcontainers.JdbcContainer;
-import org.dbunit.database.DatabaseDataSet;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITableMetaData;
-import org.dbunit.dataset.stream.DataSetProducerAdapter;
 import org.dbunit.dataset.stream.IDataSetConsumer;
+import org.dbunit.dataset.stream.IDataSetProducer;
 
 import java.sql.SQLException;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class DatabaseDataSetConsumerAdapter extends DefaultContainerAwareDataSetConsumer implements ChainableDataSetConsumer {
+public class ReproduceConsumerAdapter extends DefaultContainerAwareDataSetConsumer implements ChainableDataSetConsumer {
 
     private IRowFilterFactory rowFilterFactory;
 
@@ -51,19 +51,14 @@ public class DatabaseDataSetConsumerAdapter extends DefaultContainerAwareDataSet
     }
 
     protected void processResult(IDatabaseConnection databaseConnection, IDataSetConsumer resultConsumer) throws SQLException, DataSetException {
-        DatabaseDataSet databaseDataSet = createDataSet(databaseConnection);
-        DataSetProducerAdapter dataSetProducerAdapter = new DataSetProducerAdapter(databaseDataSet);
+        IDataSetProducer dataSetProducer = new DatabaseDataSetProducer(databaseConnection);
 
         RowFilterConsumer rowFilterConsumer = new RowFilterConsumer();
         rowFilterConsumer.setRowFilterFactory(rowFilterFactory);
         rowFilterConsumer.setSubsequentConsumer(resultConsumer);
         IDataSetConsumer effectiveConsumer = rowFilterConsumer;
 
-        dataSetProducerAdapter.setConsumer(effectiveConsumer);
-        dataSetProducerAdapter.produce();
-    }
-
-    protected DatabaseDataSet createDataSet(IDatabaseConnection databaseConnection) throws SQLException {
-        return new DatabaseDataSet(databaseConnection, false);
+        dataSetProducer.setConsumer(effectiveConsumer);
+        dataSetProducer.produce();
     }
 }

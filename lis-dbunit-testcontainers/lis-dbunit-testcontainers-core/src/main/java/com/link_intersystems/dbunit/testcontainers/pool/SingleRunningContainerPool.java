@@ -11,12 +11,12 @@ import java.util.function.Supplier;
  */
 public class SingleRunningContainerPool implements RunningContainerPool {
 
-    private Supplier<DBunitJdbcContainer> dBunitJdbcContainerSupplier;
+    private DBunitJdbcContainer dBunitJdbcContainer;
 
     private RunningContainer runningContainer;
 
-    public SingleRunningContainerPool(Supplier<DBunitJdbcContainer> dBunitJdbcContainerSupplier) {
-        this.dBunitJdbcContainerSupplier = dBunitJdbcContainerSupplier;
+    public SingleRunningContainerPool(DBunitJdbcContainer dBunitJdbcContainer) {
+        this.dBunitJdbcContainer = dBunitJdbcContainer;
     }
 
     @Override
@@ -29,7 +29,6 @@ public class SingleRunningContainerPool implements RunningContainerPool {
             }
         }
 
-        DBunitJdbcContainer dBunitJdbcContainer = dBunitJdbcContainerSupplier.get();
         runningContainer = dBunitJdbcContainer.start();
         return runningContainer;
     }
