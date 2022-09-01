@@ -18,7 +18,7 @@ import com.link_intersystems.dbunit.table.TableOrder;
 import com.link_intersystems.dbunit.test.TinySakilaDataSetFiles;
 import com.link_intersystems.dbunit.testcontainers.DBunitJdbcContainer;
 import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
-import com.link_intersystems.dbunit.testcontainers.commons.CommonsRunningContainerPool;
+import com.link_intersystems.dbunit.testcontainers.commons.CommonsJdbcContainerPool;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
@@ -63,7 +63,7 @@ class DataSetCollectionFlywayMigrationTest {
     void migrateDataSetCollection() throws DataSetException {
         List<DataSetResource> dataSetResources = fileResourcesSupplier.getDataSetResources();
 
-        CommonsRunningContainerPool runningContainerPool = CommonsRunningContainerPool.createPool(() -> {
+        CommonsJdbcContainerPool runningContainerPool = CommonsJdbcContainerPool.createPool(() -> {
             DatabaseContainerSupport databaseContainerSupport = DatabaseContainerSupport.getDatabaseContainerSupport("postgres:latest");
             return new DBunitJdbcContainer(databaseContainerSupport.create(), databaseContainerSupport.getDatabaseConfig());
         }, dataSetResources.size());

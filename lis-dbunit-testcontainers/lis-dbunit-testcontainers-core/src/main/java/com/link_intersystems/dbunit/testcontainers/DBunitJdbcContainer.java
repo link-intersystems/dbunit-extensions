@@ -16,11 +16,18 @@ import static org.dbunit.database.DatabaseConfig.*;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class DBunitJdbcContainer {
+public class DBunitJdbcContainer implements JdbcContainer {
+
+    private static interface RunningContainer extends JdbcContainer {
+
+        void stop();
+
+    }
 
 
     private final JdbcDatabaseContainer<?> jdbcDatabaseContainer;
     private DatabaseConfig dbunitConfig;
+    private RunningContainer runningContainer;
 
     public DBunitJdbcContainer(DatabaseContainerSupport databaseContainerSupport) {
         this(databaseContainerSupport.create(), databaseContainerSupport.getDatabaseConfig());
@@ -35,7 +42,11 @@ public class DBunitJdbcContainer {
         this.dbunitConfig = requireNonNull(dbunitConfig);
     }
 
-    public RunningContainer start() throws DataSetException {
+    public void start() throws DataSetException {
+        if (isRunning()) {
+            return;
+        }
+
         jdbcDatabaseContainer.start();
 
         DatabaseContainerDataSource dataSource = new DatabaseContainerDataSource(jdbcDatabaseContainer);
@@ -44,10 +55,47 @@ public class DBunitJdbcContainer {
             DatabaseConfig databaseConfig = databaseConnection.getConfig();
             applyContainerSupportConfig(dbunitConfig, databaseConfig);
 
-            return createRunningContainer(jdbcDatabaseContainer, dataSource, databaseConnection);
+            runningContainer = createRunningContainer(jdbcDatabaseContainer, dataSource, databaseConnection);
         } catch (DatabaseUnitException | SQLException e) {
             throw new DataSetException(e);
         }
+    }
+
+    public boolean isRunning() {
+        return runningContainer != null;
+    }
+
+    public void stop() {
+        if (isStopped()) {
+            return;
+        }
+
+        try {
+            runningContainer.stop();
+        } finally {
+            runningContainer = null;
+        }
+    }
+
+    public boolean isStopped() {
+        return runningContainer == null;
+    }
+
+    @Override
+    public DataSource getDataSource() {
+        if (isStopped()) {
+            throw new RuntimeException("Container stopped");
+        }
+
+        return runningContainer.getDataSource();
+    }
+
+    @Override
+    public IDatabaseConnection getDatabaseConnection() {
+        if (isStopped()) {
+            throw new RuntimeException("Container stopped");
+        }
+        return runningContainer.getDatabaseConnection();
     }
 
     protected void applyContainerSupportConfig(DatabaseConfig containerSupportConfig, DatabaseConfig databaseConfig) {
@@ -77,27 +125,16 @@ public class DBunitJdbcContainer {
 
             @Override
             public DataSource getDataSource() {
-                if (isStopped()) {
-                    throw new RuntimeException("Container stopped");
-                }
-
                 return containerDataSource;
             }
 
             @Override
             public IDatabaseConnection getDatabaseConnection() {
-                if (isStopped()) {
-                    throw new RuntimeException("Container stopped");
-                }
                 return databaseConnection;
             }
 
             @Override
             public void stop() {
-                if (isStopped()) {
-                    return;
-                }
-
                 try {
                     containerDataSource.close();
                     containerDataSource = null;
@@ -105,11 +142,6 @@ public class DBunitJdbcContainer {
                     container.stop();
                     container = null;
                 }
-            }
-
-            @Override
-            public boolean isStopped() {
-                return container == null;
             }
         };
     }
