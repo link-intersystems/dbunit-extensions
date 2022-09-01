@@ -3,17 +3,19 @@ package com.link_intersystems.dbunit.testcontainers.consumer;
 import com.link_intersystems.dbunit.testcontainers.JdbcContainer;
 
 import java.lang.ref.WeakReference;
+import java.util.Stack;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 public class JdbcContainerHolder {
 
-    private static ThreadLocal<WeakReference<JdbcContainer>> HOLDER = new ThreadLocal();
 
+    private static ThreadLocal<Stack<WeakReference<JdbcContainer>>> HOLDER = ThreadLocal.withInitial(() -> new Stack<>());
 
     public static JdbcContainer get() {
-        WeakReference<JdbcContainer> reference = HOLDER.get();
+        Stack<WeakReference<JdbcContainer>> stack = HOLDER.get();
+        WeakReference<JdbcContainer> reference = stack.peek();
         if (reference == null) {
             return null;
         }
@@ -21,11 +23,15 @@ public class JdbcContainerHolder {
     }
 
     public static void set(JdbcContainer jdbcContainer) {
-        HOLDER.set(new WeakReference<>(jdbcContainer));
+        Stack<WeakReference<JdbcContainer>> stack = HOLDER.get();
+        stack.push(new WeakReference<>(jdbcContainer));
     }
 
 
     public static void remove() {
-        HOLDER.remove();
+        Stack<WeakReference<JdbcContainer>> stack = HOLDER.get();
+        if (!stack.isEmpty()) {
+            stack.pop();
+        }
     }
 }
