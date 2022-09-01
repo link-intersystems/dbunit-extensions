@@ -16,7 +16,7 @@ import java.sql.SQLException;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class ReproduceConsumerAdapter extends DefaultContainerAwareDataSetConsumer implements ChainableDataSetConsumer {
+public class ReproduceConsumerAdapter extends JdbcContainerAwareDataSetConsumer implements ChainableDataSetConsumer {
 
     private IRowFilterFactory rowFilterFactory;
 

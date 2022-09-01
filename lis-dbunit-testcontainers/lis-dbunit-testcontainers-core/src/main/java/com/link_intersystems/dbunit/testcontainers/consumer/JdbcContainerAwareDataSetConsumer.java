@@ -4,37 +4,26 @@ import com.link_intersystems.dbunit.stream.consumer.DefaultChainableDataSetConsu
 import com.link_intersystems.dbunit.testcontainers.JdbcContainer;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.stream.IDataSetConsumer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static java.text.MessageFormat.format;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class DefaultContainerAwareDataSetConsumer extends DefaultChainableDataSetConsumer implements ContainerAwareDataSetConsumer {
-
-    private Logger logger = LoggerFactory.getLogger(DefaultContainerAwareDataSetConsumer.class);
-
-    private JdbcContainer jdbcContainer;
+public class JdbcContainerAwareDataSetConsumer extends DefaultChainableDataSetConsumer implements IDataSetConsumer {
 
     private ThreadLocal<Boolean> endlessRecursionDetector = new ThreadLocal<>();
 
     @Override
-    public final void containerStarted(JdbcContainer jdbcContainer) {
-        this.jdbcContainer = jdbcContainer;
-    }
-
-    @Override
     public final void startDataSet() throws DataSetException {
+        JdbcContainer jdbcContainer = getJdbcContainer();
         if (jdbcContainer == null) {
-            String jdbcContainerName = JdbcContainer.class.getSimpleName();
-            String containerAwareClassName = ContainerAwareDataSetConsumer.class.getName();
+            String jdbcContainerClassName = JdbcContainer.class.getSimpleName();
             String testContainerConsumerClassName = TestContainersLifecycleConsumer.class.getName();
-            String msg = format("{0} is null. A {1} must be used in a context that supports {1}, like the {2}",
-                    jdbcContainerName,
-                    containerAwareClassName,
-                    testContainerConsumerClassName
+            String msg = format("{0} is null. Ensure that a {0} is available through the {1}. Usually set by {2}",
+                    jdbcContainerClassName,
+                    JdbcContainerHolder.class.getSimpleName(),
+                    TestContainersLifecycleConsumer.class.getSimpleName()
             );
             throw new DataSetException(msg);
         }
@@ -56,25 +45,13 @@ public class DefaultContainerAwareDataSetConsumer extends DefaultChainableDataSe
         }
     }
 
-
-    public JdbcContainer getJdbcContainer() {
-        return jdbcContainer;
+    protected JdbcContainer getJdbcContainer() {
+        return JdbcContainerHolder.get();
     }
+
 
     protected void startDataSet(JdbcContainer jdbcContainer) throws DataSetException {
-        startDataSetInternal(jdbcContainer);
-    }
-
-    private void startDataSetInternal(JdbcContainer jdbcContainer) throws DataSetException {
-        IDataSetConsumer delegate = getDelegate();
-
-        if (delegate instanceof ContainerAwareDataSetConsumer) {
-            ContainerAwareDataSetConsumer containerAwareDataSetConsumer = (ContainerAwareDataSetConsumer) delegate;
-            containerAwareDataSetConsumer.containerStarted(jdbcContainer);
-        }
-
         super.startDataSet();
     }
-
 
 }

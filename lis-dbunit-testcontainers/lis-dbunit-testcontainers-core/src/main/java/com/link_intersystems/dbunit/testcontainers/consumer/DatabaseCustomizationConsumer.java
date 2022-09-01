@@ -7,7 +7,7 @@ import org.dbunit.dataset.DataSetException;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class DatabaseCustomizationConsumer extends DefaultContainerAwareDataSetConsumer implements ChainableDataSetConsumer {
+public class DatabaseCustomizationConsumer extends JdbcContainerAwareDataSetConsumer implements ChainableDataSetConsumer {
 
     @Override
     public void startDataSet(JdbcContainer jdbcContainer) throws DataSetException {

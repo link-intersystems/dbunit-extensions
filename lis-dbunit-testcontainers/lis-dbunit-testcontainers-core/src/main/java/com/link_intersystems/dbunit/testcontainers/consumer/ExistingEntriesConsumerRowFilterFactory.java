@@ -22,7 +22,7 @@ import java.util.*;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class ExistingEntriesConsumerRowFilterFactory extends DefaultContainerAwareDataSetConsumer implements ChainableDataSetConsumer, IRowFilterFactory {
+public class ExistingEntriesConsumerRowFilterFactory extends JdbcContainerAwareDataSetConsumer implements ChainableDataSetConsumer, IRowFilterFactory {
 
     private Map<String, Collection<PrimaryKey>> primaryKeysByTableName = new HashMap<>();
     private Map<String, ITableMetaData> metaDataByTableName = new HashMap<>();
@@ -49,6 +49,7 @@ public class ExistingEntriesConsumerRowFilterFactory extends DefaultContainerAwa
     private void getExistingPrimaryKeys(ITableMetaData pkMetaData) throws DataSetException {
         DatabaseDataSetProducerConfig config = new DatabaseDataSetProducerConfig();
         config.setTableFilter(tableName -> pkMetaData.getTableName().equals(tableName));
+
         DatabaseDataSetProducer dataSetProducer = new DatabaseDataSetProducer(getJdbcContainer().getDatabaseConnection(), config);
 
         Collection<PrimaryKey> primaryKeys = getPrimaryKeys(pkMetaData);

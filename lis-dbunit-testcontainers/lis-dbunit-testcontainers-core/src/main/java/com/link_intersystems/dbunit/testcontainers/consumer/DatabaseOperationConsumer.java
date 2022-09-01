@@ -14,7 +14,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class DatabaseOperationConsumer extends DefaultContainerAwareDataSetConsumer implements ChainableDataSetConsumer {
+public class DatabaseOperationConsumer extends JdbcContainerAwareDataSetConsumer implements ChainableDataSetConsumer {
 
     private DatabaseOperation databaseOperation = DatabaseOperation.INSERT;
     private DefaultTable rowCache;

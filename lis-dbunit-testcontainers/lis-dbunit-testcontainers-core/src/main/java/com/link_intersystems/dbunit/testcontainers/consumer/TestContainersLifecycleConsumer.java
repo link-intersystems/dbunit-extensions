@@ -33,12 +33,7 @@ public class TestContainersLifecycleConsumer extends DefaultChainableDataSetCons
     @Override
     public void startDataSet() throws DataSetException {
         jdbcContainer = jdbcContainerPool.borrowContainer();
-
-        IDataSetConsumer delegate = getDelegate();
-        if (delegate instanceof ContainerAwareDataSetConsumer) {
-            ContainerAwareDataSetConsumer containerAwareDataSetConsumer = (ContainerAwareDataSetConsumer) delegate;
-            containerAwareDataSetConsumer.containerStarted(jdbcContainer);
-        }
+        JdbcContainerHolder.set(jdbcContainer);
 
         super.startDataSet();
     }
@@ -48,6 +43,7 @@ public class TestContainersLifecycleConsumer extends DefaultChainableDataSetCons
         try {
             super.endDataSet();
         } finally {
+            JdbcContainerHolder.remove();
             jdbcContainerPool.returnContainer(jdbcContainer);
         }
     }
