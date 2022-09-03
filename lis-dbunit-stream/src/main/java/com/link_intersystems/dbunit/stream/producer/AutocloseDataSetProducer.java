@@ -26,8 +26,8 @@ public class AutocloseDataSetProducer implements AutoCloseable, IDataSetProducer
 
         @Override
         public void endDataSet() throws DataSetException {
-            super.endDataSet();
             endDataSet = true;
+            super.endDataSet();
         }
 
         @Override
