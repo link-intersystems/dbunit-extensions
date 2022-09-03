@@ -1,5 +1,6 @@
 package com.link_intersystems.dbunit.stream.consumer;
 
+import com.link_intersystems.dbunit.meta.TableMetaDataBuilder;
 import com.link_intersystems.dbunit.stream.producer.DefaultDataSetProducerSupport;
 import com.link_intersystems.dbunit.table.TableOrder;
 import org.dbunit.dataset.DataSetException;
@@ -55,7 +56,8 @@ public class ExternalSortTableConsumer extends DefaultChainableDataSetConsumer i
 
     @Override
     public void startTable(ITableMetaData iTableMetaData) throws DataSetException {
-        sourceTableMetaData.put(iTableMetaData.getTableName(), iTableMetaData);
+        TableMetaDataBuilder tableMetaDataBuilder = new TableMetaDataBuilder(iTableMetaData);
+        sourceTableMetaData.put(iTableMetaData.getTableName(), tableMetaDataBuilder.build());
         tempDataSetConsumer.startTable(iTableMetaData);
     }
 
