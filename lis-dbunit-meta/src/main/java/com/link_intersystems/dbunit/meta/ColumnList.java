@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.table;
+package com.link_intersystems.dbunit.meta;
 
 import org.dbunit.dataset.Column;
 
@@ -8,9 +8,6 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static com.link_intersystems.dbunit.table.ColumnPredicates.byName;
-import static com.link_intersystems.dbunit.table.ColumnPredicates.byNameIgnoreCase;
-
 /**
  * A {@link ColumnList} provides filter and query methods for a list of {@link Column}s.
  *
@@ -18,6 +15,7 @@ import static com.link_intersystems.dbunit.table.ColumnPredicates.byNameIgnoreCa
  */
 public class ColumnList extends AbstractList<Column> {
 
+    public static final Column[] EMPTY_COLUMN_ARRAY = new Column[0];
     private List<Column> columns;
 
     public ColumnList(Column... columns) {
@@ -44,7 +42,7 @@ public class ColumnList extends AbstractList<Column> {
      * @param caseSensitive ignore name's case.
      */
     public Column getColumn(String name, boolean caseSensitive) {
-        Predicate<Column> columnPredicate = caseSensitive ? byNameIgnoreCase(name) : byName(name);
+        Predicate<Column> columnPredicate = caseSensitive ? ColumnPredicates.byNameIgnoreCase(name) : ColumnPredicates.byName(name);
         return filter(columnPredicate).findFirst().orElse(null);
     }
 
@@ -65,5 +63,18 @@ public class ColumnList extends AbstractList<Column> {
     @Override
     public int size() {
         return columns.size();
+    }
+
+    public Column[] toArray() {
+        return super.toArray(EMPTY_COLUMN_ARRAY);
+    }
+
+    public ColumnList copy() {
+        ColumnListBuilder columnListBuilder = new ColumnListBuilder(this);
+        return columnListBuilder.build();
+    }
+
+    public String[] toColumnNames() {
+        return stream().map(Column::getColumnName).toArray(String[]::new);
     }
 }

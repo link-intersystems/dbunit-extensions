@@ -1,7 +1,7 @@
 package com.link_intersystems.dbunit.dataset.beans;
 
 import com.link_intersystems.beans.*;
-import com.link_intersystems.dbunit.table.ColumnList;
+import com.link_intersystems.dbunit.meta.ColumnList;
 import com.link_intersystems.dbunit.dataset.beans.fixtures.PrimitiveTypesBean;
 import com.link_intersystems.test.ComponentTest;
 import org.dbunit.dataset.Column;

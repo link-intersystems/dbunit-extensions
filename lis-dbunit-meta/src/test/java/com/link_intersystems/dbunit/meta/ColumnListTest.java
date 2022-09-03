@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.table;
+package com.link_intersystems.dbunit.meta;
 
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.datatype.DataType;
@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@UnitTest
 class ColumnListTest {
 
     private ColumnList columnList;
@@ -46,5 +45,16 @@ class ColumnListTest {
     @Test
     void size() {
         assertEquals(2, columnList.size());
+    }
+
+
+    @Test
+    void copy() {
+        assertEquals(columnList, columnList.copy());
+    }
+
+    @Test
+    void toArray() {
+        assertArrayEquals(new Column[]{col1, col2}, columnList.toArray());
     }
 }

@@ -1,7 +1,7 @@
 package com.link_intersystems.dbunit.stream.consumer;
 
 import com.link_intersystems.dbunit.table.IRowFilterFactory;
-import com.link_intersystems.dbunit.table.TableMetaDataUtil;
+import com.link_intersystems.dbunit.meta.TableMetaDataUtil;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IRowValueProvider;
 import org.dbunit.dataset.ITableMetaData;

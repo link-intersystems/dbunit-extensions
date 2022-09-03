@@ -1,5 +1,6 @@
-package com.link_intersystems.dbunit.table;
+package com.link_intersystems.dbunit.meta;
 
+import com.link_intersystems.dbunit.meta.ColumnBuilder;
 import com.link_intersystems.dbunit.test.TestDataSets;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;

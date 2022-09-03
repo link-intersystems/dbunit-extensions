@@ -1,7 +1,8 @@
-package com.link_intersystems.dbunit.table;
+package com.link_intersystems.dbunit.meta;
 
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;
+import org.dbunit.dataset.DefaultTableMetaData;
 import org.dbunit.dataset.ITableMetaData;
 
 import java.util.Arrays;
@@ -71,4 +72,32 @@ public class TableMetaDataUtil {
     public int indexOf(String columnName) throws DataSetException {
         return getColumnNames().indexOf(columnName);
     }
+
+    public ITableMetaData copy(ITableMetaData metaData) throws DataSetException {
+        String tableName = metaData.getTableName();
+        Column[] columns = copyColumns(metaData.getColumns());
+        Column[] primaryKeys = getPrimaryKeys(columns, metaData.getPrimaryKeys());
+        return new DefaultTableMetaData(tableName, columns, primaryKeys);
+    }
+
+    private Column[] getPrimaryKeys(Column[] columns, Column[] primaryKeys) {
+        List<String> pkColNames = Arrays.stream(primaryKeys).map(Column::getColumnName).collect(Collectors.toList());
+        return Arrays.stream(columns).filter(c -> pkColNames.contains(c.getColumnName())).toArray(Column[]::new);
+    }
+
+    private Column[] copyColumns(Column[] columns) {
+        return Arrays.stream(columns)
+                .map(c -> new Column(
+                                c.getColumnName(),
+                                c.getDataType(),
+                                c.getSqlTypeName(),
+                                c.getNullable(),
+                                c.getDefaultValue(),
+                                c.getRemarks(),
+                                c.getAutoIncrement()
+                        )
+                ).toArray(Column[]::new);
+    }
+
+
 }

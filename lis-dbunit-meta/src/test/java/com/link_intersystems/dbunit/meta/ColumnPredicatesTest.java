@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.table;
+package com.link_intersystems.dbunit.meta;
 
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.datatype.DataType;
@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-@UnitTest
 class ColumnPredicatesTest {
 
     private Column column1;

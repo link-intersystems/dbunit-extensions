@@ -1,5 +1,6 @@
 package com.link_intersystems.dbunit.table;
 
+import com.link_intersystems.dbunit.meta.ColumnBuilder;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.datatype.DataType;
 import org.dbunit.dataset.datatype.TypeCastException;

@@ -1,5 +1,6 @@
 package com.link_intersystems.dbunit.table;
 
+import com.link_intersystems.dbunit.meta.TableMetaDataUtil;
 import com.link_intersystems.util.Serialization;
 import org.dbunit.dataset.*;
 import org.dbunit.dataset.datatype.DataType;

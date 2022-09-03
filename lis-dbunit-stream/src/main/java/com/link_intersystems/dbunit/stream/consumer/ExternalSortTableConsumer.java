@@ -12,9 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * A memory saving streaming {@link IDataSetConsumer} that temporarily save the tables to a temp directory, loads them
@@ -30,18 +28,23 @@ public class ExternalSortTableConsumer extends DefaultChainableDataSetConsumer i
     private IDataSetConsumer tempDataSetConsumer;
     private File tempDir;
 
+    private Map<String, ITableMetaData> sourceTableMetaData;
+
     public ExternalSortTableConsumer(TableOrder tableOrder) {
         this.tableOrder = Objects.requireNonNull(tableOrder);
     }
 
     @Override
     public void startDataSet() throws DataSetException {
+        sourceTableMetaData = new HashMap<>();
+
         try {
             tempDir = createTempDirectory();
             tempDir.deleteOnExit();
             DefaultDataSetConsumerSupport defaultDataSetConsumerSupport = new DefaultDataSetConsumerSupport();
             defaultDataSetConsumerSupport.setCsvConsumer(tempDir);
             tempDataSetConsumer = defaultDataSetConsumerSupport.getDataSetConsumer();
+
         } catch (IOException e) {
             throw new DataSetException(e);
         }
@@ -52,6 +55,7 @@ public class ExternalSortTableConsumer extends DefaultChainableDataSetConsumer i
 
     @Override
     public void startTable(ITableMetaData iTableMetaData) throws DataSetException {
+        sourceTableMetaData.put(iTableMetaData.getTableName(), iTableMetaData);
         tempDataSetConsumer.startTable(iTableMetaData);
     }
 
@@ -79,9 +83,12 @@ public class ExternalSortTableConsumer extends DefaultChainableDataSetConsumer i
             defaultDataSetProducerSupport.setCsvProducer(tempDir);
             IDataSetProducer dataSetProducer = defaultDataSetProducerSupport.getDataSetProducer();
 
-            dataSetProducer.setConsumer(getDelegate());
+            TableMetaDataReplacementConsumer tableMetaDataReplacementConsumer = new TableMetaDataReplacementConsumer(sourceTableMetaData::get);
+            tableMetaDataReplacementConsumer.setSubsequentConsumer(getDelegate());
+            dataSetProducer.setConsumer(tableMetaDataReplacementConsumer);
             dataSetProducer.produce();
         } finally {
+            sourceTableMetaData = null;
             try {
                 close();
             } catch (IOException e) {

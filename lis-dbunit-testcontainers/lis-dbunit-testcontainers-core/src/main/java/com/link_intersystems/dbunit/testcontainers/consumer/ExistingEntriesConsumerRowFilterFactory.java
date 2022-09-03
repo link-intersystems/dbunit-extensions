@@ -3,7 +3,7 @@ package com.link_intersystems.dbunit.testcontainers.consumer;
 import com.link_intersystems.dbunit.stream.consumer.ChainableDataSetConsumer;
 import com.link_intersystems.dbunit.stream.producer.db.DatabaseDataSetProducer;
 import com.link_intersystems.dbunit.stream.producer.db.DatabaseDataSetProducerConfig;
-import com.link_intersystems.dbunit.table.ColumnBuilder;
+import com.link_intersystems.dbunit.meta.ColumnBuilder;
 import com.link_intersystems.dbunit.table.IRowFilterFactory;
 import com.link_intersystems.dbunit.table.PrimaryKey;
 import com.link_intersystems.dbunit.testcontainers.JdbcContainer;

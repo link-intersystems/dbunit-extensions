@@ -1,5 +1,6 @@
-package com.link_intersystems.dbunit.table;
+package com.link_intersystems.dbunit.meta;
 
+import com.link_intersystems.dbunit.meta.TableMetaDataUtil;
 import com.link_intersystems.dbunit.test.TestDataSets;
 import org.dbunit.dataset.*;
 import org.junit.jupiter.api.BeforeEach;
