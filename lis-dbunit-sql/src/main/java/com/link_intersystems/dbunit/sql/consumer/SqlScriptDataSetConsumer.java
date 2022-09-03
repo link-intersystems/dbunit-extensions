@@ -1,32 +1,29 @@
 package com.link_intersystems.dbunit.sql.consumer;
 
-import com.link_intersystems.dbunit.sql.statement.InsertSqlBuilder;
-import com.link_intersystems.sql.dialect.SqlDialect;
+import com.link_intersystems.dbunit.sql.statement.InsertSqlFactory;
 import com.link_intersystems.sql.format.SqlFormatSettings;
-import com.link_intersystems.sql.format.SqlFormatter;
-import org.dbunit.dataset.ITableMetaData;
 
 import java.io.PrintWriter;
 import java.io.Writer;
 
-public class SqlScriptWriter extends AbstractSqlScriptDataSetConsumer {
+public class SqlScriptDataSetConsumer extends AbstractSqlScriptDataSetConsumer {
 
     private PrintWriter writer;
     private SqlFormatSettings sqlFormatSettings = new SqlFormatSettings();
 
 
-    public SqlScriptWriter(SqlDialect sqlDialect, Writer writer) {
-        this(new InsertSqlBuilder(sqlDialect), writer);
+    public SqlScriptDataSetConsumer(Writer writer) {
+        this(new InsertSqlFactory(), writer);
     }
 
-    public SqlScriptWriter(InsertSqlBuilder insertSqlBuilder, Writer writer) {
-        super(insertSqlBuilder);
+    public SqlScriptDataSetConsumer(InsertSqlFactory insertSqlFactory, Writer writer) {
+        super(insertSqlFactory);
         this.writer = new PrintWriter(writer);
     }
 
 
     @Override
-    protected void insertRow(String insertSql) {
+    protected void addInsertSql(String insertSql) {
         writer.append(insertSql);
 
         String statementSeparator = sqlFormatSettings.getStatementSeparator();

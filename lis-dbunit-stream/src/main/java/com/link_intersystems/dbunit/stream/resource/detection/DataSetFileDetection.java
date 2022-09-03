@@ -1,7 +1,7 @@
 package com.link_intersystems.dbunit.stream.resource.detection;
 
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
-import com.link_intersystems.dbunit.stream.resource.file.DataSetFileConfig;
+import com.link_intersystems.util.config.properties.ConfigProperties;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import static java.util.stream.Collectors.toList;
 public class DataSetFileDetection {
 
     private List<DataSetFileDetector> detectors;
-    private DataSetFileConfig dataSetFileConfig = new DataSetFileConfig();
+    private ConfigProperties configProperties = new ConfigProperties();
 
     /**
      * @param detectors the {@link DataSetFileDetector}s to use. If none are set (null is the default)
@@ -28,8 +28,8 @@ public class DataSetFileDetection {
         this.detectors = detectors;
     }
 
-    public void setDataSetFileConfig(DataSetFileConfig dataSetFileConfig) {
-        this.dataSetFileConfig = requireNonNull(dataSetFileConfig);
+    public void setConfigProperties(ConfigProperties configProperties) {
+        this.configProperties = requireNonNull(configProperties);
     }
 
     private List<DataSetFileDetector> getDetectors() {
@@ -42,7 +42,7 @@ public class DataSetFileDetection {
         dataSetDetectorsLoader.forEach(providers::add);
 
         return providers.stream()
-                .map(p -> p.getDataSetFileDetector(dataSetFileConfig))
+                .map(p -> p.getDataSetFileDetector(configProperties))
                 .collect(toList());
     }
 

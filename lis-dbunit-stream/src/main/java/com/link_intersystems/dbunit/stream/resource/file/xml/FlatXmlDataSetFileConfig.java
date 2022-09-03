@@ -1,12 +1,15 @@
 package com.link_intersystems.dbunit.stream.resource.file.xml;
 
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFileConfig;
+import com.link_intersystems.util.config.properties.ConfigProperty;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public interface FlatXmlDataSetFileConfig {
+public interface FlatXmlDataSetFileConfig extends DataSetFileConfig {
 
-    public static final DataSetFileConfig.ConfigProperty<Boolean> COLUMN_SENSING_PROPERTY = new DataSetFileConfig.ConfigProperty<>(Boolean.class, false);
+    public static final ConfigProperty<Boolean> COLUMN_SENSING = ConfigProperty.named("columnSensing").withDefaultValue(false);
+
+    public boolean isColumnSensing();
 
 }

@@ -1,28 +1,27 @@
 package com.link_intersystems.dbunit.sql.consumer;
 
-import com.link_intersystems.dbunit.sql.statement.InsertSqlBuilder;
-import com.link_intersystems.sql.dialect.SqlDialect;
+import com.link_intersystems.dbunit.sql.statement.InsertSqlFactory;
 import com.link_intersystems.sql.format.SqlFormatSettings;
 import com.link_intersystems.sql.format.SqlFormatter;
+import com.link_intersystems.sql.statement.InsertSql;
+import com.link_intersystems.sql.statement.TableLiteralFormat;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITableMetaData;
 import org.dbunit.dataset.stream.DefaultConsumer;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 public abstract class AbstractSqlScriptDataSetConsumer extends DefaultConsumer {
 
     private SqlFormatSettings sqlFormatSettings = new SqlFormatSettings();
-    private ITableMetaData currMetaData;
-    private InsertSqlBuilder insertSqlBuilder;
+    private ITableMetaData tableMetaData;
+    private InsertSqlFactory insertSqlFactory;
+    private TableLiteralFormatResolver tableLiteralFormatResolver = new DefaultTableLiteralFormatResolver();
 
+    private TableLiteralFormat tableLiteralFormat;
 
-    public AbstractSqlScriptDataSetConsumer(SqlDialect sqlDialect) {
-        this(new InsertSqlBuilder(sqlDialect));
-    }
-
-    public AbstractSqlScriptDataSetConsumer(InsertSqlBuilder insertSqlBuilder) {
-        this.insertSqlBuilder = insertSqlBuilder;
+    public AbstractSqlScriptDataSetConsumer(InsertSqlFactory insertSqlFactory) {
+        this.insertSqlFactory = requireNonNull(insertSqlFactory);
     }
 
     public SqlFormatSettings getSqlFormatSettings() {
@@ -30,31 +29,38 @@ public abstract class AbstractSqlScriptDataSetConsumer extends DefaultConsumer {
     }
 
     public void setSqlFormatSettings(SqlFormatSettings sqlFormatSettings) {
-        this.sqlFormatSettings = Objects.requireNonNull(sqlFormatSettings);
+        this.sqlFormatSettings = requireNonNull(sqlFormatSettings);
+    }
+
+    public void setTableLiteralFormatResolver(TableLiteralFormatResolver tableLiteralFormatResolver) {
+        this.tableLiteralFormatResolver = requireNonNull(tableLiteralFormatResolver);
     }
 
     public void setSchema(String schema) {
-        insertSqlBuilder.setSchema(schema);
+        insertSqlFactory.setSchema(schema);
     }
 
     @Override
     public void startTable(ITableMetaData iTableMetaData) throws DataSetException {
-        this.currMetaData = iTableMetaData;
+        this.tableMetaData = iTableMetaData;
+        tableLiteralFormat = tableLiteralFormatResolver.getTableLiteralFormat(tableMetaData);
     }
 
     @Override
     public void row(Object[] values) throws DataSetException {
-        String insertSql = insertSqlBuilder.createInsertSql(currMetaData, values);
-        SqlFormatSettings sqlFormatSettings = getSqlFormatSettings();
+        InsertSql insertSql = insertSqlFactory.createInsertSql(tableMetaData, values);
 
-        String formattedSql = formatSql(insertSql);
-        insertRow(formattedSql);
+        try {
+            String sql = insertSql.toSqlString(tableLiteralFormat);
+            String statementDelimiter = sqlFormatSettings.getStatementDelimiter();
+            String formattedSql = formatSql(sql + statementDelimiter);
+            addInsertSql(formattedSql);
+        } catch (Exception e) {
+            throw new DataSetException(e);
+        }
     }
 
-    protected abstract void insertRow(String insertRowSql) throws DataSetException;
-
-
-    private String formatSql(String insertSql) {
+    protected String formatSql(String insertSql) {
         SqlFormatSettings sqlFormatSettings = getSqlFormatSettings();
 
         SqlFormatter sqlFormatter = sqlFormatSettings.getSqlFormatter();
@@ -66,4 +72,13 @@ public abstract class AbstractSqlScriptDataSetConsumer extends DefaultConsumer {
         return insertSql;
     }
 
+    protected abstract void addInsertSql(String insertSql) throws DataSetException;
+
+    @Override
+    public void endTable() throws DataSetException {
+        super.endTable();
+
+        tableMetaData = null;
+        tableLiteralFormat = null;
+    }
 }

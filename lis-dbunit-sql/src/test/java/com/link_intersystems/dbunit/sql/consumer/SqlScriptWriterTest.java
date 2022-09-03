@@ -4,8 +4,6 @@ import com.link_intersystems.jdbc.MapRowMapper;
 import com.link_intersystems.jdbc.test.db.h2.H2Database;
 import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimDB;
 import com.link_intersystems.jdbc.test.db.sakila.SakilaSlimExtension;
-import com.link_intersystems.sql.dialect.DefaultSqlDialect;
-import com.link_intersystems.sql.dialect.SqlDialect;
 import com.link_intersystems.sql.format.SqlFormatSettings;
 import com.link_intersystems.sql.io.SqlScript;
 import org.dbunit.DatabaseUnitException;
@@ -54,8 +52,7 @@ class SqlScriptWriterTest {
         assertNotNull(initialActor);
 
         StringWriter writer = new StringWriter();
-        SqlDialect sqlDialect = new DefaultSqlDialect();
-        SqlScriptWriter sqlStatementWriter = new SqlScriptWriter(sqlDialect, writer);
+        SqlScriptDataSetConsumer sqlStatementWriter = new SqlScriptDataSetConsumer(writer);
         sqlStatementWriter.setSchema("sakila2");
         SqlFormatSettings sqlFormatSettings = new SqlFormatSettings();
         sqlStatementWriter.setSqlFormatSettings(sqlFormatSettings);
