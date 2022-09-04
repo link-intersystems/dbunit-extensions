@@ -35,12 +35,12 @@ public class TableMetaDataBuilder {
         return this;
     }
 
-    public TableMetaDataBuilder setColumns(Column[] columns) {
+    public TableMetaDataBuilder setColumns(Column... columns) {
         this.columns = columns.clone();
         return this;
     }
 
-    public TableMetaDataBuilder setPkColumns(String[] pkColumns) {
+    public TableMetaDataBuilder setPkColumns(String... pkColumns) {
         this.pkColumns = pkColumns.clone();
         return this;
     }

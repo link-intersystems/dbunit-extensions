@@ -86,7 +86,9 @@ public class ExternalSortTableConsumer extends DefaultChainableDataSetConsumer i
             IDataSetProducer dataSetProducer = defaultDataSetProducerSupport.getDataSetProducer();
 
             TableMetaDataReplacementConsumer tableMetaDataReplacementConsumer = new TableMetaDataReplacementConsumer(sourceTableMetaData::get);
-            tableMetaDataReplacementConsumer.setSubsequentConsumer(getDelegate());
+            EnsureDataTypeConsumer ensureDataTypeConsumer = new EnsureDataTypeConsumer();
+            ensureDataTypeConsumer.setSubsequentConsumer(getDelegate());
+            tableMetaDataReplacementConsumer.setSubsequentConsumer(ensureDataTypeConsumer);
             dataSetProducer.setConsumer(tableMetaDataReplacementConsumer);
             dataSetProducer.produce();
         } finally {

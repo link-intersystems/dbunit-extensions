@@ -20,16 +20,22 @@ class ColumnListBuilderTest {
     }
 
     @Test
+    void emptyList() {
+        ColumnList columnList = columnListBuilder.build();
+        assertEquals(0, columnList.size());
+    }
+
+    @Test
     void addColumn() {
-        ColumnListBuilder.ColumnElementBuilder elementBuilder = columnListBuilder.addColumn();
-        elementBuilder.setColumnName("first_name")
+        OngoingColumnBuild ongoingColumnBuild = columnListBuilder.newColumn("first_name", DataType.VARCHAR);
+        ongoingColumnBuild.setColumnName("first_name")
                 .setDataType(DataType.VARCHAR)
                 .setSqlTypeName("VARCHAR")
                 .setDefaultValue("N/A")
                 .setAutoIncrement(Column.AutoIncrement.NO)
                 .setNullable(Column.NO_NULLS)
                 .setRemarks("Remarks")
-                .add();
+                .build();
 
 
         ColumnList columnList = columnListBuilder.build();
@@ -47,7 +53,6 @@ class ColumnListBuilderTest {
 
     @Test
     void addTemplateColumn() {
-        ColumnListBuilder.ColumnElementBuilder elementBuilder = columnListBuilder.addColumn();
         Column templateColumn = new Column(
                 "first_name",
                 DataType.VARCHAR,
@@ -57,7 +62,8 @@ class ColumnListBuilderTest {
                 "Remarks",
                 Column.AutoIncrement.NO
         );
-        elementBuilder.addFromTemplate(templateColumn);
+        OngoingColumnBuild elementBuilder = columnListBuilder.newColumn(templateColumn);
+        elementBuilder.build();
 
 
         ColumnList columnList = columnListBuilder.build();

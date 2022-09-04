@@ -3,6 +3,8 @@ package com.link_intersystems.dbunit.meta;
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.datatype.DataType;
 
+import static java.util.Objects.requireNonNull;
+
 public class ColumnBuilder {
 
     private String columnName;
@@ -13,9 +15,6 @@ public class ColumnBuilder {
     private String remarks;
     private Column.AutoIncrement autoIncrement;
 
-    public ColumnBuilder() {
-    }
-
     public ColumnBuilder(Column column) {
         setColumnName(column.getColumnName());
         setDataType(column.getDataType());
@@ -24,6 +23,14 @@ public class ColumnBuilder {
         setDefaultValue(column.getDefaultValue());
         setRemarks(column.getRemarks());
         setAutoIncrement(column.getAutoIncrement());
+    }
+
+    public ColumnBuilder(String columnName, DataType dataType) {
+        this.columnName = requireNonNull(columnName);
+        if (columnName.trim().isEmpty()) {
+            throw new IllegalArgumentException("columnName must not be blank");
+        }
+        this.dataType = requireNonNull(dataType);
     }
 
     public ColumnBuilder setColumnName(String columnName) {

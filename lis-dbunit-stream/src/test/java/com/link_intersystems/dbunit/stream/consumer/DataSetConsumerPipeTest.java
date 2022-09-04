@@ -52,6 +52,14 @@ class DataSetConsumerPipeTest {
     }
 
     @Test
+    void subsequentConsumer() throws DataSetException {
+        dataSetConsumerPipe.setSubsequentConsumer(targetConsumer);
+
+        chainProduce();
+        assertTransformerChainWorks();
+    }
+
+    @Test
     void emptyChain() throws DataSetException {
         chainProduce();
     }
@@ -117,7 +125,6 @@ class DataSetConsumerPipeTest {
         producerSupport.setDataSetProducer(tinySakilaDataSet);
 
         IDataSetProducer dataSetProducer = producerSupport.getDataSetProducer();
-        dataSetProducer.setConsumer(dataSetConsumerPipe);
-        dataSetProducer.produce();
+        dataSetConsumerPipe.execute(dataSetProducer);
     }
 }
