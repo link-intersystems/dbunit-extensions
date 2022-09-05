@@ -16,7 +16,6 @@ import static java.util.Objects.requireNonNull;
  */
 public class FlywayDatabaseMigrationSupport implements DatabaseMigrationSupport {
 
-
     private static final Collection<String> FLYWAY_TABLES = Arrays.asList("flyway_schema_history");
 
     private FlywayMigrationConfig migrationConfig;
@@ -30,7 +29,7 @@ public class FlywayDatabaseMigrationSupport implements DatabaseMigrationSupport 
     }
 
     @Override
-    public void prepareDataSource(DataSource dataSource) {
+    public void prepareDataSource(DataSource dataSource) throws SQLException {
         FlywayMigration flywayMigration = createFlywayMigration();
         FlywayMigrationConfig migrationConfig = getMigrationConfig();
 
@@ -70,6 +69,4 @@ public class FlywayDatabaseMigrationSupport implements DatabaseMigrationSupport 
     protected void dropTable(Statement statement, String flywayTable) throws SQLException {
         statement.execute("drop table " + flywayTable);
     }
-
-
 }
