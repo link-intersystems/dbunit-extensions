@@ -1,8 +1,9 @@
 package com.link_intersystems.maven;
 
 import com.link_intersystems.dbunit.testcontainers.DatabaseContainerSupport;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -15,7 +16,7 @@ class ArtifactInfoTest {
 
         String groupId = artifactInfo.getGroupId();
 
-        Assertions.assertEquals("com.link-intersystems.dbunit.testcontainers", groupId);
+        assertEquals("com.link-intersystems.dbunit.testcontainers", groupId);
     }
 
 }
