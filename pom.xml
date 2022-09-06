@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -12,7 +11,7 @@
     <groupId>com.link-intersystems.dbunit</groupId>
     <artifactId>lis-dbunit</artifactId>
     <packaging>pom</packaging>
-    <version>1.1.1-SNAPSHOT</version>
+    <version>1.1.1</version>
 
     <modules>
         <module>lis-dbunit-beans</module>
@@ -70,37 +69,37 @@
             <dependency>
                 <groupId>com.link-intersystems.dbunit</groupId>
                 <artifactId>lis-dbunit-beans</artifactId>
-                <version>1.1.1-SNAPSHOT</version>
+                <version>1.1.1</version>
             </dependency>
             <dependency>
                 <groupId>com.link-intersystems.dbunit</groupId>
                 <artifactId>lis-dbunit-sql</artifactId>
-                <version>1.1.1-SNAPSHOT</version>
+                <version>1.1.1</version>
             </dependency>
             <dependency>
                 <groupId>com.link-intersystems.dbunit</groupId>
                 <artifactId>lis-dbunit-meta</artifactId>
-                <version>1.1.1-SNAPSHOT</version>
+                <version>1.1.1</version>
             </dependency>
             <dependency>
                 <groupId>com.link-intersystems.dbunit</groupId>
                 <artifactId>lis-dbunit-dataset</artifactId>
-                <version>1.1.1-SNAPSHOT</version>
+                <version>1.1.1</version>
             </dependency>
             <dependency>
                 <groupId>com.link-intersystems.dbunit</groupId>
                 <artifactId>lis-dbunit-table</artifactId>
-                <version>1.1.1-SNAPSHOT</version>
+                <version>1.1.1</version>
             </dependency>
             <dependency>
                 <groupId>com.link-intersystems.dbunit</groupId>
                 <artifactId>lis-dbunit-stream</artifactId>
-                <version>1.1.1-SNAPSHOT</version>
+                <version>1.1.1</version>
             </dependency>
             <dependency>
                 <groupId>com.link-intersystems.dbunit</groupId>
                 <artifactId>lis-dbunit-test</artifactId>
-                <version>1.1.1-SNAPSHOT</version>
+                <version>1.1.1</version>
                 <scope>test</scope>
             </dependency>
 
@@ -305,6 +304,6 @@
         </plugins>
     </reporting>
     <scm>
-        <tag>lis-dbunit-1.1.0</tag>
+        <tag>lis-dbunit-1.1.1</tag>
     </scm>
 </project>
