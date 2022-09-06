@@ -27,11 +27,6 @@
             <artifactId>lis-commons-security</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.link-intersystems.dbunit.testcontainers</groupId>
-            <artifactId>lis-dbunit-testcontainers-postgres</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>com.link-intersystems.dbunit</groupId>
             <artifactId>lis-dbunit-test</artifactId>
         </dependency>
