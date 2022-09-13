@@ -20,6 +20,10 @@
         </dependency>
         <dependency>
             <groupId>com.link-intersystems.dbunit</groupId>
+            <artifactId>lis-dbunit-database</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.link-intersystems.dbunit</groupId>
             <artifactId>lis-dbunit-stream</artifactId>
         </dependency>
         <dependency>
