@@ -1,6 +1,8 @@
 package com.link_intersystems.dbunit.stream.consumer;
 
 import com.link_intersystems.dbunit.dataset.MergedDataSet;
+import com.link_intersystems.dbunit.meta.ColumnListBuilder;
+import com.link_intersystems.dbunit.meta.TableMetaDataBuilder;
 import com.link_intersystems.dbunit.table.TableList;
 import org.dbunit.dataset.*;
 import org.dbunit.dataset.stream.DefaultConsumer;
@@ -34,30 +36,9 @@ public class CopyDataSetConsumer extends DefaultConsumer {
         copyTable = new DefaultTable(copyMetaData);
     }
 
-    protected DefaultTableMetaData copyMetaData(ITableMetaData metaData) throws DataSetException {
-        String tableName = metaData.getTableName();
-        Column[] columns = copyColumns(metaData.getColumns());
-        Column[] primaryKeys = getPrimaryKeys(columns, metaData.getPrimaryKeys());
-        return new DefaultTableMetaData(tableName, columns, primaryKeys);
-    }
-
-    private Column[] getPrimaryKeys(Column[] columns, Column[] primaryKeys) {
-        List<String> pkColNames = Arrays.stream(primaryKeys).map(Column::getColumnName).collect(Collectors.toList());
-        return Arrays.stream(columns).filter(c -> pkColNames.contains(c.getColumnName())).toArray(Column[]::new);
-    }
-
-    private Column[] copyColumns(Column[] columns) {
-        return Arrays.stream(columns)
-                .map(c -> new Column(
-                                c.getColumnName(),
-                                c.getDataType(),
-                                c.getSqlTypeName(),
-                                c.getNullable(),
-                                c.getDefaultValue(),
-                                c.getRemarks(),
-                                c.getAutoIncrement()
-                        )
-                ).toArray(Column[]::new);
+    protected ITableMetaData copyMetaData(ITableMetaData metaData) throws DataSetException {
+        TableMetaDataBuilder tableMetaDataBuilder = new TableMetaDataBuilder(metaData);
+        return tableMetaDataBuilder.build();
     }
 
     @Override
@@ -79,5 +60,4 @@ public class CopyDataSetConsumer extends DefaultConsumer {
     protected void endDataSet(IDataSet dataSet) throws DataSetException {
         this.dataSet = dataSet;
     }
-
 }
