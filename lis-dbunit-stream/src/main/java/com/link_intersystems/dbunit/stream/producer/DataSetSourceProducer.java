@@ -1,5 +1,6 @@
 package com.link_intersystems.dbunit.stream.producer;
 
+import com.link_intersystems.dbunit.dataset.DataSetSupplier;
 import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
@@ -10,7 +11,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class DataSetSourceProducer implements DataSetSource {
+public class DataSetSourceProducer implements DataSetSupplier {
 
     private IDataSetProducer dataSetProducer;
 

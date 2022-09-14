@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.sql.consumer;
+package com.link_intersystems.dbunit.stream.consumer.sql;
 
 import com.link_intersystems.sql.format.*;
 import org.dbunit.dataset.Column;

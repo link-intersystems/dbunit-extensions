@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.stream.producer;
+package com.link_intersystems.dbunit.stream.producer.csv;
 
 import org.dbunit.dataset.Column;
 import org.dbunit.dataset.DataSetException;

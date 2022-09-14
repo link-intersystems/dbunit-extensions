@@ -58,7 +58,7 @@ public class DatabaseDataSetConsumer extends CopyDataSetConsumer {
     }
 
     @Override
-    protected DefaultTableMetaData copyMetaData(ITableMetaData metaData) throws DataSetException {
+    protected ITableMetaData copyMetaData(ITableMetaData metaData) throws DataSetException {
         String tableName = metaData.getTableName();
 
         ITableMetaData databaseMetaData = null;

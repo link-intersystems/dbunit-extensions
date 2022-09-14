@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.stream.producer;
+package com.link_intersystems.dbunit.stream.producer.xls;
 
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.excel.XlsDataSet;

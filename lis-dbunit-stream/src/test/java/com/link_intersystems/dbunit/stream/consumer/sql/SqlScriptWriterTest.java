@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.sql.consumer;
+package com.link_intersystems.dbunit.stream.consumer.sql;
 
 import com.link_intersystems.jdbc.MapRowMapper;
 import com.link_intersystems.jdbc.test.db.h2.H2Database;

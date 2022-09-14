@@ -1,11 +1,11 @@
 package com.link_intersystems.dbunit.stream.command;
 
 import com.link_intersystems.dbunit.dataset.DataSetDecorator;
-import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerSupport;
+import com.link_intersystems.dbunit.stream.consumer.support.DataSetConsumerSupport;
 import com.link_intersystems.dbunit.stream.consumer.DataSetPrinterConsumer;
-import com.link_intersystems.dbunit.stream.producer.DataSetBuilder;
-import com.link_intersystems.dbunit.stream.producer.DataSetProducerSupport;
-import com.link_intersystems.dbunit.stream.producer.DataSetSource;
+import com.link_intersystems.dbunit.dataset.DataSetBuilder;
+import com.link_intersystems.dbunit.stream.producer.support.DataSetProducerSupport;
+import com.link_intersystems.dbunit.dataset.DataSetSupplier;
 import com.link_intersystems.dbunit.stream.producer.DataSetSourceProducer;
 import com.link_intersystems.dbunit.table.IRowFilterFactory;
 import com.link_intersystems.dbunit.table.TableOrder;
@@ -26,7 +26,7 @@ public class DataSetCommand implements DataSetConsumerSupport, DataSetProducerSu
 
     public static final String DEFAULT_NULL_REPLACEMENT = "[null]";
 
-    private DataSetSource dataSetSource;
+    private DataSetSupplier dataSetSource;
     private IDataSetConsumer dataSetConsumer;
 
     private String[] tables = new String[0];
@@ -51,9 +51,9 @@ public class DataSetCommand implements DataSetConsumerSupport, DataSetProducerSu
 
     @Override
     public void setDataSetProducer(IDataSetProducer dataSetProducer) {
-        DataSetSource dataSetSource;
-        if (dataSetProducer instanceof DataSetSource) {
-            dataSetSource = (DataSetSource) dataSetProducer;
+        DataSetSupplier dataSetSource;
+        if (dataSetProducer instanceof DataSetSupplier) {
+            dataSetSource = (DataSetSupplier) dataSetProducer;
         } else {
             dataSetSource = new DataSetSourceProducer(dataSetProducer);
         }
@@ -61,7 +61,7 @@ public class DataSetCommand implements DataSetConsumerSupport, DataSetProducerSu
         setDataSetSource(dataSetSource);
     }
 
-    public void setDataSetSource(DataSetSource dataSetSource) {
+    public void setDataSetSource(DataSetSupplier dataSetSource) {
         this.dataSetSource = requireNonNull(dataSetSource);
     }
 
@@ -85,7 +85,7 @@ public class DataSetCommand implements DataSetConsumerSupport, DataSetProducerSu
         DataSetBuilder dataSetBuilder = new DataSetBuilder();
         IDataSet dataSet = dataSetSource.get();
 
-        dataSetBuilder.setDataSetProducer(dataSet);
+        dataSetBuilder.setSourceDataSetSupplier(() -> dataSet);
         dataSetBuilder.setTables(tables);
         dataSetBuilder.setTableContentFilter(rowFilterFactory);
         dataSetBuilder.setResultDecorator(resultDecorator);

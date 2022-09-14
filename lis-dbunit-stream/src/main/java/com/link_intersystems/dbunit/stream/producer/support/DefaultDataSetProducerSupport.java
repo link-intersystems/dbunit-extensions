@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.stream.producer;
+package com.link_intersystems.dbunit.stream.producer.support;
 
 import org.dbunit.dataset.stream.IDataSetProducer;
 

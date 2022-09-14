@@ -1,7 +1,7 @@
 package com.link_intersystems.dbunit.stream.resource.file;
 
 import com.link_intersystems.dbunit.stream.producer.AutocloseDataSetProducer;
-import com.link_intersystems.dbunit.stream.producer.DataSetProducerSupport;
+import com.link_intersystems.dbunit.stream.producer.support.DataSetProducerSupport;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.stream.IDataSetProducer;
 

@@ -1,5 +1,6 @@
 package com.link_intersystems.dbunit.stream.producer;
 
+import com.link_intersystems.dbunit.dataset.DataSetSupplier;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.stream.DataSetProducerAdapter;
@@ -14,7 +15,7 @@ import java.util.Objects;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class DataSetSourceProducerAdapter implements IDataSetProducer, DataSetSource {
+public class DataSetSourceProducerAdapter implements IDataSetProducer, DataSetSupplier {
 
     private IDataSet dataSet;
 

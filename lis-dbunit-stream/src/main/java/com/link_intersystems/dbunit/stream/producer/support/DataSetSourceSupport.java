@@ -1,5 +1,7 @@
-package com.link_intersystems.dbunit.stream.producer;
+package com.link_intersystems.dbunit.stream.producer.support;
 
+import com.link_intersystems.dbunit.dataset.DataSetSupplier;
+import com.link_intersystems.dbunit.stream.producer.DataSetSourceProducer;
 import org.dbunit.dataset.stream.IDataSetProducer;
 
 /**
@@ -8,10 +10,10 @@ import org.dbunit.dataset.stream.IDataSetProducer;
 public interface DataSetSourceSupport extends DataSetProducerSupport {
 
     default public void setDataSetProducer(IDataSetProducer dataSetProducer) {
-        DataSetSource dataSetSource;
+        DataSetSupplier dataSetSource;
 
-        if (dataSetProducer instanceof DataSetSource) {
-            dataSetSource = (DataSetSource) dataSetProducer;
+        if (dataSetProducer instanceof DataSetSupplier) {
+            dataSetSource = (DataSetSupplier) dataSetProducer;
         } else {
             dataSetSource = new DataSetSourceProducer(dataSetProducer);
         }
@@ -19,5 +21,5 @@ public interface DataSetSourceSupport extends DataSetProducerSupport {
         setDataSetSource(dataSetSource);
     }
 
-    public void setDataSetSource(DataSetSource dataSetSource);
+    public void setDataSetSource(DataSetSupplier dataSetSource);
 }

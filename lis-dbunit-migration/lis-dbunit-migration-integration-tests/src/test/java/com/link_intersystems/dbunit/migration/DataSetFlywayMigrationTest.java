@@ -4,7 +4,7 @@ import com.link_intersystems.dbunit.migration.flyway.FlywayDatabaseMigrationSupp
 import com.link_intersystems.dbunit.migration.flyway.FlywayMigrationConfig;
 import com.link_intersystems.dbunit.migration.testcontainers.TestcontainersMigrationDataSetPipeFactory;
 import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
-import com.link_intersystems.dbunit.stream.consumer.DefaultDataSetConsumerSupport;
+import com.link_intersystems.dbunit.stream.consumer.support.DefaultDataSetConsumerSupport;
 import com.link_intersystems.dbunit.stream.consumer.ExternalSortTableConsumer;
 import com.link_intersystems.dbunit.table.DefaultTableOrder;
 import com.link_intersystems.dbunit.table.Row;

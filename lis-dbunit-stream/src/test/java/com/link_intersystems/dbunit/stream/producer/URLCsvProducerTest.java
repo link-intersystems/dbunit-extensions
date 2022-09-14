@@ -2,6 +2,7 @@ package com.link_intersystems.dbunit.stream.producer;
 
 import com.link_intersystems.dbunit.stream.consumer.CopyDataSetConsumer;
 import com.link_intersystems.dbunit.stream.consumer.FilterTableConsumer;
+import com.link_intersystems.dbunit.stream.producer.csv.URLCsvProducer;
 import com.link_intersystems.dbunit.test.DBUnitAssertions;
 import com.link_intersystems.dbunit.test.TestDataSets;
 import org.dbunit.dataset.DataSetException;

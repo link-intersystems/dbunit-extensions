@@ -1,7 +1,7 @@
 package com.link_intersystems.dbunit.stream.resource.file.csv;
 
-import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerSupport;
-import com.link_intersystems.dbunit.stream.producer.DataSetProducerSupport;
+import com.link_intersystems.dbunit.stream.consumer.support.DataSetConsumerSupport;
+import com.link_intersystems.dbunit.stream.producer.support.DataSetProducerSupport;
 import com.link_intersystems.dbunit.stream.resource.file.AbstractDataSetFile;
 
 import java.io.File;

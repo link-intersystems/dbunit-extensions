@@ -1,5 +1,9 @@
-package com.link_intersystems.dbunit.stream.producer;
+package com.link_intersystems.dbunit.stream.producer.support;
 
+import com.link_intersystems.dbunit.stream.producer.AutocloseDataSetProducer;
+import com.link_intersystems.dbunit.stream.producer.DataSetSourceProducerAdapter;
+import com.link_intersystems.dbunit.stream.producer.csv.URLCsvProducer;
+import com.link_intersystems.dbunit.stream.producer.xls.XlsDataSetProducer;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.csv.CsvProducer;
 import org.dbunit.dataset.stream.IDataSetProducer;

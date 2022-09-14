@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.stream.consumer;
 
-import com.link_intersystems.dbunit.stream.producer.DefaultDataSetProducerSupport;
+import com.link_intersystems.dbunit.stream.producer.support.DefaultDataSetProducerSupport;
 import com.link_intersystems.dbunit.test.DBUnitAssertions;
 import com.link_intersystems.dbunit.test.TestDataSets;
 import org.dbunit.dataset.DataSetException;

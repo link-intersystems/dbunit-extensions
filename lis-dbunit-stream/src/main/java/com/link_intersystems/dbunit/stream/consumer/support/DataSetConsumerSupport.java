@@ -1,5 +1,7 @@
-package com.link_intersystems.dbunit.stream.consumer;
+package com.link_intersystems.dbunit.stream.consumer.support;
 
+import com.link_intersystems.dbunit.stream.consumer.CloseableDataSetConsumer;
+import com.link_intersystems.dbunit.stream.consumer.CompositeDataSetConsumer;
 import com.link_intersystems.dbunit.stream.consumer.db.DatabaseDataSetConsumer;
 import com.link_intersystems.dbunit.stream.consumer.xls.XlsDataSetConsumer;
 import org.dbunit.DatabaseUnitException;

@@ -27,7 +27,7 @@
     </modules>
 
     <properties>
-        <lis-commons.version>1.8.1</lis-commons.version>
+        <lis-commons.version>1.8.2-SNAPSHOT</lis-commons.version>
         <junit.jupiter.version>5.8.2</junit.jupiter.version>
         <mockito.version>4.4.0</mockito.version>
         <slf4j.version>1.7.36</slf4j.version>
@@ -111,55 +111,10 @@
 
             <dependency>
                 <groupId>com.link-intersystems.commons</groupId>
-                <artifactId>lis-commons-beans</artifactId>
+                <artifactId>lis-commons</artifactId>
                 <version>${lis-commons.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.link-intersystems.commons</groupId>
-                <artifactId>lis-commons-lang</artifactId>
-                <version>${lis-commons.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.link-intersystems.commons</groupId>
-                <artifactId>lis-commons-util</artifactId>
-                <version>${lis-commons.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.link-intersystems.commons</groupId>
-                <artifactId>lis-commons-jdbc</artifactId>
-                <version>${lis-commons.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.link-intersystems.commons</groupId>
-                <artifactId>lis-commons-sql</artifactId>
-                <version>${lis-commons.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.link-intersystems.commons</groupId>
-                <artifactId>lis-commons-test</artifactId>
-                <version>${lis-commons.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.link-intersystems.commons</groupId>
-                <artifactId>lis-commons-jdbc-test</artifactId>
-                <version>${lis-commons.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.link-intersystems.commons</groupId>
-                <artifactId>lis-commons-swing</artifactId>
-                <version>${lis-commons.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.link-intersystems.commons</groupId>
-                <artifactId>lis-commons-io</artifactId>
-                <version>${lis-commons.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.link-intersystems.commons</groupId>
-                <artifactId>lis-commons-security</artifactId>
-                <version>${lis-commons.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
 
             <dependency>

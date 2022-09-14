@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.stream.resource.file.xml;
 
-import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerSupport;
+import com.link_intersystems.dbunit.stream.consumer.support.DataSetConsumerSupport;
 import com.link_intersystems.dbunit.stream.resource.file.AbstractTextDataSetFile;
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
 import org.dbunit.dataset.DataSetException;

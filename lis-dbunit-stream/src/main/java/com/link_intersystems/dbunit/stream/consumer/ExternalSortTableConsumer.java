@@ -1,7 +1,8 @@
 package com.link_intersystems.dbunit.stream.consumer;
 
 import com.link_intersystems.dbunit.meta.TableMetaDataBuilder;
-import com.link_intersystems.dbunit.stream.producer.DefaultDataSetProducerSupport;
+import com.link_intersystems.dbunit.stream.consumer.support.DefaultDataSetConsumerSupport;
+import com.link_intersystems.dbunit.stream.producer.support.DefaultDataSetProducerSupport;
 import com.link_intersystems.dbunit.table.TableOrder;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITableMetaData;

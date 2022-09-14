@@ -1,16 +1,11 @@
-package com.link_intersystems.dbunit.stream.producer;
+package com.link_intersystems.dbunit.dataset;
 
-import com.link_intersystems.dbunit.dataset.DataSetDecorator;
-import com.link_intersystems.dbunit.dataset.RowFilteredDataSet;
+import com.link_intersystems.dbunit.meta.TableMetaDataBuilder;
 import com.link_intersystems.dbunit.table.IRowFilterFactory;
 import com.link_intersystems.dbunit.table.TableOrder;
 import org.dbunit.database.AmbiguousTableNameException;
-import org.dbunit.dataset.DataSetException;
-import org.dbunit.dataset.FilteredDataSet;
-import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.ReplacementDataSet;
+import org.dbunit.dataset.*;
 import org.dbunit.dataset.filter.SequenceTableFilter;
-import org.dbunit.dataset.stream.DataSetProducerAdapter;
 
 import java.util.Map;
 
@@ -19,7 +14,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class DataSetBuilder implements DataSetSourceSupport {
+public class DataSetBuilder {
 
     public static enum BuildStrategy {
         DECORATE {
@@ -31,7 +26,18 @@ public class DataSetBuilder implements DataSetSourceSupport {
         COPY {
             @Override
             protected IDataSet apply(IDataSet dataSet) throws DataSetException {
-                return new DataSetSourceProducer(new DataSetProducerAdapter(dataSet)).get();
+                DefaultDataSet defaultDataSet = new DefaultDataSet();
+
+                ITableIterator iterator = dataSet.iterator();
+                while (iterator.next()) {
+                    ITable table = iterator.getTable();
+                    ITableMetaData metaDataCopy = new TableMetaDataBuilder(table.getTableMetaData()).build();
+                    DefaultTable defaultTable = new DefaultTable(metaDataCopy);
+                    defaultTable.addTableRows(table);
+                    defaultDataSet.addTable(table);
+                }
+
+                return defaultDataSet;
             }
         };
 
@@ -44,7 +50,7 @@ public class DataSetBuilder implements DataSetSourceSupport {
     private Map<Object, Object> replacementObjects;
     private TableOrder tableOrder;
 
-    private DataSetSource dataSetSource;
+    private DataSetSupplier dataSetSource;
 
     public void setTables(String... tables) {
         this.tables = tables;
@@ -66,7 +72,11 @@ public class DataSetBuilder implements DataSetSourceSupport {
         this.tableOrder = tableOrder;
     }
 
-    public void setDataSetSource(DataSetSource dataSetSource) {
+    public void setSourceDataSet(IDataSet dataSet) {
+        setSourceDataSetSupplier(() -> dataSet);
+    }
+
+    public void setSourceDataSetSupplier(DataSetSupplier dataSetSource) {
         this.dataSetSource = requireNonNull(dataSetSource);
     }
 

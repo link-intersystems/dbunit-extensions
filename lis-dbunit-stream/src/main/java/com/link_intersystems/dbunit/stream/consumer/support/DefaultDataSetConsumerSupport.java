@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.stream.consumer;
+package com.link_intersystems.dbunit.stream.consumer.support;
 
 import org.dbunit.dataset.stream.IDataSetConsumer;
 

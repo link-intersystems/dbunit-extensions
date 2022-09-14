@@ -1,9 +1,9 @@
 package com.link_intersystems.dbunit.stream.resource.file;
 
-import com.link_intersystems.dbunit.stream.consumer.DataSetConsumerSupport;
-import com.link_intersystems.dbunit.stream.consumer.DefaultDataSetConsumerSupport;
-import com.link_intersystems.dbunit.stream.producer.DataSetProducerSupport;
-import com.link_intersystems.dbunit.stream.producer.DefaultDataSetProducerSupport;
+import com.link_intersystems.dbunit.stream.consumer.support.DataSetConsumerSupport;
+import com.link_intersystems.dbunit.stream.consumer.support.DefaultDataSetConsumerSupport;
+import com.link_intersystems.dbunit.stream.producer.support.DataSetProducerSupport;
+import com.link_intersystems.dbunit.stream.producer.support.DefaultDataSetProducerSupport;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.stream.IDataSetConsumer;
 import org.dbunit.dataset.stream.IDataSetProducer;

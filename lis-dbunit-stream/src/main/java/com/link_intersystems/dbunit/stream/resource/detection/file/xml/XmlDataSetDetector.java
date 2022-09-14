@@ -1,6 +1,7 @@
 package com.link_intersystems.dbunit.stream.resource.detection.file.xml;
 
-import com.link_intersystems.dbunit.stream.producer.DefaultDataSetProducerSupport;
+import com.link_intersystems.dbunit.stream.producer.support.DefaultDataSetProducerSupport;
+import com.link_intersystems.dbunit.stream.resource.detection.Order;
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFileConfig;
 import com.link_intersystems.dbunit.stream.resource.file.xml.XmlDataSetFile;
@@ -13,6 +14,7 @@ import java.io.InputStream;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
+@Order
 public class XmlDataSetDetector extends AbstractXmlTableMetaDataDataSetFileDetector {
 
     private ConfigProperties dataSetFileConfig;

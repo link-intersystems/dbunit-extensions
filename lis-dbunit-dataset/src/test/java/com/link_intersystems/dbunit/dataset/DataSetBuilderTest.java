@@ -1,4 +1,4 @@
-package com.link_intersystems.dbunit.stream.producer;
+package com.link_intersystems.dbunit.dataset;
 
 import com.link_intersystems.dbunit.test.DBUnitAssertions;
 import com.link_intersystems.dbunit.test.TestDataSets;
@@ -20,7 +20,7 @@ class DataSetBuilderTest {
     void filterTables() throws Exception {
         IDataSet tinySakilaDataSet = TestDataSets.getTinySakilaDataSet();
         DataSetBuilder dataSetBuilder = new DataSetBuilder();
-        dataSetBuilder.setDataSetProducer(tinySakilaDataSet);
+        dataSetBuilder.setSourceDataSetSupplier(() -> tinySakilaDataSet);
         dataSetBuilder.setTables("actor");
         IDataSet build = dataSetBuilder.build();
 
@@ -36,7 +36,7 @@ class DataSetBuilderTest {
     void filterRows() throws Exception {
         IDataSet tinySakilaDataSet = TestDataSets.getTinySakilaDataSet();
         DataSetBuilder dataSetBuilder = new DataSetBuilder();
-        dataSetBuilder.setDataSetProducer(tinySakilaDataSet);
+        dataSetBuilder.setSourceDataSetSupplier(() -> tinySakilaDataSet);
         dataSetBuilder.setTableContentFilter(t -> t.getTableName().equals("language") ? rvp -> false : null);
 
         IDataSet dataSet = dataSetBuilder.build();
