@@ -1,6 +1,8 @@
 package com.link_intersystems.dbunit.stream.producer.sql;
 
 import com.link_intersystems.dbunit.database.DatabaseConnectionBorrower;
+import com.link_intersystems.dbunit.stream.producer.db.DatabaseDataSetProducer;
+import com.link_intersystems.dbunit.stream.producer.db.DatabaseDataSetProducerConfig;
 import com.link_intersystems.sql.io.SqlScript;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.IDatabaseConnection;

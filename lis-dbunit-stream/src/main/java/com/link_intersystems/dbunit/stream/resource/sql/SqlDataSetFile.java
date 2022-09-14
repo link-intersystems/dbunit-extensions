@@ -4,7 +4,7 @@ import com.link_intersystems.dbunit.database.DatabaseConnectionBorrower;
 import com.link_intersystems.dbunit.stream.consumer.sql.DefaultTableLiteralFormatResolver;
 import com.link_intersystems.dbunit.stream.consumer.sql.SqlScriptDataSetConsumer;
 import com.link_intersystems.dbunit.stream.consumer.sql.TableLiteralFormatResolver;
-import com.link_intersystems.dbunit.stream.producer.sql.DatabaseDataSetProducerConfig;
+import com.link_intersystems.dbunit.stream.producer.db.DatabaseDataSetProducerConfig;
 import com.link_intersystems.dbunit.stream.producer.sql.SqlScriptDataSetProducer;
 import com.link_intersystems.dbunit.stream.resource.file.DataSetFile;
 import com.link_intersystems.sql.io.SqlScript;

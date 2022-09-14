@@ -3,7 +3,7 @@ package com.link_intersystems.dbunit.stream.resource.sql;
 import com.link_intersystems.dbunit.database.DatabaseConnectionBorrower;
 import com.link_intersystems.dbunit.stream.consumer.sql.DefaultTableLiteralFormatResolver;
 import com.link_intersystems.dbunit.stream.consumer.sql.TableLiteralFormatResolver;
-import com.link_intersystems.dbunit.stream.producer.sql.DatabaseDataSetProducerConfig;
+import com.link_intersystems.dbunit.stream.producer.db.DatabaseDataSetProducerConfig;
 import com.link_intersystems.util.config.properties.ConfigProperty;
 
 /**
