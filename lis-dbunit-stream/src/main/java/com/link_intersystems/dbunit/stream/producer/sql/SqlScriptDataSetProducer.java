@@ -49,23 +49,18 @@ public class SqlScriptDataSetProducer implements IDataSetProducer {
     public void produce() throws DataSetException {
         try {
             IDatabaseConnection databaseConnection = connectionPool.borrowConnection();
-            DataSetException produceException = null;
             try {
                 produce(databaseConnection);
             } catch (DataSetException e) {
-                produceException = e;
+                logger.error("Exception while producing sql script", e);
+                throw e;
             } finally {
                 if (databaseConnection != null) {
-                    try {
-                        connectionPool.returnConnection(databaseConnection);
-                    } catch (DatabaseUnitException e) {
-                        if (produceException != null) {
-                            logger.error("Exception while producing sql script", produceException);
-                        }
-                        throw new DataSetException("Unable to return borrowed database connection.", e);
-                    }
+                    connectionPool.returnConnection(databaseConnection);
                 }
             }
+        } catch (DataSetException e) {
+            throw e;
         } catch (DatabaseUnitException e) {
             throw new DataSetException(e);
         }

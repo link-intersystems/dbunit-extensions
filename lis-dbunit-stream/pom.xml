@@ -44,6 +44,11 @@
             <groupId>com.link-intersystems.dbunit</groupId>
             <artifactId>lis-dbunit-test</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.link-intersystems.commons</groupId>
+            <artifactId>lis-commons-jdbc-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 
