@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.stream.producer.sql;
 
-import com.link_intersystems.dbunit.database.DatabaseConnectionBorrower;
+import com.link_intersystems.dbunit.database.DatabaseConnectionPool;
 import com.link_intersystems.dbunit.stream.producer.db.DatabaseDataSetProducer;
 import com.link_intersystems.dbunit.stream.producer.db.DatabaseDataSetProducerConfig;
 import com.link_intersystems.sql.io.SqlScript;
@@ -29,10 +29,10 @@ public class SqlScriptDataSetProducer implements IDataSetProducer {
 
     private SqlScript sqlScript;
     private DatabaseDataSetProducerConfig config = new DatabaseDataSetProducerConfig();
-    private DatabaseConnectionBorrower connectionBorrower;
+    private DatabaseConnectionPool connectionPool;
 
-    public SqlScriptDataSetProducer(DatabaseConnectionBorrower connectionBorrower, SqlScript sqlScript) {
-        this.connectionBorrower = requireNonNull(connectionBorrower);
+    public SqlScriptDataSetProducer(DatabaseConnectionPool connectionPool, SqlScript sqlScript) {
+        this.connectionPool = requireNonNull(connectionPool);
         this.sqlScript = requireNonNull(sqlScript);
     }
 
@@ -48,7 +48,7 @@ public class SqlScriptDataSetProducer implements IDataSetProducer {
     @Override
     public void produce() throws DataSetException {
         try {
-            IDatabaseConnection databaseConnection = connectionBorrower.borrowConnection();
+            IDatabaseConnection databaseConnection = connectionPool.borrowConnection();
             DataSetException produceException = null;
             try {
                 produce(databaseConnection);
@@ -57,7 +57,7 @@ public class SqlScriptDataSetProducer implements IDataSetProducer {
             } finally {
                 if (databaseConnection != null) {
                     try {
-                        connectionBorrower.returnConnection(databaseConnection);
+                        connectionPool.returnConnection(databaseConnection);
                     } catch (DatabaseUnitException e) {
                         if (produceException != null) {
                             logger.error("Exception while producing sql script", produceException);

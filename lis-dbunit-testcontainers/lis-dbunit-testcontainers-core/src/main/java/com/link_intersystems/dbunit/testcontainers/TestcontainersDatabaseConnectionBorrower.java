@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.testcontainers;
 
-import com.link_intersystems.dbunit.database.DatabaseConnectionBorrower;
+import com.link_intersystems.dbunit.database.DatabaseConnectionPool;
 import com.link_intersystems.dbunit.database.DatabaseConnectionDelegate;
 import com.link_intersystems.dbunit.testcontainers.pool.JdbcContainerPool;
 import org.dbunit.DatabaseUnitException;
@@ -13,7 +13,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class TestcontainersDatabaseConnectionBorrower extends DatabaseConnectionBorrower {
+public class TestcontainersDatabaseConnectionBorrower extends DatabaseConnectionPool {
 
     private static class ContainerAwareDatabaseConnection extends DatabaseConnectionDelegate {
 

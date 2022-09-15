@@ -1,6 +1,6 @@
 package com.link_intersystems.dbunit.stream.resource.sql;
 
-import com.link_intersystems.dbunit.database.DatabaseConnectionBorrower;
+import com.link_intersystems.dbunit.database.DatabaseConnectionPool;
 import com.link_intersystems.dbunit.stream.consumer.sql.DefaultTableLiteralFormatResolver;
 import com.link_intersystems.dbunit.stream.consumer.sql.SqlScriptDataSetConsumer;
 import com.link_intersystems.dbunit.stream.consumer.sql.TableLiteralFormatResolver;
@@ -29,7 +29,7 @@ public class SqlDataSetFile implements DataSetFile {
     private Charset charset = StandardCharsets.UTF_8;
     private DatabaseDataSetProducerConfig databaseDataSetProducerConfig = new DatabaseDataSetProducerConfig();
     private TableLiteralFormatResolver tableLiteralFormatResolver = new DefaultTableLiteralFormatResolver();
-    private DatabaseConnectionBorrower databaseConnectionBorrower;
+    private DatabaseConnectionPool databaseConnectionBorrower;
 
 
     public SqlDataSetFile(File sqlScript) {
@@ -51,7 +51,7 @@ public class SqlDataSetFile implements DataSetFile {
         this.charset = requireNonNull(charset);
     }
 
-    public void setDatabaseConnectionBorrower(DatabaseConnectionBorrower databaseConnectionBorrower) {
+    public void setDatabaseConnectionBorrower(DatabaseConnectionPool databaseConnectionBorrower) {
         this.databaseConnectionBorrower = databaseConnectionBorrower;
     }
 
@@ -62,7 +62,7 @@ public class SqlDataSetFile implements DataSetFile {
     @Override
     public IDataSetProducer createProducer() throws DataSetException {
         if (databaseConnectionBorrower == null) {
-            String msg = MessageFormat.format("Unable to create producer, because no {0} is set", DatabaseConnectionBorrower.class.getSimpleName());
+            String msg = MessageFormat.format("Unable to create producer, because no {0} is set", DatabaseConnectionPool.class.getSimpleName());
             throw new DataSetException(msg);
         }
 

@@ -10,11 +10,11 @@ import java.sql.SQLException;
  */
 class BorrowedDatabaseConnection extends DatabaseConnectionDelegate {
 
-    private DatabaseConnectionBorrower databaseConnectionBorrower;
+    private DatabaseConnectionPool connectionPool;
     private IDatabaseConnection targetConnection;
 
-    public BorrowedDatabaseConnection(DatabaseConnectionBorrower databaseConnectionBorrower, IDatabaseConnection targetConnection) {
-        this.databaseConnectionBorrower = databaseConnectionBorrower;
+    public BorrowedDatabaseConnection(DatabaseConnectionPool connectionPool, IDatabaseConnection targetConnection) {
+        this.connectionPool = connectionPool;
         this.targetConnection = targetConnection;
     }
 
@@ -25,7 +25,7 @@ class BorrowedDatabaseConnection extends DatabaseConnectionDelegate {
     @Override
     public void close() throws SQLException {
         try {
-            databaseConnectionBorrower.returnConnection(this);
+            connectionPool.returnConnection(this);
         } catch (DatabaseUnitException e) {
             Throwable cause = e.getCause();
             if (cause instanceof SQLException) {

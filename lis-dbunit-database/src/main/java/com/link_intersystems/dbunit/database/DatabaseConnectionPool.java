@@ -10,7 +10,7 @@ import static java.text.MessageFormat.format;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public abstract class DatabaseConnectionBorrower {
+public abstract class DatabaseConnectionPool {
 
     public IDatabaseConnection borrowConnection() throws DatabaseUnitException {
         IDatabaseConnection databaseConnection = borrowTargetConnection();
@@ -24,7 +24,7 @@ public abstract class DatabaseConnectionBorrower {
 
     public void returnConnection(IDatabaseConnection borrowedConnection) throws DatabaseUnitException {
         if (!(borrowedConnection instanceof BorrowedDatabaseConnection)) {
-            String msg = format("borrowedConnection was not borrowed by this {0}", DatabaseConnectionBorrower.class.getSimpleName());
+            String msg = format("borrowedConnection was not borrowed by this {0}", DatabaseConnectionPool.class.getSimpleName());
             throw new IllegalArgumentException(msg);
         }
 
