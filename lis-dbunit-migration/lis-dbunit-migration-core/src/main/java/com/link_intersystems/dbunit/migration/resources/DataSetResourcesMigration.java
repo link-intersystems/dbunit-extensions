@@ -24,7 +24,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class DataSetResourcesMigration {
 
-    private DataSetResourcesMigrationListener migrationListener = new LoggingDataSetResourcesMigrationListener();
+    private MigrationListener migrationListener = new Slf4jLoggingMigrationListener();
     private Logger logger = LoggerFactory.getLogger(DataSetResourcesMigration.class);
 
     private TargetDataSetResourceSupplier targetDataSetResourceSupplier;
@@ -50,7 +50,7 @@ public class DataSetResourcesMigration {
         return databaseMigrationSupport;
     }
 
-    public void setMigrationListener(DataSetResourcesMigrationListener migrationListener) {
+    public void setMigrationListener(MigrationListener migrationListener) {
         this.migrationListener = requireNonNull(migrationListener);
     }
 

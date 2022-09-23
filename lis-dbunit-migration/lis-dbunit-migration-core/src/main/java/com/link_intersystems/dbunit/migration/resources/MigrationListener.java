@@ -6,7 +6,7 @@ import org.dbunit.dataset.DataSetException;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public interface DataSetResourcesMigrationListener {
+public interface MigrationListener {
 
     void startMigration(DataSetResource dataSetResource);
 

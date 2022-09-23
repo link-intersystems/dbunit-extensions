@@ -6,9 +6,9 @@ import org.dbunit.dataset.DataSetException;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public class NullDataSetResourcesMigrationListener implements DataSetResourcesMigrationListener {
+public class NullMigrationListener implements MigrationListener {
 
-    public static final NullDataSetResourcesMigrationListener INSTANCE = new NullDataSetResourcesMigrationListener();
+    public static final NullMigrationListener INSTANCE = new NullMigrationListener();
 
     @Override
     public void startMigration(DataSetResource dataSetResource) {

@@ -15,7 +15,7 @@ import static java.text.MessageFormat.format;
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
-public abstract class AbstractLoggingDataSetResourcesMigrationListener implements DataSetResourcesMigrationListener {
+public abstract class AbstractLoggingMigrationListener implements MigrationListener {
     @Override
     public void migrationSuccessful(DataSetResource dataSetResource) {
         String msg = format("\u2714\ufe0e Migrated ''{0}''", dataSetResource);
