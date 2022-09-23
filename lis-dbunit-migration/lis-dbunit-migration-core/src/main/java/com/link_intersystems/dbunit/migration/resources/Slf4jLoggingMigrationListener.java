@@ -33,7 +33,7 @@ public class Slf4jLoggingMigrationListener extends AbstractLoggingMigrationListe
     }
 
     @Override
-    protected void logMigrationFailed(DataSetException e, String msg) {
+    protected void logMigrationFailed(String msg, DataSetException e) {
         Logger logger = getLogger();
         if (logger.isDebugEnabled()) {
             logger.error(msg, e);

@@ -27,10 +27,10 @@ public abstract class AbstractLoggingMigrationListener implements MigrationListe
     @Override
     public void migrationFailed(DataSetResource dataSetResource, DataSetException e) {
         String msg = format("\u274c\ufe0e Migration failed ''{0}''", dataSetResource);
-        logMigrationFailed(e, msg);
+        logMigrationFailed(msg, e);
     }
 
-    protected abstract void logMigrationFailed(DataSetException e, String msg);
+    protected abstract void logMigrationFailed(String msg, DataSetException e);
 
     @Override
     public void startMigration(DataSetResource dataSetResource) {
