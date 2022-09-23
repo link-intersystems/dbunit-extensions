@@ -10,17 +10,20 @@ import com.link_intersystems.dbunit.testcontainers.consumer.DatabaseCustomizatio
 public class MigrationDatabaseCustomizationConsumer extends DatabaseCustomizationConsumer {
     private DatabaseMigrationSupport databaseMigrationSupport;
 
+    private JdbcContainer jdbcContainer;
+
     public MigrationDatabaseCustomizationConsumer(DatabaseMigrationSupport databaseMigrationSupport) {
         this.databaseMigrationSupport = databaseMigrationSupport;
     }
 
     @Override
     protected void beforeStartDataSet(JdbcContainer jdbcContainer) throws Exception {
+        this.jdbcContainer = jdbcContainer;
         databaseMigrationSupport.prepareDataSource(jdbcContainer.getDataSource());
     }
 
     @Override
-    protected void beforeEndDataSet(JdbcContainer jdbcContainer) throws Exception {
+    protected void beforeEndDataSet() throws Exception {
         databaseMigrationSupport.migrateDataSource(jdbcContainer.getDataSource());
     }
 }

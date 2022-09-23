@@ -14,7 +14,7 @@ public class DatabaseCustomizationConsumer extends JdbcContainerAwareDataSetCons
         try {
             beforeStartDataSet(getJdbcContainer());
             super.startDataSet(jdbcContainer);
-            afterStartDataSet(getJdbcContainer());
+            afterStartDataSet();
         } catch (DataSetException e) {
             throw e;
         } catch (Exception e) {
@@ -25,15 +25,15 @@ public class DatabaseCustomizationConsumer extends JdbcContainerAwareDataSetCons
     protected void beforeStartDataSet(JdbcContainer jdbcContainer) throws Exception {
     }
 
-    protected void afterStartDataSet(JdbcContainer jdbcContainer) throws Exception {
+    protected void afterStartDataSet() throws Exception {
     }
 
     @Override
     public void endDataSet() throws DataSetException {
         try {
-            beforeEndDataSet(getJdbcContainer());
+            beforeEndDataSet();
             super.endDataSet();
-            afterEndDataSet(getJdbcContainer());
+            afterEndDataSet();
         } catch (DataSetException e) {
             throw e;
         } catch (Exception e) {
@@ -41,9 +41,9 @@ public class DatabaseCustomizationConsumer extends JdbcContainerAwareDataSetCons
         }
     }
 
-    protected void beforeEndDataSet(JdbcContainer jdbcContainer) throws Exception {
+    protected void beforeEndDataSet() throws Exception {
     }
 
-    protected void afterEndDataSet(JdbcContainer jdbcContainer) throws Exception {
+    protected void afterEndDataSet() throws Exception {
     }
 }
