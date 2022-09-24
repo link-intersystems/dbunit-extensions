@@ -10,10 +10,10 @@ public class NullDatabaseMigrationSupport implements DatabaseMigrationSupport {
     public static final NullDatabaseMigrationSupport INSTANCE = new NullDatabaseMigrationSupport();
 
     @Override
-    public void prepareDataSource(DataSource dataSource) {
+    public void prepareDataSource(DataSource dataSource, DataSourceProperties properties) {
     }
 
     @Override
-    public void migrateDataSource(DataSource dataSource) {
+    public void migrateDataSource(DataSource dataSource, DataSourceProperties properties) {
     }
 }

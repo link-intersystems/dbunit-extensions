@@ -9,6 +9,8 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 import static org.dbunit.database.DatabaseConfig.*;
@@ -40,6 +42,28 @@ public class DBunitJdbcContainer implements JdbcContainer {
     public DBunitJdbcContainer(JdbcDatabaseContainer<?> jdbcDatabaseContainer, DatabaseConfig dbunitConfig) {
         this.jdbcDatabaseContainer = requireNonNull(jdbcDatabaseContainer);
         this.dbunitConfig = requireNonNull(dbunitConfig);
+    }
+
+    @Override
+    public JdbcContainerProperties getProperties() {
+        DefaultJdbcContainerProperties properties = new DefaultJdbcContainerProperties();
+
+        if (isRunning()) {
+            properties.setUsername(jdbcDatabaseContainer.getUsername());
+            properties.setPassword(jdbcDatabaseContainer.getPassword());
+            properties.setJdbcUrl(jdbcDatabaseContainer.getJdbcUrl());
+            properties.setDatabaseName(jdbcDatabaseContainer.getDatabaseName());
+            properties.setHostname(jdbcDatabaseContainer.getHost());
+            List<Integer> exposedPorts = jdbcDatabaseContainer.getExposedPorts();
+            if (!exposedPorts.isEmpty()) {
+                Integer mappedPort = jdbcDatabaseContainer.getMappedPort(exposedPorts.get(0));
+                properties.setPort(String.valueOf(mappedPort));
+            }
+            Map<String, String> envMap = jdbcDatabaseContainer.getEnvMap();
+            properties.setEnvironment(envMap);
+        }
+
+        return properties;
     }
 
     public void start() throws DataSetException {
@@ -131,6 +155,11 @@ public class DBunitJdbcContainer implements JdbcContainer {
             @Override
             public IDatabaseConnection getDatabaseConnection() {
                 return databaseConnection;
+            }
+
+            @Override
+            public JdbcContainerProperties getProperties() {
+                return DBunitJdbcContainer.this.getProperties();
             }
 
             @Override

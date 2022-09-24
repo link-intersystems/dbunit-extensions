@@ -11,4 +11,6 @@ public interface JdbcContainer {
     DataSource getDataSource();
 
     IDatabaseConnection getDatabaseConnection();
+
+    public JdbcContainerProperties getProperties();
 }

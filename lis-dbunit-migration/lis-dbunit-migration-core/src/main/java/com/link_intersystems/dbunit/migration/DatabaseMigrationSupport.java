@@ -8,8 +8,8 @@ import java.sql.SQLException;
  */
 public interface DatabaseMigrationSupport {
 
-    void prepareDataSource(DataSource dataSource) throws SQLException;
+    void prepareDataSource(DataSource dataSource, DataSourceProperties properties) throws SQLException;
 
-    void migrateDataSource(DataSource dataSource) throws SQLException;
+    void migrateDataSource(DataSource dataSource, DataSourceProperties properties) throws SQLException;
 
 }
