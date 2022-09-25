@@ -1,5 +1,6 @@
 package com.link_intersystems.dbunit.migration.flyway;
 
+import com.link_intersystems.dbunit.migration.DataSourceProperties;
 import org.flywaydb.core.api.MigrationVersion;
 import org.flywaydb.core.api.configuration.Configuration;
 import org.flywaydb.core.api.configuration.FluentConfiguration;

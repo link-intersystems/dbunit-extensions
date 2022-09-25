@@ -22,10 +22,16 @@ import static java.util.Objects.requireNonNull;
  */
 public class FlywayDatabaseMigrationSupport implements DatabaseMigrationSupport {
 
+    private PlaceholdersSourceTransformer placeholdersSourceTransformer = (ps, dsp) -> ps;
+
     private FlywayMigrationConfig migrationConfig;
 
     public FlywayDatabaseMigrationSupport(FlywayMigrationConfig migrationConfig) {
         this.migrationConfig = requireNonNull(migrationConfig);
+    }
+
+    public void setPlaceholdersSourceTransformer(PlaceholdersSourceTransformer placeholdersSourceTransformer) {
+        this.placeholdersSourceTransformer = requireNonNull(placeholdersSourceTransformer);
     }
 
     public FlywayMigrationConfig getMigrationConfig() {
@@ -39,7 +45,6 @@ public class FlywayDatabaseMigrationSupport implements DatabaseMigrationSupport 
 
         flywayMigration.execute(dataSource, migrationConfig.getSourceVersion());
     }
-
 
     @Override
     public void migrateDataSource(DataSource dataSource, DataSourceProperties properties) throws SQLException {
@@ -64,7 +69,6 @@ public class FlywayDatabaseMigrationSupport implements DatabaseMigrationSupport 
     }
 
     protected FlywayMigration createFlywayMigration(DataSourceProperties properties) {
-
         FluentConfiguration effectiveConfiguration = createFlywayConfiguration(properties);
         return new FlywayMigration(effectiveConfiguration);
     }
@@ -75,21 +79,29 @@ public class FlywayDatabaseMigrationSupport implements DatabaseMigrationSupport 
         Configuration basicConfiguration = migrationConfig.getFlywayConfiguration();
         effectiveConfiguration.configuration(basicConfiguration);
 
-        PlaceholdersSource placeholdersSource = createPlaceholdersSource(basicConfiguration, properties);
-        effectiveConfiguration.placeholders(placeholdersSource.getPlaceholders());
+        PlaceholdersSource placeholdersSource = createPlaceholdersSource(properties);
+        PlaceholdersSource transformedPlaceholderSource = placeholdersSourceTransformer.transform(placeholdersSource, properties);
+
+        effectiveConfiguration.placeholders(transformedPlaceholderSource.getPlaceholders());
 
         return effectiveConfiguration;
     }
 
-    protected PlaceholdersSource createPlaceholdersSource(Configuration configuration, DataSourceProperties properties) {
+    private PlaceholdersSource createPlaceholdersSource(DataSourceProperties properties) {
         List<PlaceholdersSource> placeholdersSources = new ArrayList<>();
 
         PlaceholdersSource dataSourcePlaceholdersSource = createDataSourcePlaceholdersSource(properties);
         placeholdersSources.add(dataSourcePlaceholdersSource);
 
-        placeholdersSources.add(configuration::getPlaceholders);
+        PlaceholdersSource migrationConfigPlaceholdersSource = createMigrationConfigPlaceholdersSource(migrationConfig);
+        placeholdersSources.add(migrationConfigPlaceholdersSource);
 
         return new PlaceholdersSourceChain(placeholdersSources);
+    }
+
+    protected PlaceholdersSource createMigrationConfigPlaceholdersSource(FlywayMigrationConfig migrationConfig) {
+        Configuration configuration = migrationConfig.getFlywayConfiguration();
+        return configuration::getPlaceholders;
     }
 
     protected PlaceholdersSource createDataSourcePlaceholdersSource(DataSourceProperties dataSourceProperties) {
