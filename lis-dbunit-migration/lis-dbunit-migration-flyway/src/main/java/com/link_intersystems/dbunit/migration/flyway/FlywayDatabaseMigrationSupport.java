@@ -9,19 +9,18 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
  */
 public class FlywayDatabaseMigrationSupport implements DatabaseMigrationSupport {
-
-    private static final Collection<String> FLYWAY_TABLES = Arrays.asList("flyway_schema_history");
 
     private FlywayMigrationConfig migrationConfig;
 
@@ -65,33 +64,52 @@ public class FlywayDatabaseMigrationSupport implements DatabaseMigrationSupport 
     }
 
     protected FlywayMigration createFlywayMigration(DataSourceProperties properties) {
-        Configuration configuration = migrationConfig.getFlywayConfiguration();
-        FluentConfiguration effectiveConfiguration = createEffectiveConfiguration(configuration, properties);
 
+        FluentConfiguration effectiveConfiguration = createFlywayConfiguration(properties);
         return new FlywayMigration(effectiveConfiguration);
     }
 
-    protected FluentConfiguration createEffectiveConfiguration(Configuration configuration, DataSourceProperties properties) {
+    private FluentConfiguration createFlywayConfiguration(DataSourceProperties properties) {
         FluentConfiguration effectiveConfiguration = new FluentConfiguration();
-        effectiveConfiguration.configuration(configuration);
 
-        Map<String, String> placeholders = new HashMap<>();
+        Configuration basicConfiguration = migrationConfig.getFlywayConfiguration();
+        effectiveConfiguration.configuration(basicConfiguration);
 
-        placeholders.putAll(properties);
-
-        Map<String, String> environmentProperties = properties.getEnvironmentProperties();
-        for (Map.Entry<String, String> environmentPropertyEntry : environmentProperties.entrySet()) {
-            placeholders.put("env." + environmentPropertyEntry.getKey(), environmentPropertyEntry.getValue());
-        }
-
-        placeholders.putAll(configuration.getPlaceholders());
-        effectiveConfiguration.placeholders(placeholders);
+        PlaceholdersSource placeholdersSource = createPlaceholdersSource(basicConfiguration, properties);
+        effectiveConfiguration.placeholders(placeholdersSource.getPlaceholders());
 
         return effectiveConfiguration;
     }
 
+    protected PlaceholdersSource createPlaceholdersSource(Configuration configuration, DataSourceProperties properties) {
+        List<PlaceholdersSource> placeholdersSources = new ArrayList<>();
+
+        PlaceholdersSource dataSourcePlaceholdersSource = createDataSourcePlaceholdersSource(properties);
+        placeholdersSources.add(dataSourcePlaceholdersSource);
+
+        placeholdersSources.add(configuration::getPlaceholders);
+
+        return new PlaceholdersSourceChain(placeholdersSources);
+    }
+
+    protected PlaceholdersSource createDataSourcePlaceholdersSource(DataSourceProperties dataSourceProperties) {
+        return PlaceholdersSource.fromMap(placeholders -> {
+            placeholders.put("username", dataSourceProperties.getUsername());
+            placeholders.put("password", dataSourceProperties.getPassword());
+            placeholders.put("databaseName", dataSourceProperties.getDatabaseName());
+            placeholders.put("host", dataSourceProperties.getHost());
+            placeholders.put("port", dataSourceProperties.getPort());
+            placeholders.put("jdbcUrl", dataSourceProperties.getJdbcUrl());
+
+            Map<String, String> environmentProperties = dataSourceProperties.getEnvironment();
+            for (Map.Entry<String, String> environmentPropertyEntry : environmentProperties.entrySet()) {
+                placeholders.put("env." + environmentPropertyEntry.getKey(), environmentPropertyEntry.getValue());
+            }
+        });
+    }
+
     protected Collection<String> getFlywayTables() {
-        return FLYWAY_TABLES;
+        return singletonList("flyway_schema_history");
     }
 
     protected void dropTable(Statement statement, String flywayTable) throws SQLException {

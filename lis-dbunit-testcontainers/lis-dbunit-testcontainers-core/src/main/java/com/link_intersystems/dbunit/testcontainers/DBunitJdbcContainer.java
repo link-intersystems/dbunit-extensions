@@ -1,5 +1,6 @@
 package com.link_intersystems.dbunit.testcontainers;
 
+import com.link_intersystems.dbunit.database.DatabaseConfigUtils;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
@@ -9,11 +10,8 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
-import static org.dbunit.database.DatabaseConfig.*;
 
 /**
  * @author René Link {@literal <rene.link@link-intersystems.com>}
@@ -46,24 +44,7 @@ public class DBunitJdbcContainer implements JdbcContainer {
 
     @Override
     public JdbcContainerProperties getProperties() {
-        DefaultJdbcContainerProperties properties = new DefaultJdbcContainerProperties();
-
-        if (isRunning()) {
-            properties.setUsername(jdbcDatabaseContainer.getUsername());
-            properties.setPassword(jdbcDatabaseContainer.getPassword());
-            properties.setJdbcUrl(jdbcDatabaseContainer.getJdbcUrl());
-            properties.setDatabaseName(jdbcDatabaseContainer.getDatabaseName());
-            properties.setHostname(jdbcDatabaseContainer.getHost());
-            List<Integer> exposedPorts = jdbcDatabaseContainer.getExposedPorts();
-            if (!exposedPorts.isEmpty()) {
-                Integer mappedPort = jdbcDatabaseContainer.getMappedPort(exposedPorts.get(0));
-                properties.setPort(String.valueOf(mappedPort));
-            }
-            Map<String, String> envMap = jdbcDatabaseContainer.getEnvMap();
-            properties.setEnvironment(envMap);
-        }
-
-        return properties;
+        return new JdbcDatabaseContainerProperties(jdbcDatabaseContainer);
     }
 
     public void start() throws DataSetException {
@@ -76,8 +57,8 @@ public class DBunitJdbcContainer implements JdbcContainer {
         DatabaseContainerDataSource dataSource = new DatabaseContainerDataSource(jdbcDatabaseContainer);
         try {
             DatabaseConnection databaseConnection = new DatabaseConnection(dataSource.getConnection());
-            DatabaseConfig databaseConfig = databaseConnection.getConfig();
-            applyContainerSupportConfig(dbunitConfig, databaseConfig);
+            DatabaseConfig connectionConfig = databaseConnection.getConfig();
+            DatabaseConfigUtils.copy(dbunitConfig, connectionConfig);
 
             runningContainer = createRunningContainer(jdbcDatabaseContainer, dataSource, databaseConnection);
         } catch (DatabaseUnitException | SQLException e) {
@@ -120,25 +101,6 @@ public class DBunitJdbcContainer implements JdbcContainer {
             throw new RuntimeException("Container stopped");
         }
         return runningContainer.getDatabaseConnection();
-    }
-
-    protected void applyContainerSupportConfig(DatabaseConfig containerSupportConfig, DatabaseConfig databaseConfig) {
-        databaseConfig.setFeature(FEATURE_BATCHED_STATEMENTS, containerSupportConfig.getFeature(FEATURE_BATCHED_STATEMENTS));
-        databaseConfig.setFeature(FEATURE_QUALIFIED_TABLE_NAMES, containerSupportConfig.getFeature(FEATURE_QUALIFIED_TABLE_NAMES));
-        databaseConfig.setFeature(FEATURE_CASE_SENSITIVE_TABLE_NAMES, containerSupportConfig.getFeature(FEATURE_CASE_SENSITIVE_TABLE_NAMES));
-        databaseConfig.setFeature(FEATURE_DATATYPE_WARNING, containerSupportConfig.getFeature(FEATURE_DATATYPE_WARNING));
-        databaseConfig.setFeature(FEATURE_ALLOW_EMPTY_FIELDS, containerSupportConfig.getFeature(FEATURE_ALLOW_EMPTY_FIELDS));
-
-        databaseConfig.setProperty(PROPERTY_STATEMENT_FACTORY, containerSupportConfig.getProperty(PROPERTY_STATEMENT_FACTORY));
-        databaseConfig.setProperty(PROPERTY_RESULTSET_TABLE_FACTORY, containerSupportConfig.getProperty(PROPERTY_RESULTSET_TABLE_FACTORY));
-        databaseConfig.setProperty(PROPERTY_DATATYPE_FACTORY, containerSupportConfig.getProperty(PROPERTY_DATATYPE_FACTORY));
-        databaseConfig.setProperty(PROPERTY_ESCAPE_PATTERN, containerSupportConfig.getProperty(PROPERTY_ESCAPE_PATTERN));
-        databaseConfig.setProperty(PROPERTY_TABLE_TYPE, containerSupportConfig.getProperty(PROPERTY_TABLE_TYPE));
-        databaseConfig.setProperty(PROPERTY_BATCH_SIZE, containerSupportConfig.getProperty(PROPERTY_BATCH_SIZE));
-        databaseConfig.setProperty(PROPERTY_FETCH_SIZE, containerSupportConfig.getProperty(PROPERTY_FETCH_SIZE));
-        databaseConfig.setProperty(PROPERTY_METADATA_HANDLER, containerSupportConfig.getProperty(PROPERTY_METADATA_HANDLER));
-        databaseConfig.setProperty(PROPERTY_ALLOW_VERIFYTABLEDEFINITION_EXPECTEDTABLE_COUNT_MISMATCH,
-                containerSupportConfig.getProperty(PROPERTY_ALLOW_VERIFYTABLEDEFINITION_EXPECTEDTABLE_COUNT_MISMATCH));
     }
 
     protected RunningContainer createRunningContainer(JdbcDatabaseContainer<?> jdbcDatabaseContainer, DatabaseContainerDataSource dataSource, DatabaseConnection databaseConnection) {
