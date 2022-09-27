@@ -18,7 +18,7 @@ public class DefaultTableLiteralFormatResolver extends AbstractTableLiteralForma
 
     private Map<Integer, LiteralFormat> sqlTypeLiteralFormats;
 
-    private LiteralFormat defaultLiteralFormat = new SimpleLiteralFormat();
+    private LiteralFormat defaultLiteralFormat = ToStringLiteralFormat.INSTANCE;
 
     public void setDefaultLiteralFormat(LiteralFormat defaultLiteralFormat) {
         this.defaultLiteralFormat = requireNonNull(defaultLiteralFormat);
@@ -47,14 +47,14 @@ public class DefaultTableLiteralFormatResolver extends AbstractTableLiteralForma
         sqlTypeLiteralFormats.put(Types.DECIMAL, decimalLiteralFormat);
         sqlTypeLiteralFormats.put(Types.NUMERIC, decimalLiteralFormat);
 
-        SimpleLiteralFormat simpleLiteralFormat = new SimpleLiteralFormat();
-        sqlTypeLiteralFormats.put(Types.BOOLEAN, simpleLiteralFormat);
-        sqlTypeLiteralFormats.put(Types.BIGINT, simpleLiteralFormat);
-        sqlTypeLiteralFormats.put(Types.DOUBLE, simpleLiteralFormat);
-        sqlTypeLiteralFormats.put(Types.FLOAT, simpleLiteralFormat);
-        sqlTypeLiteralFormats.put(Types.TINYINT, simpleLiteralFormat);
-        sqlTypeLiteralFormats.put(Types.SMALLINT, simpleLiteralFormat);
-        sqlTypeLiteralFormats.put(Types.INTEGER, simpleLiteralFormat);
+        LiteralFormat toStringLiteralFormat = new ToStringLiteralFormat();
+        sqlTypeLiteralFormats.put(Types.BOOLEAN, toStringLiteralFormat);
+        sqlTypeLiteralFormats.put(Types.BIGINT, toStringLiteralFormat);
+        sqlTypeLiteralFormats.put(Types.DOUBLE, toStringLiteralFormat);
+        sqlTypeLiteralFormats.put(Types.FLOAT, toStringLiteralFormat);
+        sqlTypeLiteralFormats.put(Types.TINYINT, toStringLiteralFormat);
+        sqlTypeLiteralFormats.put(Types.SMALLINT, toStringLiteralFormat);
+        sqlTypeLiteralFormats.put(Types.INTEGER, toStringLiteralFormat);
 
         TimestampLiteralFormat timestampLiteralFormat = getTimestampLiteralFormat();
         sqlTypeLiteralFormats.put(Types.TIMESTAMP, timestampLiteralFormat);
