@@ -27,12 +27,15 @@
     </modules>
 
     <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+
         <lis-commons.version>1.8.2</lis-commons.version>
         <junit.jupiter.version>5.8.2</junit.jupiter.version>
         <mockito.version>4.4.0</mockito.version>
         <slf4j.version>1.7.36</slf4j.version>
         <postgresql.version>42.3.5</postgresql.version>
-        <dbunit.version>2.7.3</dbunit.version>
+        <dbunit.version>3.0.0</dbunit.version>
     </properties>
 
     <dependencies>

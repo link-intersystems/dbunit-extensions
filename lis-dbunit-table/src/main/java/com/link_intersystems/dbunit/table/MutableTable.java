@@ -7,6 +7,7 @@ import org.dbunit.dataset.datatype.DataType;
 import org.dbunit.dataset.datatype.TypeCastException;
 
 import java.io.Serializable;
+import java.lang.reflect.InaccessibleObjectException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -46,7 +47,8 @@ public class MutableTable extends AbstractTable {
                     Method clone = Object.class.getDeclaredMethod("clone");
                     clone.setAccessible(true);
                     copy = clone.invoke(value);
-                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException |
+                         InaccessibleObjectException e) {
                 }
             }
 
