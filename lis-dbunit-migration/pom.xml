@@ -3,7 +3,7 @@
     <parent>
         <artifactId>lis-dbunit</artifactId>
         <groupId>com.link-intersystems.dbunit</groupId>
-        <version>1.2.1-SNAPSHOT</version>
+        <version>1.3.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -34,23 +34,23 @@
             <dependency>
                 <groupId>com.link-intersystems.dbunit.migration</groupId>
                 <artifactId>lis-dbunit-migration-core</artifactId>
-                <version>1.2.1-SNAPSHOT</version>
+                <version>1.3.0</version>
             </dependency>
             <dependency>
                 <groupId>com.link-intersystems.dbunit.migration</groupId>
                 <artifactId>lis-dbunit-migration-testcontainers</artifactId>
-                <version>1.2.1-SNAPSHOT</version>
+                <version>1.3.0</version>
             </dependency>
             <dependency>
                 <groupId>com.link-intersystems.dbunit.migration</groupId>
                 <artifactId>lis-dbunit-migration-flyway</artifactId>
-                <version>1.2.1-SNAPSHOT</version>
+                <version>1.3.0</version>
             </dependency>
 
             <dependency>
                 <groupId>com.link-intersystems.dbunit.testcontainers</groupId>
                 <artifactId>lis-dbunit-testcontainers</artifactId>
-                <version>1.2.1-SNAPSHOT</version>
+                <version>1.3.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
